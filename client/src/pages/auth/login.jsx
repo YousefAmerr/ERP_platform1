@@ -42,7 +42,7 @@ const Login = () => {
         EMPLOYEE: '/employee_dashboard'
         };
 
-        navigate(routeByRole[selectedRole] || '/login');
+        navigate(routeByRole[selectedRole]);
         setEmail('');
         setPassword('');
         } catch (error) {
@@ -73,7 +73,7 @@ const Login = () => {
             <div className="password-field mb-3">
                 <h5><i className="fa-solid fa-lock"></i> Password</h5>
 
-                <input type="password" placeholder="Enter your email id" 
+                <input type="password" placeholder="Enter password" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />

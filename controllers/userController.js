@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken'
 import { checkRole, findUserByEmail, matchPassword } from "../models/UsersModel.js"
 
 
@@ -42,9 +43,16 @@ export const Login = async (req, res) => {
         }
 
 
+        const token = jwt.sign(
+            { email, role },
+            process.env.JWT_SECRET,
+            { expiresIn: '1d' }
+        );
+
         res.status(200).send({
             success:true,
-            message:"login success"
+            message:"login success",
+            token
         })
 
     } catch (error) {
