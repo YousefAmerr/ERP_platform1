@@ -1,17 +1,37 @@
 import express from 'express'
-import {getDatabaseTableeee} from './models/test.js'
+import 'colors'
+import cors from 'cors'
+import {connectDB} from './config/database.js'
+import morgan from 'morgan'
+import UserRoute from './routes/UserRoute.js'
+
+//check 
+connectDB();
+
 const app = express()
 
-app.get("/notes", async (req,res) =>{
-    const notes = await getDatabaseTableeee()
-    res.send(notes)
-})
+//middlewares
+app.use(express.json())
+app.use(cors())
+app.use(morgan("dev"))
+
+
+//routes
+app.use('/api/v1/user',UserRoute)
+
 
 app.use((err,req,res,next) =>{
     console.error(err)
     res.status(500).send("smothing broke")
 })
 
-app.listen(8080, () =>{
-    console.log('server is running on port 8080')
-})
+
+//PORT 
+const PORT = process.env.PORT
+
+
+app.listen(PORT, () => {
+console.log(('server is running on port ' + PORT).bgCyan.white);
+});
+
+

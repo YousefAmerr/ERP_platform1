@@ -1,0 +1,77 @@
+.auth-container{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    margin: 100px 0px;
+    flex-direction: column;
+
+}
+
+.card{
+    padding: 50px;
+    width: 1000px;
+    border: 1px solid gray;
+    box-shadow: -10px 15px 15px lightgray;
+}
+
+.card h1{
+    font-family:'Times New Roman', Times, serif;
+    padding: 20px 0px
+
+}
+
+.card h5{
+    font-family:'Times New Roman', Times, serif;
+}
+
+.card input{
+    
+    border-bottom: 2px solid black;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-radius: 0;
+    outline: none;
+
+    margin: 5px 0px;
+    width: 400px;
+    padding: 10px 0px;
+}
+
+.card .username-field{
+    margin-top: 10px;
+}
+
+.card .password-field{
+    margin-top: 10px;
+}
+
+.card .login-btn{
+    width: 200px;
+    border-radius: 15px;
+    justify-content: center;
+    display: flex;
+    margin-left: 90px;
+    margin-top: 20px;
+    background-color: rgb(55, 118, 253);
+    
+}
+
+.card .role-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;    
+    gap: 35px;
+    margin: 10px 0px;
+}
+
+.role-buttons .role-button{
+    width: 110px;
+    background-color: white;
+    color: gray;
+    border-radius: 5px;
+}
+
+.role-buttons .role-button:hover {
+color: #1f2a44;
+}
