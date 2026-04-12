@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { checkRole, findUserByEmail, matchPassword } from "../models/UsersModel.js"
+import { checkRole, findUserByEmail, matchPassword, getUserInfo } from "../models/UsersModel.js"
 
 
 //login
@@ -62,5 +62,19 @@ export const Login = async (req, res) => {
             message:"error in login api",
             error
         })
+    }
+}
+
+// get current logged-in user info
+export const getMe = async (req, res) => {
+    try {
+        const user = await getUserInfo(req.user.email)
+        if (!user) {
+            return res.status(404).send({ success: false, message: 'User not found' })
+        }
+        res.status(200).send({ success: true, name: user.name, email: user.email, role: user.role })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({ success: false, message: 'Error fetching user info' })
     }
 }

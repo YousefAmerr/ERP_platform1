@@ -1,0 +1,129 @@
+/* ── Employee Project Tasks Page ─────────────────────────── */
+
+.ept-page {
+  padding: 24px 32px 36px;
+  background: #f4f6fb;
+  min-height: 100%;
+}
+
+/* ── Header card ────────────────────────────────────────── */
+.ept-header-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  padding: 20px 24px;
+  margin-bottom: 22px;
+}
+
+.ept-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  background: #e5e7eb;
+  color: #374151;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 14px;
+  transition: background 0.13s;
+}
+
+.ept-back-btn:hover { background: #d1d5db; }
+
+.ept-project-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+/* ── Tasks card ─────────────────────────────────────────── */
+.ept-tasks-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  overflow: hidden;
+}
+
+.ept-tasks-header {
+  padding: 18px 24px 14px;
+  border-bottom: 2px solid #3b82f6;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ── Table ──────────────────────────────────────────────── */
+.ept-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ept-table thead th {
+  padding: 11px 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #374151;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ept-table tbody tr {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background 0.1s;
+}
+
+.ept-table tbody tr:last-child { border-bottom: none; }
+.ept-table tbody tr:hover { background: #fafbff; }
+
+.ept-table td {
+  padding: 14px 20px;
+  vertical-align: top;
+  font-size: 0.85rem;
+  color: #374151;
+}
+
+.ept-title { font-weight: 500; color: #111827; }
+.ept-desc  { color: #6b7280; font-size: 0.83rem; }
+.ept-date  { white-space: nowrap; }
+
+/* Status badge */
+.ept-status {
+  display: inline-block;
+  padding: 3px 11px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ept-status.done        { background: #dcfce7; color: #15803d; }
+.ept-status.in-progress { background: #dbeafe; color: #1d4ed8; }
+.ept-status.overdue     { background: #fee2e2; color: #dc2626; }
+
+/* View More button */
+.ept-view-btn {
+  padding: 6px 16px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.13s;
+}
+
+.ept-view-btn:hover { background: #1d4ed8; }
+
+/* Empty */
+.ept-empty td {
+  text-align: center;
+  padding: 56px 20px;
+  color: #9ca3af;
+  font-size: 0.86rem;
+}

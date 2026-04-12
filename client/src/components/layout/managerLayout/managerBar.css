@@ -1,0 +1,234 @@
+/* ===== SIDEBAR SUBMENU ===== */
+.mgr-nav-group {
+    justify-content: flex-start;
+}
+
+.mgr-nav-chevron {
+    margin-left: auto;
+    font-size: 0.62rem;
+    color: #8a96a8;
+}
+
+.mgr-subnav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: 36px;
+}
+
+.mgr-subnav-link {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.83rem;
+    font-weight: 500;
+    color: #6b7590;
+    text-decoration: none;
+    transition: background 0.13s, color 0.13s;
+}
+
+.mgr-subnav-link:hover {
+    background: #f0f4ff;
+    color: #1f2a44;
+    text-decoration: none;
+}
+
+.mgr-subnav-link.active {
+    background: #eff4ff;
+    color: #3776fd;
+    font-weight: 600;
+}
+
+/* ===== MANAGER LAYOUT WRAPPER ===== */
+.mgr-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.mgr-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #f4f6fb;
+}
+
+.mgr-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 32px;
+}
+
+/* ===== SIDEBAR ===== */
+.mgr-sidebar {
+    width: 230px;
+    min-width: 230px;
+    background: #f1f5f9;
+    border-right: 1px solid #e5e9f0;
+    display: flex;
+    flex-direction: column;
+}
+
+.mgr-brand {
+    padding: 22px 24px 20px;
+    user-select: none;
+}
+
+.mgr-brand-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #3776fd;
+    letter-spacing: 0.2px;
+    line-height: 1.2;
+}
+
+.mgr-brand-sub {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #8a96a8;
+    margin-top: 2px;
+}
+
+.mgr-nav {
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.mgr-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: #6b7590;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s;
+}
+
+.mgr-nav-link:hover {
+    background: #f0f4ff;
+    color: #1f2a44;
+    text-decoration: none;
+}
+
+.mgr-nav-link.active {
+    background: #ffffff;
+    color: #3776fd;
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+
+.mgr-nav-link.active:hover {
+    background: #ffffff;
+    color: #3776fd;
+}
+
+.mgr-nav-link i {
+    width: 16px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: inherit;
+}
+
+.mgr-sidebar-footer {
+    margin-top: auto;
+    padding: 16px 12px;
+    border-top: 1px solid #e5e9f0;
+}
+
+.mgr-logout {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #e05252;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.mgr-logout:hover {
+    background: #fdeaea;
+    color: #c0392b;
+}
+
+.mgr-logout i {
+    width: 16px;
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+/* ===== TOPBAR ===== */
+.mgr-topbar {
+    height: 62px;
+    min-height: 62px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e9f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+}
+
+.mgr-topbar-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1f2a44;
+    margin: 0;
+}
+
+.mgr-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mgr-role-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1.5px solid #3776fd;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #3776fd;
+    letter-spacing: 0.4px;
+}
+
+.mgr-role-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #3776fd;
+    flex-shrink: 0;
+}
+
+.mgr-topbar-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #3776fd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #fff;
+    cursor: default;
+    border: 2px solid #e5e9f0;
+    overflow: hidden;
+}

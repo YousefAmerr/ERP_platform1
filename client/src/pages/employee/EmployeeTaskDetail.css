@@ -1,0 +1,105 @@
+/* ── Employee Task Detail Page ───────────────────────────── */
+
+.etd-page {
+  padding: 24px 32px 36px;
+  background: #f4f6fb;
+  min-height: 100%;
+}
+
+/* ── Card ───────────────────────────────────────────────── */
+.etd-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  padding: 22px 28px 28px;
+}
+
+.etd-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  background: #e5e7eb;
+  color: #374151;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: background 0.13s;
+}
+
+.etd-back-btn:hover { background: #d1d5db; }
+
+.etd-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 16px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #3b82f6;
+}
+
+/* ── Detail rows ────────────────────────────────────────── */
+.etd-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 14px 0;
+  border-bottom: 1px solid #f3f4f6;
+  gap: 16px;
+}
+
+.etd-row:last-of-type { border-bottom: none; }
+
+.etd-row-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #111827;
+  min-width: 110px;
+  flex-shrink: 0;
+}
+
+.etd-row-value {
+  font-size: 0.88rem;
+  color: #2563eb;
+  flex: 1;
+}
+
+.etd-row-value.neutral { color: #374151; }
+
+/* Status select */
+.etd-select {
+  padding: 7px 12px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.87rem;
+  color: #374151;
+  background: #fff;
+  outline: none;
+  cursor: pointer;
+  min-width: 160px;
+  transition: border-color 0.15s;
+}
+
+.etd-select:focus { border-color: #3b82f6; }
+
+/* Save button */
+.etd-save-btn {
+  margin-top: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 20px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.87rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.13s;
+}
+
+.etd-save-btn:hover:not(:disabled) { background: #1d4ed8; }
+.etd-save-btn:disabled { opacity: 0.6; cursor: not-allowed; }

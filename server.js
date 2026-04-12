@@ -4,6 +4,16 @@ import cors from 'cors'
 import {connectDB} from './config/database.js'
 import morgan from 'morgan'
 import UserRoute from './routes/UserRoute.js'
+import AdminDashboardRoute from './routes/adminRoute/AdminDashboardRoute.js'
+import UsersManagementRoute from './routes/adminRoute/UsersManagementRoute.js'
+import LeaveManagementRoute from './routes/adminRoute/LeaveManagementRoute.js'
+import ManagerDashboardRoute from './routes/managerRoute/ManagerDashboardRoute.js'
+import ManagerLeaveRoute from './routes/managerRoute/ManagerLeaveRoute.js'
+import ManagerTasksRoute from './routes/managerRoute/ManagerTasksRoute.js'
+import ManagerInsideTaskRoute from './routes/managerRoute/ManagerInsideTaskRoute.js'
+import EmployeeDashboardRoute from './routes/employeeRoute/EmployeeDashboardRoute.js'
+import EmployeeLeaveRoute from './routes/employeeRoute/EmployeeLeaveRoute.js'
+import EmployeeTasksRoute from './routes/employeeRoute/EmployeeTasksRoute.js'
 
 //check 
 connectDB();
@@ -17,7 +27,17 @@ app.use(morgan("dev"))
 
 
 //routes
-app.use('/api/v1/user',UserRoute)
+app.use('/api/v1/user', UserRoute)
+app.use('/api/v1/admin', AdminDashboardRoute)
+app.use('/api/v1/admin', UsersManagementRoute)
+app.use('/api/v1/admin', LeaveManagementRoute)
+app.use('/api/v1/manager', ManagerDashboardRoute)
+app.use('/api/v1/manager', ManagerLeaveRoute)
+app.use('/api/v1/manager', ManagerTasksRoute)
+app.use('/api/v1/manager', ManagerInsideTaskRoute)
+app.use('/api/v1/employee', EmployeeDashboardRoute)
+app.use('/api/v1/employee', EmployeeLeaveRoute)
+app.use('/api/v1/employee', EmployeeTasksRoute)
 
 
 app.use((err,req,res,next) =>{

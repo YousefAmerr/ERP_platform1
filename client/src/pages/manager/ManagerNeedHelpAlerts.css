@@ -1,0 +1,279 @@
+/* ── Manager Need Help Alerts ─────────────────────────────── */
+
+.mnha-page {
+  padding: 15px 32px;
+  background: #f4f6fb;
+  min-height: 100%;
+}
+
+/* Breadcrumb */
+.mnha-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  margin-bottom: 22px;
+}
+
+.mnha-bc-parent {
+  color: #374151;
+  font-weight: 500;
+}
+
+.mnha-bc-sep {
+  color: #9ca3af;
+  font-size: 0.78rem;
+}
+
+.mnha-bc-current {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* Card */
+.mnha-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+}
+
+/* Card Header */
+.mnha-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.mnha-header-left {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.mnha-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.mnha-entry-count {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.mnha-header-icons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mnha-icon-btn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: background 0.12s, color 0.12s;
+}
+
+.mnha-icon-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* Table */
+.mnha-table-wrap {
+  overflow-x: auto;
+}
+
+.mnha-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mnha-table thead th {
+  padding: 11px 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  text-align: left;
+  background: #fff;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.mnha-table tbody tr {
+  border-bottom: 1px solid #f9fafb;
+  transition: background 0.12s;
+}
+
+.mnha-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.mnha-table tbody tr:hover {
+  background: #fafbff;
+}
+
+.mnha-table td {
+  padding: 14px 20px;
+  vertical-align: middle;
+}
+
+/* Employee cell */
+.mnha-emp-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mnha-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.mnha-emp-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.3;
+}
+
+.mnha-emp-dept {
+  font-size: 0.74rem;
+  color: #2563eb;
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+/* Reason */
+.mnha-reason {
+  font-size: 0.85rem;
+  color: #374151;
+}
+
+/* Date cell */
+.mnha-date-main {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.mnha-date-time {
+  font-size: 0.73rem;
+  color: #9ca3af;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+/* Status badges */
+.mnha-status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.mnha-status-badge.open {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.mnha-status-badge.under-review {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.mnha-status-badge.resolved {
+  background: #d1fae5;
+  color: #059669;
+}
+
+/* Actions */
+.mnha-view-btn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.12s;
+  white-space: nowrap;
+}
+
+.mnha-view-btn:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+/* Empty state */
+.mnha-empty-row td {
+  text-align: center;
+  padding: 56px;
+  color: #9ca3af;
+  font-size: 0.88rem;
+}
+
+/* Footer / Pagination */
+.mnha-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 22px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.mnha-page-info {
+  font-size: 0.82rem;
+  color: #6b7280;
+}
+
+.mnha-pagination {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mnha-page-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  font-size: 0.75rem;
+  color: #374151;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.mnha-page-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+.mnha-page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

@@ -1,0 +1,342 @@
+/* ── Manager Tasks Page ───────────────────────────────────── */
+
+.mgt-page {
+  padding: 20px 32px 32px;
+  background: #f4f6fb;
+  min-height: 100%;
+}
+
+/* Top action row */
+.mgt-top-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.mgt-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 20px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.mgt-add-btn:hover {
+  background: #1d4ed8;
+}
+
+/* Project cards */
+.mgt-project-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  padding: 24px 28px 22px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.12s;
+}
+
+.mgt-project-card:hover {
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.12);
+  transform: translateY(-1px);
+}
+
+.mgt-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.mgt-project-name {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 6px 0;
+}
+
+.mgt-project-desc {
+  font-size: 0.84rem;
+  color: #6b7280;
+  margin: 0 0 18px 0;
+  line-height: 1.5;
+}
+
+/* Completion bar */
+.mgt-completion-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 16px;
+}
+
+.mgt-completion-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #2563eb;
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+.mgt-progress-track {
+  flex: 1;
+  height: 5px;
+  background: #e5e7eb;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.mgt-progress-fill {
+  height: 100%;
+  background: #2563eb;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.mgt-completion-pct {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #374151;
+  white-space: nowrap;
+}
+
+/* Stats row */
+.mgt-stats-row {
+  display: flex;
+  gap: 32px;
+}
+
+.mgt-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mgt-stat-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.mgt-stat-value {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.1;
+}
+
+.mgt-stat-value.completed {
+  color: #16a34a;
+}
+
+.mgt-stat-value.pending {
+  color: #f59e0b;
+}
+
+/* Action buttons */
+.mgt-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.mgt-btn-active {
+  padding: 10px 32px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  background: #fff;
+  color: #374151;
+  border: 2px solid #e5e7eb;
+  min-width: 120px;
+}
+
+.mgt-btn-active:hover {
+  border-color: #9ca3af;
+}
+
+.mgt-btn-active.selected {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+.mgt-btn-done {
+  padding: 10px 32px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  background: #fff;
+  color: #374151;
+  border: 2px solid #e5e7eb;
+  min-width: 120px;
+}
+
+.mgt-btn-done:hover {
+  border-color: #9ca3af;
+}
+
+.mgt-btn-done.selected {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+/* Empty state */
+.mgt-empty {
+  text-align: center;
+  padding: 56px;
+  color: #9ca3af;
+  font-size: 0.9rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+}
+
+/* ── Modal Overlay ────────────────────────────────────────── */
+.mgt-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.mgt-modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 30px 32px 26px;
+  width: 460px;
+  max-width: 95vw;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+}
+
+.mgt-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.mgt-modal-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.mgt-modal-close {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: background 0.12s, color 0.12s;
+}
+
+.mgt-modal-close:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* Form fields */
+.mgt-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.mgt-form-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.mgt-form-input,
+.mgt-form-textarea,
+.mgt-form-select {
+  padding: 9px 13px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.15s;
+  font-family: inherit;
+}
+
+.mgt-form-input:focus,
+.mgt-form-textarea:focus,
+.mgt-form-select:focus {
+  border-color: #2563eb;
+}
+
+.mgt-form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.mgt-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.mgt-modal-cancel {
+  padding: 9px 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #374151;
+  font-size: 0.86rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.mgt-modal-cancel:hover {
+  background: #f9fafb;
+}
+
+.mgt-modal-submit {
+  padding: 9px 22px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.mgt-modal-submit:hover {
+  background: #1d4ed8;
+}
+
+.mgt-modal-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

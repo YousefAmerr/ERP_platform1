@@ -1,0 +1,469 @@
+/* ── Inside Manager Task (Project Detail) ─────────────────── */
+
+.imt-page {
+  padding: 16px 32px 36px;
+  background: #f4f6fb;
+  min-height: 100%;
+}
+
+/* Back button */
+.imt-back-row {
+  margin-bottom: 16px;
+}
+
+.imt-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #374151;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.imt-back-btn:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+/* Project info card */
+.imt-project-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  padding: 22px 28px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.imt-project-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: #eff6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.2rem;
+  color: #2563eb;
+}
+
+.imt-project-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.imt-project-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 6px 0;
+}
+
+.imt-project-desc {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.imt-proj-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.imt-proj-status-badge.active {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.imt-proj-status-badge.done {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+/* Section header row */
+.imt-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.imt-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.imt-create-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.imt-create-btn:hover {
+  background: #1d4ed8;
+}
+
+/* Filters row */
+.imt-filters-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.imt-filter-select {
+  padding: 7px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.83rem;
+  color: #374151;
+  background: #fff;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.13s;
+  min-width: 160px;
+}
+
+.imt-filter-select:focus {
+  border-color: #2563eb;
+}
+
+/* Table card */
+.imt-table-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+
+.imt-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.imt-table thead th {
+  padding: 11px 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  text-align: left;
+  background: #fff;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.imt-table tbody tr {
+  border-bottom: 1px solid #f9fafb;
+  transition: background 0.12s;
+}
+
+.imt-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.imt-table tbody tr:hover {
+  background: #fafbff;
+}
+
+.imt-table td {
+  padding: 13px 20px;
+  vertical-align: middle;
+  font-size: 0.86rem;
+  color: #374151;
+}
+
+/* Task title cell */
+.imt-task-title {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Employee cell */
+.imt-emp-cell {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.imt-emp-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.imt-emp-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Status badge */
+.imt-task-status {
+  display: inline-block;
+  padding: 3px 11px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.imt-task-status.in_progress {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.imt-task-status.done {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.imt-task-status.overdue {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Edit button */
+.imt-edit-btn {
+  padding: 5px 14px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.13s;
+}
+
+.imt-edit-btn:hover {
+  background: #1d4ed8;
+}
+
+/* Workload */
+.imt-workload {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Empty row */
+.imt-empty-row td {
+  text-align: center;
+  padding: 48px;
+  color: #9ca3af;
+  font-size: 0.86rem;
+}
+
+/* ── Modal ────────────────────────────────────────────────── */
+.imt-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.imt-modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px 30px 24px;
+  width: 480px;
+  max-width: 95vw;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+}
+
+.imt-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.imt-modal-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.imt-modal-close {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 1.05rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: background 0.12s;
+}
+
+.imt-modal-close:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.imt-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 16px;
+}
+
+.imt-form-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.imt-form-input,
+.imt-form-textarea,
+.imt-form-select {
+  padding: 9px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.87rem;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.14s;
+  font-family: inherit;
+}
+
+.imt-form-input:focus,
+.imt-form-textarea:focus,
+.imt-form-select:focus {
+  border-color: #2563eb;
+}
+
+.imt-form-textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+
+.imt-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.imt-modal-cancel {
+  padding: 8px 18px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: #374151;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.imt-modal-cancel:hover {
+  background: #f9fafb;
+}
+
+.imt-modal-submit {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.14s;
+}
+
+.imt-modal-submit:hover {
+  background: #1d4ed8;
+}
+
+.imt-modal-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Rate section */
+.imt-rate-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Compact inputs inside the rate table */
+.imt-rating-input {
+  width: 72px;
+  padding: 6px 8px;
+  text-align: center;
+}
+
+.imt-comment-input {
+  width: 100%;
+  min-width: 140px;
+  padding: 6px 10px;
+}
+
+/* Rate button — green */
+.imt-rate-btn {
+  padding: 5px 16px;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.13s;
+}
+
+.imt-rate-btn:hover {
+  background: #15803d;
+}
+
+.imt-rate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

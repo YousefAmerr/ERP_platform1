@@ -36,6 +36,17 @@ export async function matchPassword(email, plainPassword){
     return bcrypt.compare(plainPassword, passwordHash)
 }
 
+export async function getUserInfo(email) {
+    const sql = `
+    SELECT name, email, role
+    FROM users
+    WHERE email=? AND active=1
+    LIMIT 1
+    `
+    const [rows] = await pool.execute(sql, [email])
+    return rows.length > 0 ? rows[0] : null;
+}
+
 export async function checkRole(email, role) {
     const sql=`
     SELECT role
