@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router";
 import "./employeeBar.css";
+import ERPLogo from "../../../assets/ERP_system_logo.png";
 
 const EmployeeLeftSideBar = () => {
   const navigate = useNavigate();
@@ -14,11 +15,8 @@ const EmployeeLeftSideBar = () => {
   return (
     <aside className="emp-sidebar">
       <div className="emp-brand">
-        <div className="emp-brand-icon">A</div>
-        <div className="emp-brand-text">
-          <div className="emp-brand-title">ERP Portal</div>
-          <div className="emp-brand-sub">Management System</div>
-        </div>
+        <img src={ERPLogo} alt="ERP Logo" className="emp-brand-logo" />
+        <span className="emp-brand-title">ERP Platform</span>
       </div>
 
       <nav className="emp-nav">

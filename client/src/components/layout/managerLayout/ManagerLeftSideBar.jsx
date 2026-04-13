@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router";
 import "./managerBar.css";
+import ERPLogo from "../../../assets/ERP_system_logo.png";
 
 const ManagerLeftSideBar = () => {
   const navigate = useNavigate();
@@ -17,8 +18,8 @@ const ManagerLeftSideBar = () => {
   return (
     <aside className="mgr-sidebar">
       <div className="mgr-brand">
-        <div className="mgr-brand-title">Manager Suite</div>
-        <div className="mgr-brand-sub">Operational Control</div>
+        <img src={ERPLogo} alt="ERP Logo" className="mgr-brand-logo" />
+        <span className="mgr-brand-title">ERP Platform</span>
       </div>
 
       <nav className="mgr-nav">
@@ -38,7 +39,7 @@ const ManagerLeftSideBar = () => {
             `mgr-nav-link${isActive ? " active" : ""}`
           }
         >
-         <i className="fa-regular fa-clipboard"></i>
+          <i className="fa-regular fa-clipboard"></i>
           Projects
         </NavLink>
 

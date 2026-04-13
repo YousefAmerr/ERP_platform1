@@ -37,6 +37,15 @@
     color: #1f2a44;
     letter-spacing: 0.2px;
     user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar-brand-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
 }
 
 .sidebar-nav {
