@@ -38,8 +38,8 @@ const ManagerLeftSideBar = () => {
             `mgr-nav-link${isActive ? " active" : ""}`
           }
         >
-          <i className="fa-regular fa-clipboard-list"></i>
-          Tasks
+         <i className="fa-regular fa-clipboard"></i>
+          Projects
         </NavLink>
 
         {/* Collapsible Alerts group */}

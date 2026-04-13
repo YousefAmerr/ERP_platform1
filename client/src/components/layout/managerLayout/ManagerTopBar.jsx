@@ -5,7 +5,7 @@ import "./managerBar.css";
 
 const pageTitles = {
   "/manager/dashboard": "Dashboard",
-  "/manager/tasks": "Tasks Management",
+  "/manager/tasks": "Project Management",
   "/manager/alerts/need-help": "Need Help Alerts",
   "/manager/alerts/recognition": "Recognition Alerts",
   "/manager/leave": "Leave",
