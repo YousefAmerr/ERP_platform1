@@ -3,23 +3,27 @@
 ## 1️⃣ SQL: Insert Test Data
 
 ### Insert 2 Test Employees
+
 ```sql
 INSERT INTO users (name, email, password, role, active, created_at)
-VALUES 
+VALUES
   ('John Failing Employee', 'john.failing@erp.local', '$2a$10$salthashedpassword123', 'EMPLOYEE', 1, NOW()),
   ('Jane Perfect Employee', 'jane.perfect@erp.local', '$2a$10$salthashedpassword456', 'EMPLOYEE', 1, NOW());
 ```
 
 ### Get Their IDs
+
 ```sql
 SELECT id, name, email FROM users WHERE email IN ('john.failing@erp.local', 'jane.perfect@erp.local');
 ```
+
 **Note the IDs - you'll need them for the next queries!**
 
 ### Insert Tasks for Employee 1 (Replace `1` with actual ID)
+
 ```sql
 INSERT INTO task (assigned_to, task_name, Task_status, Task_date, rating, created_at)
-VALUES 
+VALUES
   (1, 'Task 1 - OVERDUE', 'overdue', '2026-05-05', 1.5, NOW()),
   (1, 'Task 2 - OVERDUE', 'overdue', '2026-05-08', 1.0, NOW()),
   (1, 'Task 3 - OVERDUE', 'overdue', '2026-05-10', 2.0, NOW()),
@@ -33,9 +37,10 @@ VALUES
 ```
 
 ### Insert Leaves for Employee 1 (Replace `1` with actual ID)
+
 ```sql
 INSERT INTO leave_request (user_id, leave_date, approval_status, created_at)
-VALUES 
+VALUES
   (1, '2026-05-20', 'Approved', NOW()),
   (1, '2026-05-21', 'Approved', NOW()),
   (1, '2026-05-22', 'Approved', NOW()),
@@ -43,9 +48,10 @@ VALUES
 ```
 
 ### Insert Perfect Tasks for Employee 2 (Replace `2` with actual ID)
+
 ```sql
 INSERT INTO task (assigned_to, task_name, Task_status, Task_date, rating, created_at)
-VALUES 
+VALUES
   (2, 'Sprint Planning', 'done', '2026-05-01', 5.0, NOW()),
   (2, 'Backend API', 'done', '2026-05-02', 5.0, NOW()),
   (2, 'Frontend UI', 'done', '2026-05-03', 5.0, NOW()),
@@ -59,9 +65,10 @@ VALUES
 ```
 
 ### Verify Test Data
+
 ```sql
 -- Check Employee 1 metrics
-SELECT 
+SELECT
   COUNT(*) as total_tasks,
   SUM(CASE WHEN Task_status = 'done' THEN 1 ELSE 0 END) as done_tasks,
   SUM(CASE WHEN Task_status = 'overdue' THEN 1 ELSE 0 END) as overdue_tasks,
@@ -71,7 +78,7 @@ FROM task WHERE assigned_to = 1;
 -- Expected: total_tasks=10, done_tasks=2, overdue_tasks=5, avg_rating~2.25
 
 -- Check Employee 2 metrics
-SELECT 
+SELECT
   COUNT(*) as total_tasks,
   SUM(CASE WHEN Task_status = 'done' THEN 1 ELSE 0 END) as done_tasks,
   AVG(rating) as avg_rating
@@ -85,12 +92,14 @@ FROM task WHERE assigned_to = 2;
 ## 2️⃣ Terminal Commands: Start Services
 
 ### Terminal 1: Start Flask (Port 5000)
+
 ```powershell
 cd C:\xampp\htdocs\ERP_PLATFORM_FYP1\ERP_platform1\ml_service
 python app.py
 ```
 
 ### Terminal 2: Start Node.js Backend (Port 3000)
+
 ```powershell
 cd C:\xampp\htdocs\ERP_PLATFORM_FYP1\ERP_platform1\backend
 npm install
@@ -104,6 +113,7 @@ npm start
 ### Terminal 3: PowerShell Command
 
 #### Get Auth Token (replace with your admin credentials)
+
 ```powershell
 $body = @{
     email = "admin@erp.local"
@@ -120,6 +130,7 @@ Write-Host "Token: $token"
 ```
 
 #### Trigger Turnover Analysis
+
 ```powershell
 $response = Invoke-RestMethod -Uri "http://localhost:3000/api/admin/predict-turnover" `
   -Method POST `
@@ -130,6 +141,7 @@ $response | ConvertTo-Json
 ```
 
 ### Alternative: curl Command
+
 ```bash
 # Get token
 curl -X POST http://localhost:3000/api/login \
@@ -146,8 +158,9 @@ curl -X POST http://localhost:3000/api/admin/predict-turnover \
 ## 4️⃣ Verification: Check Results
 
 ### Check Alert Table
+
 ```sql
-SELECT 
+SELECT
   a.id,
   u.name,
   a.type,
@@ -162,12 +175,14 @@ ORDER BY a.created_at DESC;
 ```
 
 **Expected Result:**
+
 - ✅ 1 row for John Failing Employee (Employee 1)
 - ✅ 0 rows for Jane Perfect Employee (Employee 2)
 - ✅ Alert_status = 'Open'
 - ✅ risk_score > 50
 
 ### Check for Duplicates (Run twice, should still have 1)
+
 ```sql
 SELECT COUNT(*) as total_alerts
 FROM alert
@@ -181,6 +196,7 @@ AND user_id = 1;
 **Expected:** Still `1` (no duplicates created)
 
 ### Check All Recent Alerts
+
 ```sql
 SELECT * FROM alert ORDER BY created_at DESC LIMIT 10;
 ```

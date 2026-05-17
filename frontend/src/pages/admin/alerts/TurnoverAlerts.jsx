@@ -37,7 +37,9 @@ const TurnoverAlerts = () => {
     try {
       await predictTurnoverRequest();
       const result = await fetchAlerts(statusFilter);
-      setMessage(`${result?.alerts?.length ?? 0} turnover result(s) detected and displayed.`);
+      setMessage(
+        `${result?.alerts?.length ?? 0} turnover result(s) detected and displayed.`,
+      );
     } catch (err) {
       setError(err.message || "Failed to run turnover prediction.");
       setAlerts([]);
@@ -90,7 +92,8 @@ const TurnoverAlerts = () => {
           <div>
             <p className="ta-feed-title">Active Alert Feed</p>
             <p className="ta-feed-subtitle">
-              Real-time monitoring of turnover indicators and employee help requests.
+              Real-time monitoring of turnover indicators and employee help
+              requests.
             </p>
           </div>
           <div className="ta-feed-actions">
@@ -160,7 +163,9 @@ const TurnoverAlerts = () => {
                     {new Date(alert.createdAt).toLocaleString()}
                   </td>
                   <td>
-                    <span className={`ta-status ${alert.status.toLowerCase()}`}>{alert.status}</span>
+                    <span className={`ta-status ${alert.status.toLowerCase()}`}>
+                      {alert.status}
+                    </span>
                   </td>
                   <td>
                     {alert.status === "Open" ? (
@@ -194,7 +199,11 @@ const TurnoverAlerts = () => {
             <h3>Confirm Acknowledge</h3>
             <p>Are you sure you want to acknowledge this alert?</p>
             <div className="ta-modal-actions">
-              <button className="ta-modal-cancel" type="button" onClick={cancelAcknowledge}>
+              <button
+                className="ta-modal-cancel"
+                type="button"
+                onClick={cancelAcknowledge}
+              >
                 Cancel
               </button>
               <button
@@ -203,7 +212,7 @@ const TurnoverAlerts = () => {
                 onClick={confirmAcknowledge}
                 disabled={loading}
               >
-                {loading ? 'Acknowledging...' : 'Yes, Acknowledge'}
+                {loading ? "Acknowledging..." : "Yes, Acknowledge"}
               </button>
             </div>
           </div>

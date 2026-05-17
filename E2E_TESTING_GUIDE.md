@@ -10,11 +10,13 @@
 ### **STEP 1: Insert Test Data into MySQL**
 
 #### 1A. First, get the actual User IDs
+
 Open **phpMyAdmin** or **MySQL Workbench** and run:
+
 ```sql
 -- Run this FIRST to get the IDs
 INSERT INTO users (name, email, password, role, active, created_at)
-VALUES 
+VALUES
   ('John Failing Employee', 'john.failing@erp.local', '$2a$10$FakeHashedPassword123', 'EMPLOYEE', 1, NOW()),
   ('Jane Perfect Employee', 'jane.perfect@erp.local', '$2a$10$FakeHashedPassword456', 'EMPLOYEE', 1, NOW());
 
@@ -23,6 +25,7 @@ SELECT id, name, email FROM users WHERE email IN ('john.failing@erp.local', 'jan
 ```
 
 **You should see:**
+
 ```
 id | name                  | email
 1  | John Failing Employee | john.failing@erp.local
@@ -30,20 +33,24 @@ id | name                  | email
 ```
 
 #### 1B. Insert Tasks and Leaves
+
 Copy the ID numbers from above and replace `USER_ID_1` and `USER_ID_2` in the SQL file.
 
 Use the complete SQL from `E2E_TEST_DATA.sql` file. It includes:
+
 - **Employee 1 (ID=1):** 10 tasks (2 done, 5 overdue, 3 in_progress), Rating=2.25, 4 leaves
 - **Employee 2 (ID=2):** 10 tasks (all done), Rating=5.0, 0 leaves
 
 **Expected ML Predictions:**
+
 - Employee 1: `Turnover_Prediction = 1` ✓ (Should get FLAGGED)
 - Employee 2: `Turnover_Prediction = 0` ✓ (Should NOT get flagged)
 
 #### 1C. Verify the data
+
 ```sql
 -- Check task aggregation for Employee 1
-SELECT 
+SELECT
   COUNT(*) as total,
   SUM(CASE WHEN Task_status = 'done' THEN 1 ELSE 0 END) as done,
   SUM(CASE WHEN Task_status = 'overdue' THEN 1 ELSE 0 END) as overdue,
@@ -68,6 +75,7 @@ python app.py
 ```
 
 **Expected Output:**
+
 ```
 AI Model and Scaler loaded successfully!
 Starting ML API Server on Port 5000...
@@ -96,6 +104,7 @@ node server.js
 ```
 
 **Expected Output:**
+
 ```
 ✅ Server running on port 3000
 ✅ Turnover Risk Analysis scheduler initialized (runs on 28th at midnight)
@@ -144,11 +153,13 @@ curl -X POST http://localhost:3000/api/admin/predict-turnover \
 ```
 
 #### **Option C: Using Postman**
+
 1. Create a new POST request to: `http://localhost:3000/api/admin/predict-turnover`
 2. Go to **Auth** tab → Select **Bearer Token** → Paste your admin token
 3. Click **Send**
 
 **Expected Response:**
+
 ```json
 {
   "success": true,
@@ -161,6 +172,7 @@ curl -X POST http://localhost:3000/api/admin/predict-turnover \
 ```
 
 **What's happening in the console:**
+
 ```
 🔍 Starting Employee Turnover Risk Analysis...
 📊 Processing 2 employees...
@@ -180,7 +192,7 @@ Go back to **phpMyAdmin/MySQL Workbench** and run:
 
 ```sql
 -- Check all turnover alerts created
-SELECT 
+SELECT
   a.id,
   u.name,
   a.type,
@@ -196,12 +208,14 @@ ORDER BY a.created_at DESC;
 ```
 
 **Expected Results:**
+
 ```
 id | name                  | type     | Alert_status | risk_score | Alert_reason                    | created_at
 1  | John Failing Employee | Turnover | Open         | 85.23      | AI predicted high flight risk... | 2026-05-15 14:32:15
 ```
 
 **Key Assertions:**
+
 - ✅ **Only 1 alert** created (for Employee 1, NOT Employee 2)
 - ✅ Alert **type** = 'Turnover'
 - ✅ Alert **status** = 'Open'
@@ -219,6 +233,7 @@ To verify that re-running the analysis doesn't create duplicate alerts:
 3. Check the database again
 
 **Expected:**
+
 - Still only **1 alert** in the database
 - Console shows: `⏭️ Open Turnover alert already exists for John Failing Employee this month, skipping duplicate`
 
@@ -233,6 +248,7 @@ To verify graceful degradation when Flask is down:
 3. Check the response and console
 
 **Expected:**
+
 ```json
 {
   "success": true,
@@ -245,6 +261,7 @@ To verify graceful degradation when Flask is down:
 ```
 
 **Console shows:**
+
 ```
 ⚠️ ML Service unreachable for John Failing Employee: Cannot connect to http://127.0.0.1:5000
 ⚠️ ML Service unreachable for Jane Perfect Employee: Cannot connect to http://127.0.0.1:5000
@@ -257,38 +274,43 @@ To verify graceful degradation when Flask is down:
 
 ## ✅ SUCCESS CRITERIA CHECKLIST
 
-| Test | Expected | Status |
-|------|----------|--------|
-| Both services start without errors | Flask + Node.js running | ☐ |
-| API call returns 200 OK | `"success": true` | ☐ |
-| Processed count = 2 | Both employees checked | ☐ |
-| Flagged count = 1 | Only Employee 1 flagged | ☐ |
-| Alert created for Employee 1 | Risk score ~85% | ☐ |
-| No alert for Employee 2 | Clean employee record | ☐ |
-| No duplicate alerts on re-run | Still 1 alert total | ☐ |
-| Graceful failure when Flask down | No crash, clear errors | ☐ |
+| Test                               | Expected                | Status |
+| ---------------------------------- | ----------------------- | ------ |
+| Both services start without errors | Flask + Node.js running | ☐      |
+| API call returns 200 OK            | `"success": true`       | ☐      |
+| Processed count = 2                | Both employees checked  | ☐      |
+| Flagged count = 1                  | Only Employee 1 flagged | ☐      |
+| Alert created for Employee 1       | Risk score ~85%         | ☐      |
+| No alert for Employee 2            | Clean employee record   | ☐      |
+| No duplicate alerts on re-run      | Still 1 alert total     | ☐      |
+| Graceful failure when Flask down   | No crash, clear errors  | ☐      |
 
 ---
 
 ## 🐛 TROUBLESHOOTING
 
 ### **Issue: "Cannot connect to http://127.0.0.1:5000"**
+
 - ❌ Flask is not running
 - ✅ Start Flask in Terminal 1
 
 ### **Issue: "401 Unauthorized" on API call**
+
 - ❌ Token is invalid or admin is not authenticated
 - ✅ Check the auth token is valid and user has ADMIN role
 
 ### **Issue: "0 employees processed"**
+
 - ❌ No EMPLOYEE role users in database
 - ✅ Check Step 1 - verify employees were inserted
 
 ### **Issue: "Alert created but risk_score is NULL"**
+
 - ❌ ML service returned incomplete response
 - ✅ Check Flask logs for errors
 
 ### **Issue: "Duplicate alerts created"**
+
 - ❌ Previous alerts have different Alert_status (closed/resolved)
 - ✅ Only 'Open' alerts are checked for duplicates
 

@@ -64,24 +64,24 @@ export async function predictTurnoverRequest() {
   if (!res.ok) throw new Error(data?.message || "Failed to predict turnover");
   return data;
 }
-export async function getTurnoverAlertsRequest(statuses = 'open,acknowledged') {
+export async function getTurnoverAlertsRequest(statuses = "open,acknowledged") {
   const query = new URLSearchParams({ statuses }).toString();
   const res = await fetch(`/api/admin/alerts/turnover?${query}`, {
-    method: 'GET',
+    method: "GET",
     headers: authHeaders(),
   });
   const data = await res.json();
-  if (!res.ok) throw new Error(data?.message || 'Failed to fetch alerts');
+  if (!res.ok) throw new Error(data?.message || "Failed to fetch alerts");
   return data;
 }
 
 export async function acknowledgeAlertRequest(id) {
   const res = await fetch(`/api/admin/alerts/${id}/acknowledge`, {
-    method: 'PATCH',
+    method: "PATCH",
     headers: authHeaders(),
   });
   const data = await res.json();
-  if (!res.ok) throw new Error(data?.message || 'Failed to acknowledge alert');
+  if (!res.ok) throw new Error(data?.message || "Failed to acknowledge alert");
   return data;
 }
 
