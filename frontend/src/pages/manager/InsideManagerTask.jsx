@@ -486,7 +486,6 @@ export default function InsideManagerTask() {
                 className="imt-modal-close"
                 onClick={() => setShowCreate(false)}
               >
-                <i className="fa-solid fa-xmark"></i>
               </button>
             </div>
             <form onSubmit={handleCreate}>

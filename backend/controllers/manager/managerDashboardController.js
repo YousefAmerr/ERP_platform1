@@ -4,6 +4,7 @@ import {
     getOverdueTasksCount,
     getTeamAlertsCount,
     getLeaveRequestsCount,
+    getOpenProjectsCount,
     getRecentCompletedTasks,
 } from '../../models/manager/managerDashboardModel.js'
 
@@ -15,15 +16,17 @@ export async function getDashboardStats(req, res) {
             overdueTasks,
             teamAlerts,
             leaveRequests,
+            openProjects,
         ] = await Promise.all([
             getTeamEmployeesCount(),
             getTeamTasksCount(),
             getOverdueTasksCount(),
             getTeamAlertsCount(),
             getLeaveRequestsCount(),
+            getOpenProjectsCount(),
         ])
 
-        res.json({ teamEmployees, teamTasks, overdueTasks, teamAlerts, leaveRequests })
+        res.json({ teamEmployees, teamTasks, overdueTasks, teamAlerts, leaveRequests, openProjects })
     } catch (err) {
         console.error(err)
         res.status(500).json({ message: 'Failed to fetch dashboard stats' })

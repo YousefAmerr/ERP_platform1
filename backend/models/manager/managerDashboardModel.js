@@ -37,6 +37,13 @@ export async function getLeaveRequestsCount() {
     return row.total
 }
 
+export async function getOpenProjectsCount() {
+    const [[row]] = await pool.execute(
+        `SELECT COUNT(*) AS total FROM project WHERE Project_status='Active'`
+    )
+    return row.total
+}
+
 // ── Recent Completed Tasks ───────────────────────────────────────────────────
 
 export async function getRecentCompletedTasks(limit = 5) {

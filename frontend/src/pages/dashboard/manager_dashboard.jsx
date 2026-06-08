@@ -51,6 +51,7 @@ function StarRating({ rating = 0 }) {
 
 const ManagerDashboard = () => {
   const [stats, setStats] = useState({
+    openProjects: 0,
     teamEmployees: 0,
     teamTasks: 0,
     overdueTasks: 0,
@@ -60,6 +61,8 @@ const ManagerDashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingTasks, setLoadingTasks] = useState(true);
+  const [filterProject, setFilterProject] = useState("");
+  const [filterEmployee, setFilterEmployee] = useState("");
 
   useEffect(() => {
     getManagerDashboardStatsRequest()
@@ -79,24 +82,24 @@ const ManagerDashboard = () => {
       {/* ── Stat Cards ── */}
       <div className="mgr-stat-row">
         <div className="mgr-stat-card">
+          <div className="mgr-stat-label">Open Projects</div>
+          <div className="mgr-stat-number blue">
+            {loadingStats ? "—" : pad(stats.openProjects)}
+          </div>
+        </div>
+
+        <div className="mgr-stat-card">
           <div className="mgr-stat-label">Team Employees</div>
           <div className="mgr-stat-number">
             {loadingStats ? "—" : pad(stats.teamEmployees)}
           </div>
-          <div className="mgr-stat-sub blue">
-            <i className="fa-solid fa-users"></i>
-            Full Capacity
-          </div>
+
         </div>
 
         <div className="mgr-stat-card">
           <div className="mgr-stat-label">Team Tasks</div>
           <div className="mgr-stat-number">
             {loadingStats ? "—" : stats.teamTasks}
-          </div>
-          <div className="mgr-stat-sub green">
-            <i className="fa-solid fa-arrow-trend-up"></i>
-            +12% this week
           </div>
         </div>
 
@@ -105,31 +108,19 @@ const ManagerDashboard = () => {
           <div className="mgr-stat-number red">
             {loadingStats ? "—" : pad(stats.overdueTasks)}
           </div>
-          <div className="mgr-stat-sub red">
-            <i className="fa-solid fa-triangle-exclamation"></i>
-            Action Required
-          </div>
         </div>
 
         <div className="mgr-stat-card">
-          <div className="mgr-stat-label">Team Alerts</div>
+          <div className="mgr-stat-label">Need Help Alerts</div>
           <div className="mgr-stat-number orange">
             {loadingStats ? "—" : pad(stats.teamAlerts)}
           </div>
-          <div className="mgr-stat-sub orange">
-            <i className="fa-regular fa-circle-dot"></i>
-            Active Now
-          </div>
         </div>
 
         <div className="mgr-stat-card">
-          <div className="mgr-stat-label">Leave Requests</div>
+          <div className="mgr-stat-label">Recent Leave Requests</div>
           <div className="mgr-stat-number">
             {loadingStats ? "—" : pad(stats.leaveRequests)}
-          </div>
-          <div className="mgr-stat-sub gray">
-            <i className="fa-regular fa-calendar-check"></i>
-            Pending Approval
           </div>
         </div>
       </div>
@@ -137,14 +128,13 @@ const ManagerDashboard = () => {
       {/* ── Recent Team Alerts (empty table — no DB call) ── */}
       <div className="mgr-section-card">
         <div className="mgr-section-header">
-          <h6 className="mgr-section-title">Recent Team Alerts</h6>
+          <h6 className="mgr-section-title">Recent Need Help Alerts</h6>
         </div>
         <table className="mgr-alerts-table">
           <thead>
             <tr>
               <th>Type</th>
               <th>Employee</th>
-              <th>Reason</th>
               <th>Date</th>
               <th>Status</th>
             </tr>
@@ -163,13 +153,27 @@ const ManagerDashboard = () => {
       <div className="mgr-section-card">
         <div className="mgr-section-header">
           <h6 className="mgr-section-title">Recent Completed Tasks</h6>
-          <div className="mgr-section-icons">
-            <button className="mgr-icon-btn" title="Filter">
-              <i className="fa-solid fa-sliders"></i>
-            </button>
-            <button className="mgr-icon-btn" title="More">
-              <i className="fa-solid fa-ellipsis-vertical"></i>
-            </button>
+          <div className="mgr-task-filters">
+            <select
+              className="mgr-filter-select"
+              value={filterProject}
+              onChange={(e) => setFilterProject(e.target.value)}
+            >
+              <option value="">All Projects</option>
+              {[...new Set(tasks.map((t) => t.projectName).filter(Boolean))].map((p) => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+            <select
+              className="mgr-filter-select"
+              value={filterEmployee}
+              onChange={(e) => setFilterEmployee(e.target.value)}
+            >
+              <option value="">All Employees</option>
+              {[...new Set(tasks.map((t) => t.employeeName).filter(Boolean))].map((e) => (
+                <option key={e} value={e}>{e}</option>
+              ))}
+            </select>
           </div>
         </div>
         <table className="mgr-tasks-table">
@@ -195,39 +199,42 @@ const ManagerDashboard = () => {
                 </td>
               </tr>
             ) : (
-              tasks.map((t) => (
-                <tr key={t.TaskID}>
-                  <td>
-                    <div className="mgr-task-title">{t.title}</div>
-                    {t.projectName && (
-                      <div className="mgr-task-dept">{t.projectName}</div>
-                    )}
-                  </td>
-                  <td>
-                    <div className="mgr-task-emp">
-                      <div
-                        className="mgr-task-avatar"
-                        style={{
-                          background: getAvatarColor(t.employeeName || ""),
-                        }}
-                      >
-                        {getInitials(t.employeeName || "?")}
+              tasks
+                .filter((t) => !filterProject || t.projectName === filterProject)
+                .filter((t) => !filterEmployee || t.employeeName === filterEmployee)
+                .map((t) => (
+                  <tr key={t.TaskID}>
+                    <td>
+                      <div className="mgr-task-title">{t.title}</div>
+                      {t.projectName && (
+                        <div className="mgr-task-dept">{t.projectName}</div>
+                      )}
+                    </td>
+                    <td>
+                      <div className="mgr-task-emp">
+                        <div
+                          className="mgr-task-avatar"
+                          style={{
+                            background: getAvatarColor(t.employeeName || ""),
+                          }}
+                        >
+                          {getInitials(t.employeeName || "?")}
+                        </div>
+                        <span className="mgr-task-emp-name">
+                          {t.employeeName || "—"}
+                        </span>
                       </div>
-                      <span className="mgr-task-emp-name">
-                        {t.employeeName || "—"}
+                    </td>
+                    <td>
+                      <StarRating rating={t.rating} />
+                    </td>
+                    <td>
+                      <span className="mgr-task-comment" title={t.ratingComment}>
+                        {t.ratingComment ? `"${t.ratingComment}"` : "—"}
                       </span>
-                    </div>
-                  </td>
-                  <td>
-                    <StarRating rating={t.rating} />
-                  </td>
-                  <td>
-                    <span className="mgr-task-comment" title={t.ratingComment}>
-                      {t.ratingComment ? `"${t.ratingComment}"` : "—"}
-                    </span>
-                  </td>
-                </tr>
-              ))
+                    </td>
+                  </tr>
+                ))
             )}
           </tbody>
         </table>
