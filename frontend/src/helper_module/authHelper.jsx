@@ -55,6 +55,7 @@ export async function getDashboardStatsRequest() {
   return data;
 }
 
+
 export async function predictTurnoverRequest() {
   const res = await fetch("/api/admin/predict-turnover", {
     method: "POST",
@@ -64,6 +65,8 @@ export async function predictTurnoverRequest() {
   if (!res.ok) throw new Error(data?.message || "Failed to predict turnover");
   return data;
 }
+
+
 export async function getTurnoverAlertsRequest(statuses = "open,acknowledged") {
   const query = new URLSearchParams({ statuses }).toString();
   const res = await fetch(`/api/admin/alerts/turnover?${query}`, {

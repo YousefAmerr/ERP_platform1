@@ -239,6 +239,34 @@
 .dash-action-btn.reject  { color: #e05252; }
 .dash-action-btn.reject:hover  { background: #fdeaea; }
 
+.dash-view-btn,
+.dash-view-more-btn {
+    border: 1px solid #3776fd;
+    background: #3776fd;
+    color: #fff;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+}
+
+.dash-view-btn:hover,
+.dash-view-more-btn:hover {
+    background: #1f4ed8;
+}
+
+.dash-table-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #f0f4f8;
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
 /* ===== EMPTY STATE ===== */
 .dash-empty {
     text-align: center;

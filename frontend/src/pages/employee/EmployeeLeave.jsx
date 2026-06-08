@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import {
   submitEmployeeLeaveRequest,
@@ -70,20 +70,23 @@ export default function EmployeeLeave() {
   const [page, setPage] = useState(1);
   const limit = 10;
 
-  const loadLeaves = (p = page) => {
-    getEmployeeLeavesRequest(p)
-      .then((data) => {
-        setRequests(data.requests || []);
-        setTotal(data.total || 0);
-      })
-      .catch((err) =>
-        toast.error(err.message || "Failed to load leave requests"),
-      );
-  };
+  const loadLeaves = useCallback(
+    (p = page) => {
+      getEmployeeLeavesRequest(p)
+        .then((data) => {
+          setRequests(data.requests || []);
+          setTotal(data.total || 0);
+        })
+        .catch((err) =>
+          toast.error(err.message || "Failed to load leave requests"),
+        );
+    },
+    [page],
+  );
 
   useEffect(() => {
     loadLeaves(page);
-  }, [page]);
+  }, [loadLeaves, page]);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));

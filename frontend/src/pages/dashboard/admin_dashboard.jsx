@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import {
   getDashboardStatsRequest,
   getMeRequest,
@@ -21,6 +22,7 @@ const AdminDashboard = () => {
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
+  const navigate = useNavigate();
 
   useEffect(() => {
     Promise.all([getDashboardStatsRequest(), getMeRequest()])
@@ -45,9 +47,6 @@ const AdminDashboard = () => {
         <h2 className="dash-greeting">
           {greeting}, {userName.charAt(0).toUpperCase() + userName.slice(1)}
         </h2>
-        <button className="dash-export-btn">
-          <i className="fa-solid fa-download"></i> Export Report
-        </button>
       </div>
 
       {/* Top 4 stat cards */}
@@ -68,19 +67,19 @@ const AdminDashboard = () => {
         </div>
         <div className="dash-stat-card">
           <div>
+            <div className="dash-stat-label">Active Projects</div>
+            <div className="dash-stat-number blue">
+              {fmt(stats.activeProjects)}
+            </div>
+          </div>
+          <i className="fa-solid fa-folder-open dash-stat-icon"></i>
+        </div>
+        <div className="dash-stat-card">
+          <div>
             <div className="dash-stat-label">Open Tasks</div>
             <div className="dash-stat-number blue">{fmt(stats.openTasks)}</div>
           </div>
           <i className="fa-solid fa-list-check dash-stat-icon"></i>
-        </div>
-        <div className="dash-stat-card overdue">
-          <div>
-            <div className="dash-stat-label">Overdue Tasks</div>
-            <div className="dash-stat-number red">
-              {fmt(stats.overdueTasks)}
-            </div>
-          </div>
-          <i className="fa-solid fa-circle-exclamation dash-stat-icon"></i>
         </div>
       </div>
 
@@ -134,7 +133,6 @@ const AdminDashboard = () => {
         <div className="dash-section-card">
           <div className="dash-section-header">
             <h6 className="dash-section-title">Critical Recent Alerts</h6>
-            <span className="dash-section-link">View All Notifications</span>
           </div>
           <table className="dash-table">
             <thead>
@@ -160,25 +158,24 @@ const AdminDashboard = () => {
         <div className="dash-section-card">
           <div className="dash-section-header">
             <h6 className="dash-section-title">Pending Leave</h6>
-            <span className="dash-section-link">Approval Queue</span>
           </div>
           <table className="dash-table">
             <thead>
               <tr>
                 <th>Employee</th>
                 <th>Type</th>
-                <th>Status</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {stats.pendingLeave.length === 0 ? (
+              {stats.pendingLeave?.length === 0 ? (
                 <tr>
                   <td colSpan={3} className="dash-empty">
-                    No pending leave requests
+                    No pending leave requests for this month
                   </td>
                 </tr>
               ) : (
-                stats.pendingLeave.map((lr) => (
+                stats.pendingLeave?.map((lr) => (
                   <tr key={lr.LeaveRequestID}>
                     <td>
                       <div className="dash-employee-name">{lr.name}</div>
@@ -188,26 +185,34 @@ const AdminDashboard = () => {
                     </td>
                     <td>{lr.type}</td>
                     <td>
-                      <div className="dash-action-btns">
-                        <button
-                          className="dash-action-btn approve"
-                          title="Approve"
-                        >
-                          <i className="fa-solid fa-check"></i>
-                        </button>
-                        <button
-                          className="dash-action-btn reject"
-                          title="Reject"
-                        >
-                          <i className="fa-solid fa-xmark"></i>
-                        </button>
-                      </div>
+                      <button
+                        type="button"
+                        className="dash-view-btn"
+                        onClick={() => navigate("/admin/leave")}
+                      >
+                        View
+                      </button>
                     </td>
                   </tr>
                 ))
               )}
             </tbody>
           </table>
+          {stats.pendingLeaveMore && (
+            <div className="dash-table-footer">
+              <span>
+                Showing 10 of {fmt(stats.pendingLeaveCount)} pending leave
+                requests this month.
+              </span>
+              <button
+                type="button"
+                className="dash-view-more-btn"
+                onClick={() => navigate("/admin/leave")}
+              >
+                See all
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

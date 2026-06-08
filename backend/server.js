@@ -17,6 +17,7 @@ import EmployeeTasksRoute from './routes/employeeRoute/EmployeeTasksRoute.js'
 import employeeRiskRoute from './routes/employeeRiskRoute.js';
 import AlertRoute from './routes/adminRoute/AlertRoute.js'
 import { initTurnoverRiskScheduler } from './utils/turnoverScheduler.js';
+import recognitionRoutes from './routes/adminRoute/recognitionRoutes.js';
 
 //check 
 connectDB();
@@ -46,6 +47,7 @@ app.use('/api/v1/employee', EmployeeTasksRoute)
 // Register route
 app.use('/api/admin', employeeRiskRoute);
 app.use('/api/admin', AlertRoute);
+app.use('/api/recognition', recognitionRoutes);
 
 // Initialize scheduler
 let turnoverScheduler = initTurnoverRiskScheduler();

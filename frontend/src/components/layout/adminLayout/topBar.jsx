@@ -7,7 +7,7 @@ const pageTitles = {
   "/admin/dashboard": "Dashboard",
   "/admin/users": "Users",
   "/admin/alerts/turnover": "Turnover / Need Help Alerts",
-  "/admin/alerts/recognition": "Recognition Alerts",
+  "/alerts/recognition": "Recognition Alerts",
   "/admin/leave": "Leave",
 };
 

@@ -11,10 +11,10 @@ import AdminUsers from "./pages/admin/AdminUsers.jsx";
 import AdminLeave from "./pages/admin/AdminLeave.jsx";
 import TurnoverAlerts from "./pages/admin/alerts/TurnoverAlerts.jsx";
 import RecognitionAlerts from "./pages/admin/alerts/RecognitionAlerts.jsx";
+import AlertsLayout from "./components/layout/alerts/AlertsLayout.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ManagerLeave from "./pages/manager/ManagerLeave.jsx";
 import ManagerNeedHelpAlerts from "./pages/manager/ManagerNeedHelpAlerts.jsx";
-import ManagerRecognitionAlerts from "./pages/manager/ManagerRecognitionAlerts.jsx";
 import ManagerTasks from "./pages/manager/ManagerTasks.jsx";
 import InsideManagerTask from "./pages/manager/InsideManagerTask.jsx";
 import EmployeeDashboard from "./pages/employee/EmployeeDashboard.jsx";
@@ -47,7 +47,10 @@ function App() {
             element={<Navigate to="alerts/turnover" replace />}
           />
           <Route path="alerts/turnover" element={<TurnoverAlerts />} />
-          <Route path="alerts/recognition" element={<RecognitionAlerts />} />
+          <Route
+            path="alerts/recognition"
+            element={<Navigate to="/alerts/recognition" replace />}
+          />
           <Route path="leave" element={<AdminLeave />} />
         </Route>
 
@@ -81,6 +84,19 @@ function App() {
           />
           <Route path="leave" element={<EmployeeLeave />} />
         </Route>
+
+        {/* Unified alerts route for both admin and manager users */}
+        <Route
+          path="/alerts"
+          element={
+            <ProtectedRoute>
+              <AlertsLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="recognition" element={<RecognitionAlerts />} />
+        </Route>
+
         {/* Manager section with shared layout */}
         <Route
           path="/manager"
@@ -102,7 +118,7 @@ function App() {
           <Route path="alerts/need-help" element={<ManagerNeedHelpAlerts />} />
           <Route
             path="alerts/recognition"
-            element={<ManagerRecognitionAlerts />}
+            element={<Navigate to="/alerts/recognition" replace />}
           />
         </Route>
 

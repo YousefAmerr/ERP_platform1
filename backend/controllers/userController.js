@@ -42,7 +42,7 @@ export const Login = async (req, res) => {
             })
         }
 
-
+        //token
         const token = jwt.sign(
             { email, role },
             process.env.JWT_SECRET,

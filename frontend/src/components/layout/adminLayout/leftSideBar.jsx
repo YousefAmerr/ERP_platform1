@@ -7,7 +7,8 @@ const LeftSideBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const onAlertsRoute = location.pathname.startsWith("/admin/alerts");
+  const onAlertsRoute =
+    location.pathname.startsWith("/alerts");
   const [alertsOpen, setAlertsOpen] = useState(onAlertsRoute);
 
   const handleLogout = () => {
@@ -65,7 +66,7 @@ const LeftSideBar = () => {
                 Turnover/Need help Alerts
               </NavLink>
               <NavLink
-                to="/admin/alerts/recognition"
+                to="/alerts/recognition"
                 className={({ isActive }) =>
                   `sidebar-sublink${isActive ? " active" : ""}`
                 }

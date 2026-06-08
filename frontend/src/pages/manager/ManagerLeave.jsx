@@ -76,17 +76,21 @@ export default function ManagerLeave() {
   const dropRef = useRef(null);
 
   useEffect(() => {
-    setLoading(true);
-    getManagerLeaveRequest(page, LIMIT, status)
-      .then((data) => {
+    async function loadManagerLeave() {
+      setLoading(true);
+      try {
+        const data = await getManagerLeaveRequest(page, LIMIT, status);
         setRows(data.rows || []);
         setTotal(data.total || 0);
-      })
-      .catch(() => {
+      } catch {
         setRows([]);
         setTotal(0);
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadManagerLeave();
   }, [page, status]);
 
   // Close dropdown on outside click

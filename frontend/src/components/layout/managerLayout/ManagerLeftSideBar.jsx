@@ -6,7 +6,7 @@ import ERPLogo from "../../../assets/ERP_system_logo.png";
 const ManagerLeftSideBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const onAlertsRoute = location.pathname.startsWith("/manager/alerts");
+  const onAlertsRoute = location.pathname.startsWith("/alerts");
   const [alertsOpen, setAlertsOpen] = useState(onAlertsRoute);
 
   const handleLogout = () => {
@@ -66,7 +66,7 @@ const ManagerLeftSideBar = () => {
               Need Help Alerts
             </NavLink>
             <NavLink
-              to="/manager/alerts/recognition"
+              to="/alerts/recognition"
               className={({ isActive }) =>
                 `mgr-subnav-link${isActive ? " active" : ""}`
               }

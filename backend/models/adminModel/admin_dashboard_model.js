@@ -49,21 +49,38 @@ export async function getTurnoverAlertsCount() {
     return row.total
 }
 
+export async function getActiveProjectsCount() {
+    const [[row]] = await pool.execute(
+        `SELECT COUNT(*) AS total FROM project WHERE Project_status = 'Active'`
+    )
+    return row.total
+}
+
 export async function getPendingLeaveCount() {
     const [[row]] = await pool.execute(
-        `SELECT COUNT(*) AS total FROM leave_request WHERE Leave_status='Pending'`
+        `SELECT COUNT(*) AS total
+         FROM leave_request lr
+         WHERE lr.Leave_status = 'Pending'
+           AND (
+             DATE_FORMAT(lr.startDate, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')
+             OR DATE_FORMAT(lr.endDate, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')
+           )`
     )
     return row.total
 }
 
 export async function getPendingLeaveList() {
     const [rows] = await pool.execute(
-        `SELECT u.name, lr.startDate, lr.endDate, lr.type, lr.Leave_status AS status, lr.LeaveRequestID
+        `SELECT u.name, lr.startDate, lr.endDate, lr.type, lr.LeaveRequestID
          FROM leave_request lr
          JOIN users u ON lr.UserID = u.UserID
          WHERE lr.Leave_status = 'Pending'
+           AND (
+             DATE_FORMAT(lr.startDate, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')
+             OR DATE_FORMAT(lr.endDate, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')
+           )
          ORDER BY lr.startDate ASC
-         LIMIT 10`
+         LIMIT 11`
     )
     return rows
 }

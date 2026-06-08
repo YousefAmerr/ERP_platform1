@@ -2,10 +2,10 @@ import {
     getTotalEmployees,
     getTotalManagers,
     getOpenTasksCount,
-    getOverdueTasksCount,
     getNeedHelpAlertsCount,
     getRecognitionAlertsCount,
     getTurnoverAlertsCount,
+    getActiveProjectsCount,
     getPendingLeaveCount,
     getPendingLeaveList,
 } from '../../models/adminModel/admin_dashboard_model.js'
@@ -16,35 +16,39 @@ export const getDashboardStats = async (req, res) => {
             totalEmployees,
             totalManagers,
             openTasks,
-            overdueTasks,
             needHelpAlerts,
             recognitionAlerts,
             turnoverAlerts,
+            activeProjects,
             pendingLeaveCount,
-            pendingLeave,
+            pendingLeaveRows,
         ] = await Promise.all([
             getTotalEmployees(),
             getTotalManagers(),
             getOpenTasksCount(),
-            getOverdueTasksCount(),
             getNeedHelpAlertsCount(),
             getRecognitionAlertsCount(),
             getTurnoverAlertsCount(),
+            getActiveProjectsCount(),
             getPendingLeaveCount(),
             getPendingLeaveList(),
         ])
+
+        const pendingLeave = pendingLeaveRows.slice(0, 10)
+        const pendingLeaveMore = pendingLeaveRows.length > 10
 
         res.status(200).send({
             success: true,
             totalEmployees,
             totalManagers,
             openTasks,
-            overdueTasks,
+            activeProjects,
             needHelpAlerts,
             recognitionAlerts,
             turnoverAlerts,
             pendingLeaveCount,
             pendingLeave,
+            pendingLeaveMore,
         })
     } catch (error) {
         console.log(error)
