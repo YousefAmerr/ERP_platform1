@@ -92,9 +92,12 @@ const AdminLeave = () => {
   const endRow = Math.min(page * LIMIT, total);
 
   // Filter requests based on selected status
-  const filteredRequests = filterStatus === "All" 
-    ? requests 
-    : requests.filter(r => r.Leave_status?.toLowerCase() === filterStatus.toLowerCase());
+  const filteredRequests =
+    filterStatus === "All"
+      ? requests
+      : requests.filter(
+          (r) => r.Leave_status?.toLowerCase() === filterStatus.toLowerCase(),
+        );
 
   const fetchStats = () =>
     getLeaveStatsRequest()
@@ -185,7 +188,7 @@ const AdminLeave = () => {
           <div className="leave-header-actions">
             <div className="leave-filter-container">
               <label className="leave-filter-label">Status Filter:</label>
-              <select 
+              <select
                 className="leave-filter-select"
                 value={filterStatus}
                 onChange={(e) => {
@@ -364,11 +367,14 @@ const AdminLeave = () => {
 
       {/* ── Leave Details Modal ── */}
       {viewingLeave && (
-        <div className="leave-modal-overlay" onClick={() => setViewingLeave(null)}>
+        <div
+          className="leave-modal-overlay"
+          onClick={() => setViewingLeave(null)}
+        >
           <div className="leave-modal-box" onClick={(e) => e.stopPropagation()}>
             <div className="leave-modal-header">
               <h6 className="leave-modal-title">Leave Request Details</h6>
-              <button 
+              <button
                 className="leave-modal-close"
                 onClick={() => setViewingLeave(null)}
               >
@@ -389,16 +395,20 @@ const AdminLeave = () => {
 
               <div className="leave-modal-section">
                 <label className="leave-modal-label">Leave Type</label>
-                <p className="leave-modal-value">{typeLabel(viewingLeave.type)}</p>
+                <p className="leave-modal-value">
+                  {typeLabel(viewingLeave.type)}
+                </p>
               </div>
 
               <div className="leave-modal-section">
                 <label className="leave-modal-label">Dates</label>
                 <p className="leave-modal-value">
-                  {formatDate(viewingLeave.startDate)} — {formatDate(viewingLeave.endDate)}
+                  {formatDate(viewingLeave.startDate)} —{" "}
+                  {formatDate(viewingLeave.endDate)}
                 </p>
                 <p className="leave-modal-subtext">
-                  {businessDays(viewingLeave.startDate, viewingLeave.endDate)} Business Days
+                  {businessDays(viewingLeave.startDate, viewingLeave.endDate)}{" "}
+                  Business Days
                 </p>
               </div>
 
@@ -412,7 +422,9 @@ const AdminLeave = () => {
               <div className="leave-modal-section">
                 <label className="leave-modal-label">Status</label>
                 <p className="leave-modal-value">
-                  <span className={`leave-status-badge ${viewingLeave.Leave_status?.toLowerCase()}`}>
+                  <span
+                    className={`leave-status-badge ${viewingLeave.Leave_status?.toLowerCase()}`}
+                  >
                     {viewingLeave.Leave_status?.toUpperCase()}
                   </span>
                 </p>
@@ -420,7 +432,7 @@ const AdminLeave = () => {
             </div>
 
             <div className="leave-modal-footer">
-              <button 
+              <button
                 className="leave-modal-cancel-btn"
                 onClick={() => setViewingLeave(null)}
               >
@@ -428,7 +440,7 @@ const AdminLeave = () => {
               </button>
               {viewingLeave.Leave_status === "Pending" && (
                 <>
-                  <button 
+                  <button
                     className="leave-modal-reject-btn"
                     onClick={() => {
                       handleAction(viewingLeave.LeaveRequestID, "reject");
@@ -436,9 +448,11 @@ const AdminLeave = () => {
                     }}
                     disabled={acting === viewingLeave.LeaveRequestID}
                   >
-                    {acting === viewingLeave.LeaveRequestID ? "Rejecting..." : "Reject"}
+                    {acting === viewingLeave.LeaveRequestID
+                      ? "Rejecting..."
+                      : "Reject"}
                   </button>
-                  <button 
+                  <button
                     className="leave-modal-approve-btn"
                     onClick={() => {
                       handleAction(viewingLeave.LeaveRequestID, "approve");
@@ -446,7 +460,9 @@ const AdminLeave = () => {
                     }}
                     disabled={acting === viewingLeave.LeaveRequestID}
                   >
-                    {acting === viewingLeave.LeaveRequestID ? "Approving..." : "Approve"}
+                    {acting === viewingLeave.LeaveRequestID
+                      ? "Approving..."
+                      : "Approve"}
                   </button>
                 </>
               )}
