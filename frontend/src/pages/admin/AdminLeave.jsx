@@ -84,10 +84,17 @@ const AdminLeave = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [acting, setActing] = useState(null); // id of row being actioned
+  const [filterStatus, setFilterStatus] = useState("All"); // filter state
+  const [viewingLeave, setViewingLeave] = useState(null); // for modal
 
   const totalPages = Math.ceil(total / LIMIT);
   const startRow = total === 0 ? 0 : (page - 1) * LIMIT + 1;
   const endRow = Math.min(page * LIMIT, total);
+
+  // Filter requests based on selected status
+  const filteredRequests = filterStatus === "All" 
+    ? requests 
+    : requests.filter(r => r.Leave_status?.toLowerCase() === filterStatus.toLowerCase());
 
   const fetchStats = () =>
     getLeaveStatsRequest()
@@ -176,10 +183,22 @@ const AdminLeave = () => {
         <div className="leave-table-header">
           <h6 className="leave-table-title">Leave Requests Management</h6>
           <div className="leave-header-actions">
-            <button className="leave-filter-btn">
-              <i className="fa-solid fa-sliders" style={{ marginRight: 6 }}></i>
-              Filters
-            </button>
+            <div className="leave-filter-container">
+              <label className="leave-filter-label">Status Filter:</label>
+              <select 
+                className="leave-filter-select"
+                value={filterStatus}
+                onChange={(e) => {
+                  setFilterStatus(e.target.value);
+                  setPage(1); // reset to page 1 when filter changes
+                }}
+              >
+                <option value="All">All</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -201,14 +220,14 @@ const AdminLeave = () => {
                   <i className="fa-solid fa-spinner fa-spin"></i> Loading…
                 </td>
               </tr>
-            ) : requests.length === 0 ? (
+            ) : filteredRequests.length === 0 ? (
               <tr>
                 <td colSpan={6} className="leave-empty">
                   No leave requests found
                 </td>
               </tr>
             ) : (
-              requests.map((r) => {
+              filteredRequests.map((r) => {
                 const days = businessDays(r.startDate, r.endDate);
                 const sameDay =
                   formatDate(r.startDate) === formatDate(r.endDate);
@@ -249,7 +268,7 @@ const AdminLeave = () => {
                       </span>
                     </td>
                     <td>
-                      <div className="leave-reason" title={r.Leave_reason}>
+                      <div className="leave-reason">
                         {r.Leave_reason || "—"}
                       </div>
                     </td>
@@ -262,6 +281,13 @@ const AdminLeave = () => {
                     </td>
                     <td>
                       <div className="leave-actions">
+                        <button
+                          className="leave-act-btn view"
+                          title="View Details"
+                          onClick={() => setViewingLeave(r)}
+                        >
+                          <i className="fa-regular fa-eye"></i>
+                        </button>
                         <button
                           className="leave-act-btn approve"
                           title="Approve"
@@ -335,6 +361,99 @@ const AdminLeave = () => {
           </div>
         </div>
       </div>
+
+      {/* ── Leave Details Modal ── */}
+      {viewingLeave && (
+        <div className="leave-modal-overlay" onClick={() => setViewingLeave(null)}>
+          <div className="leave-modal-box" onClick={(e) => e.stopPropagation()}>
+            <div className="leave-modal-header">
+              <h6 className="leave-modal-title">Leave Request Details</h6>
+              <button 
+                className="leave-modal-close"
+                onClick={() => setViewingLeave(null)}
+              >
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <div className="leave-modal-content">
+              <div className="leave-modal-section">
+                <label className="leave-modal-label">Employee Name</label>
+                <p className="leave-modal-value">{viewingLeave.employeeName}</p>
+              </div>
+
+              <div className="leave-modal-section">
+                <label className="leave-modal-label">Employee Role</label>
+                <p className="leave-modal-value">{viewingLeave.employeeRole}</p>
+              </div>
+
+              <div className="leave-modal-section">
+                <label className="leave-modal-label">Leave Type</label>
+                <p className="leave-modal-value">{typeLabel(viewingLeave.type)}</p>
+              </div>
+
+              <div className="leave-modal-section">
+                <label className="leave-modal-label">Dates</label>
+                <p className="leave-modal-value">
+                  {formatDate(viewingLeave.startDate)} — {formatDate(viewingLeave.endDate)}
+                </p>
+                <p className="leave-modal-subtext">
+                  {businessDays(viewingLeave.startDate, viewingLeave.endDate)} Business Days
+                </p>
+              </div>
+
+              <div className="leave-modal-section">
+                <label className="leave-modal-label">Reason</label>
+                <p className="leave-modal-value leave-modal-reason">
+                  {viewingLeave.Leave_reason || "No reason provided"}
+                </p>
+              </div>
+
+              <div className="leave-modal-section">
+                <label className="leave-modal-label">Status</label>
+                <p className="leave-modal-value">
+                  <span className={`leave-status-badge ${viewingLeave.Leave_status?.toLowerCase()}`}>
+                    {viewingLeave.Leave_status?.toUpperCase()}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            <div className="leave-modal-footer">
+              <button 
+                className="leave-modal-cancel-btn"
+                onClick={() => setViewingLeave(null)}
+              >
+                Cancel
+              </button>
+              {viewingLeave.Leave_status === "Pending" && (
+                <>
+                  <button 
+                    className="leave-modal-reject-btn"
+                    onClick={() => {
+                      handleAction(viewingLeave.LeaveRequestID, "reject");
+                      setViewingLeave(null);
+                    }}
+                    disabled={acting === viewingLeave.LeaveRequestID}
+                  >
+                    {acting === viewingLeave.LeaveRequestID ? "Rejecting..." : "Reject"}
+                  </button>
+                  <button 
+                    className="leave-modal-approve-btn"
+                    onClick={() => {
+                      handleAction(viewingLeave.LeaveRequestID, "approve");
+                      setViewingLeave(null);
+                    }}
+                    disabled={acting === viewingLeave.LeaveRequestID}
+                  >
+                    {acting === viewingLeave.LeaveRequestID ? "Approving..." : "Approve"}
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
