@@ -84,3 +84,16 @@ export async function getPendingLeaveList() {
     )
     return rows
 }
+
+export async function getOpenAlertsList(limit = 20) {
+        const [rows] = await pool.execute(
+                `SELECT a.AlertID AS id, a.UserID as userId, u.Name as name, a.type, a.Alert_reason as reason, a.createdAt, a.Alert_status as status
+                 FROM alert a
+                 JOIN users u ON a.UserID = u.UserID
+                 WHERE LOWER(a.Alert_status) = 'open' AND a.type IN ('Turnover','burnout')
+                 ORDER BY a.createdAt DESC
+                 LIMIT ?`,
+                [limit]
+        )
+        return rows
+}

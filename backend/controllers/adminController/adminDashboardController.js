@@ -8,6 +8,7 @@ import {
     getActiveProjectsCount,
     getPendingLeaveCount,
     getPendingLeaveList,
+    getOpenAlertsList,
 } from '../../models/adminModel/admin_dashboard_model.js'
 
 export const getDashboardStats = async (req, res) => {
@@ -22,6 +23,7 @@ export const getDashboardStats = async (req, res) => {
             activeProjects,
             pendingLeaveCount,
             pendingLeaveRows,
+            openAlerts,
         ] = await Promise.all([
             getTotalEmployees(),
             getTotalManagers(),
@@ -32,6 +34,7 @@ export const getDashboardStats = async (req, res) => {
             getActiveProjectsCount(),
             getPendingLeaveCount(),
             getPendingLeaveList(),
+            getOpenAlertsList(),
         ])
 
         const pendingLeave = pendingLeaveRows.slice(0, 10)
@@ -46,6 +49,7 @@ export const getDashboardStats = async (req, res) => {
             needHelpAlerts,
             recognitionAlerts,
             turnoverAlerts,
+            openAlerts,
             pendingLeaveCount,
             pendingLeave,
             pendingLeaveMore,

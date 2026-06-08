@@ -75,15 +75,6 @@ const ManagerDashboard = () => {
 
   return (
     <>
-      {/* ── Breadcrumb ── */}
-      <div className="mgr-dash-breadcrumb">
-        <span className="mgr-dash-breadcrumb-app">ERP Manager</span>
-        <i
-          className="fa-solid fa-chevron-right mgr-dash-breadcrumb-sep"
-          style={{ fontSize: "0.6rem" }}
-        ></i>
-        <span className="mgr-dash-breadcrumb-page">Dashboard</span>
-      </div>
 
       {/* ── Stat Cards ── */}
       <div className="mgr-stat-row">
@@ -147,7 +138,6 @@ const ManagerDashboard = () => {
       <div className="mgr-section-card">
         <div className="mgr-section-header">
           <h6 className="mgr-section-title">Recent Team Alerts</h6>
-          <button className="mgr-view-all">VIEW ALL</button>
         </div>
         <table className="mgr-alerts-table">
           <thead>

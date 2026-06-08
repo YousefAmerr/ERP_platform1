@@ -139,17 +139,38 @@ const AdminDashboard = () => {
               <tr>
                 <th>Type</th>
                 <th>Employee</th>
-                <th>Reason</th>
                 <th>Date</th>
                 <th>Status</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td colSpan={5} className="dash-empty">
-                  No alerts to display
-                </td>
-              </tr>
+              {stats.openAlerts && stats.openAlerts.length > 0 ? (
+                stats.openAlerts.map((a) => (
+                  <tr key={a.id}>
+                    <td>{a.type}</td>
+                    <td>
+                      <div className="dash-employee-name">{a.name}</div>
+                      <div className="dash-employee-dates">
+                        {formatDate(a.createdAt)}
+                      </div>
+                    </td>
+                    <td>{formatDate(a.createdAt)}</td>
+                    <td>
+                      <span
+                        className={`status-badge status-${String(a.status).toLowerCase()}`}
+                      >
+                        {a.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="dash-empty">
+                    No alerts to display
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
