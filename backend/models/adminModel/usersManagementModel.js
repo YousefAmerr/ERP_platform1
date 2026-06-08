@@ -30,11 +30,19 @@ export async function createUser(name, email, phone, plainPassword, role) {
     return result.insertId
 }
 
-export async function updateUser(userId, name, email, phone, role) {
-    await pool.execute(
-        `UPDATE users SET Name=?, email=?, phone=?, role=? WHERE UserID=?`,
-        [name, email, phone || null, role, userId]
-    )
+export async function updateUser(userId, name, email, phone, role, plainPassword = null) {
+    if (plainPassword && plainPassword.trim()) {
+        const hash = await bcrypt.hash(plainPassword, 10)
+        await pool.execute(
+            `UPDATE users SET Name=?, email=?, phone=?, role=?, password=? WHERE UserID=?`,
+            [name, email, phone || null, role, hash, userId]
+        )
+    } else {
+        await pool.execute(
+            `UPDATE users SET Name=?, email=?, phone=?, role=? WHERE UserID=?`,
+            [name, email, phone || null, role, userId]
+        )
+    }
 }
 
 export async function setUserActive(userId, active) {

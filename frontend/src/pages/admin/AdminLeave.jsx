@@ -139,7 +139,7 @@ const AdminLeave = () => {
       <div className="leave-stats-row">
         <div className="leave-stat-card">
           <div>
-            <div className="leave-stat-label">Pending Requests</div>
+            <div className="leave-stat-label">Pending Leave Requests</div>
             <div className="leave-stat-number blue">{stats.pending}</div>
             <p className="leave-stat-sub blue">Requires immediate review</p>
           </div>
@@ -150,9 +150,9 @@ const AdminLeave = () => {
 
         <div className="leave-stat-card">
           <div>
-            <div className="leave-stat-label">Approved</div>
+            <div className="leave-stat-label">Approved Leave requests</div>
             <div className="leave-stat-number green">{stats.approved}</div>
-            <p className="leave-stat-sub green">Total for this quarter</p>
+            <p className="leave-stat-sub green">Total for this month</p>
           </div>
           <div className="leave-stat-icon-wrap green">
             <i className="fa-regular fa-circle-check"></i>
@@ -161,9 +161,9 @@ const AdminLeave = () => {
 
         <div className="leave-stat-card">
           <div>
-            <div className="leave-stat-label">Rejected</div>
+            <div className="leave-stat-label">Rejected Leave requests</div>
             <div className="leave-stat-number dark">{stats.rejected}</div>
-            <p className="leave-stat-sub">Declined applications</p>
+            <p className="leave-stat-sub green">Total for this month</p>
           </div>
           <div className="leave-stat-icon-wrap red">
             <i className="fa-regular fa-circle-xmark"></i>
@@ -180,7 +180,6 @@ const AdminLeave = () => {
               <i className="fa-solid fa-sliders" style={{ marginRight: 6 }}></i>
               Filters
             </button>
-            <button className="leave-all-btn">All Requests</button>
           </div>
         </div>
 

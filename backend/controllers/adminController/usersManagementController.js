@@ -47,7 +47,7 @@ export const addUser = async (req, res) => {
 export const editUser = async (req, res) => {
     try {
         const userId = parseInt(req.params.id)
-        const { name, email, phone, role } = req.body
+        const { name, email, phone, role, password } = req.body
         if (!name || !email || !role) {
             return res.status(400).send({ success: false, message: 'Name, email and role are required' })
         }
@@ -58,7 +58,7 @@ export const editUser = async (req, res) => {
         if (await emailExists(email, userId)) {
             return res.status(409).send({ success: false, message: 'Email already in use by another user' })
         }
-        await updateUser(userId, name, email, phone, role.toUpperCase())
+        await updateUser(userId, name, email, phone, role.toUpperCase(), password)
         res.status(200).send({ success: true, message: 'User updated' })
     } catch (error) {
         console.log(error)

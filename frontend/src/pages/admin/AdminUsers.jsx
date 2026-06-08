@@ -45,8 +45,10 @@ function EditModal({ user, onClose, onSaved }) {
     email: user.email || "",
     phone: user.phone || "",
     role: user.role || "EMPLOYEE",
+    password: "",
   });
   const [saving, setSaving] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
@@ -57,7 +59,16 @@ function EditModal({ user, onClose, onSaved }) {
     }
     setSaving(true);
     try {
-      await editUserRequest(user.UserID, form);
+      const updateData = {
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        role: form.role,
+      };
+      if (form.password.trim()) {
+        updateData.password = form.password;
+      }
+      await editUserRequest(user.UserID, updateData);
       toast.success("User updated");
       onSaved();
     } catch (err) {
@@ -102,6 +113,31 @@ function EditModal({ user, onClose, onSaved }) {
               <option value="EMPLOYEE">Employee</option>
               <option value="MANAGER">Manager</option>
             </select>
+          </div>
+          <div className="users-field users-password-field">
+            <label>Password</label>
+            <div className="users-password-input-wrap">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={form.password}
+                onChange={set("password")}
+                placeholder="Leave blank to keep current password"
+              />
+              <button
+                type="button"
+                className="users-password-toggle"
+                onClick={() => setShowPassword((show) => !show)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                <i
+                  className={
+                    showPassword
+                      ? "fa-regular fa-eye-slash"
+                      : "fa-regular fa-eye"
+                  }
+                ></i>
+              </button>
+            </div>
           </div>
         </div>
         <div className="modal-footer">
@@ -180,25 +216,29 @@ const AdminUsers = () => {
     password: "",
   });
   const [adding, setAdding] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const setF = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  const fetchUsers = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await getUsersRequest(page, LIMIT);
-      setUsers(data.users);
-      setTotal(data.total);
-    } catch (err) {
-      toast.error(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [page]);
+  const fetchUsers = useCallback(
+    async (pageToLoad = page) => {
+      setLoading(true);
+      try {
+        const data = await getUsersRequest(pageToLoad, LIMIT);
+        setUsers(data.users);
+        setTotal(data.total);
+      } catch (err) {
+        toast.error(err.message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [page],
+  );
 
   useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+    fetchUsers(page);
+  }, [page, fetchUsers]);
 
   const handleAdd = async () => {
     if (!form.name || !form.email || !form.password) {
@@ -217,7 +257,7 @@ const AdminUsers = () => {
         password: "",
       });
       setPage(1);
-      fetchUsers();
+      await fetchUsers(1);
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -240,6 +280,53 @@ const AdminUsers = () => {
     }
   };
 
+  const handleExportUsers = async () => {
+    try {
+      const data = await getUsersRequest(1, 9999);
+      const allUsers = data.users || [];
+
+      if (allUsers.length === 0) {
+        toast.error("No users to export");
+        return;
+      }
+
+      const headers = ["Name", "Email", "Contact Number", "Role", "Status"];
+      const rows = allUsers.map((u) => [
+        u.Name || "",
+        u.email || "",
+        u.phone || "",
+        u.role || "",
+        u.active ? "Active" : "Inactive",
+      ]);
+
+      const csvContent = [
+        headers.map((h) => `"${h}"`).join(","),
+        ...rows.map((r) =>
+          r.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(","),
+        ),
+      ].join("\n");
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+
+      link.setAttribute("href", url);
+      link.setAttribute(
+        "download",
+        `users_${new Date().toISOString().split("T")[0]}.csv`,
+      );
+      link.style.visibility = "hidden";
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success(`Exported ${allUsers.length} users`);
+    } catch (err) {
+      toast.error(err.message || "Failed to export users");
+    }
+  };
+
   const totalPages = Math.ceil(total / LIMIT);
 
   return (
@@ -259,6 +346,8 @@ const AdminUsers = () => {
           <div className="users-field">
             <label>Email Address</label>
             <input
+              name="email"
+              autoComplete="email"
               value={form.email}
               onChange={setF("email")}
               placeholder="julian@architect.io"
@@ -267,6 +356,10 @@ const AdminUsers = () => {
           <div className="users-field">
             <label>Contact Number</label>
             <input
+              name="phone"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
               value={form.phone}
               onChange={setF("phone")}
               placeholder="+1 (555) 000-0000"
@@ -281,14 +374,32 @@ const AdminUsers = () => {
               <option value="MANAGER">Manager</option>
             </select>
           </div>
-          <div className="users-field">
+          <div className="users-field users-password-field">
             <label>Initial Password</label>
-            <input
-              type="password"
-              value={form.password}
-              onChange={setF("password")}
-              placeholder="••••••••"
-            />
+            <div className="users-password-input-wrap">
+              <input
+                name="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="new-password"
+                value={form.password}
+                onChange={setF("password")}
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                className="users-password-toggle"
+                onClick={() => setShowPassword((show) => !show)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                <i
+                  className={
+                    showPassword
+                      ? "fa-regular fa-eye-slash"
+                      : "fa-regular fa-eye"
+                  }
+                ></i>
+              </button>
+            </div>
           </div>
           <button
             className="users-add-btn"
@@ -311,11 +422,13 @@ const AdminUsers = () => {
             </p>
           </div>
           <div className="users-dir-actions">
-            <button className="users-dir-icon-btn" title="Filter">
-              <i className="fa-solid fa-sliders"></i>
-            </button>
-            <button className="users-dir-icon-btn" title="Export">
+            <button
+              className="users-export-btn"
+              title="Export all users"
+              onClick={handleExportUsers}
+            >
               <i className="fa-solid fa-download"></i>
+              Export Users
             </button>
           </div>
         </div>
