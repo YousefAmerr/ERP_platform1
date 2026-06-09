@@ -323,7 +323,10 @@ export default function ManagerLeave() {
           <div className="mgl-modal" onClick={(e) => e.stopPropagation()}>
             <div className="mgl-modal-header">
               <h2 className="mgl-modal-title">Leave Request Details</h2>
-              <button className="mgl-modal-close" onClick={() => setViewRow(null)}>
+              <button
+                className="mgl-modal-close"
+                onClick={() => setViewRow(null)}
+              >
                 <i className="fa-solid fa-xmark"></i>
               </button>
             </div>
@@ -333,12 +336,16 @@ export default function ManagerLeave() {
               <div className="mgl-detail-row">
                 <div
                   className="mgl-avatar"
-                  style={{ background: getAvatarColor(viewRow.employeeName || "") }}
+                  style={{
+                    background: getAvatarColor(viewRow.employeeName || ""),
+                  }}
                 >
                   {getInitials(viewRow.employeeName || "")}
                 </div>
                 <div>
-                  <div className="mgl-detail-emp-name">{viewRow.employeeName}</div>
+                  <div className="mgl-detail-emp-name">
+                    {viewRow.employeeName}
+                  </div>
                   <div className="mgl-detail-emp-role">
                     {viewRow.employeeRole
                       ? viewRow.employeeRole.charAt(0).toUpperCase() +
@@ -359,16 +366,22 @@ export default function ManagerLeave() {
                   </span>
                   <span className="mgl-detail-days">
                     {daysBetween(viewRow.startDate, viewRow.endDate)} day
-                    {daysBetween(viewRow.startDate, viewRow.endDate) !== 1 ? "s" : ""}
+                    {daysBetween(viewRow.startDate, viewRow.endDate) !== 1
+                      ? "s"
+                      : ""}
                   </span>
                 </div>
                 <div className="mgl-detail-field">
                   <span className="mgl-detail-label">Type</span>
-                  <span className="mgl-detail-value">{formatType(viewRow.type)}</span>
+                  <span className="mgl-detail-value">
+                    {formatType(viewRow.type)}
+                  </span>
                 </div>
                 <div className="mgl-detail-field">
                   <span className="mgl-detail-label">Status</span>
-                  <span className={`mgl-status-badge ${statusBadgeClass(viewRow.Leave_status)}`}>
+                  <span
+                    className={`mgl-status-badge ${statusBadgeClass(viewRow.Leave_status)}`}
+                  >
                     {statusLabel(viewRow.Leave_status)}
                   </span>
                 </div>
@@ -377,12 +390,17 @@ export default function ManagerLeave() {
               {/* Reason — full width box */}
               <div className="mgl-detail-reason-block">
                 <span className="mgl-detail-label">Reason</span>
-                <div className="mgl-detail-reason-box">{viewRow.Leave_reason}</div>
+                <div className="mgl-detail-reason-box">
+                  {viewRow.Leave_reason}
+                </div>
               </div>
             </div>
 
             <div className="mgl-modal-footer">
-              <button className="mgl-modal-close-btn" onClick={() => setViewRow(null)}>
+              <button
+                className="mgl-modal-close-btn"
+                onClick={() => setViewRow(null)}
+              >
                 Close
               </button>
             </div>
