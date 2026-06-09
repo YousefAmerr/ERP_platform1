@@ -73,6 +73,7 @@ export default function ManagerLeave() {
   const [status, setStatus] = useState("all");
   const [loading, setLoading] = useState(true);
   const [dropOpen, setDropOpen] = useState(false);
+  const [viewRow, setViewRow] = useState(null);
   const dropRef = useRef(null);
 
   useEffect(() => {
@@ -131,11 +132,6 @@ export default function ManagerLeave() {
     <div className="mgl-page">
       {/* Header */}
       <div className="mgl-header">
-        <div className="mgl-breadcrumb">
-          <span className="mgl-breadcrumb-item">Leave Management</span>
-          <span className="mgl-breadcrumb-sep">|</span>
-          <span className="mgl-breadcrumb-item active">Reports</span>
-        </div>
         <h1 className="mgl-title">Leave Management</h1>
         <p className="mgl-subtitle">
           <strong>Monitor</strong> and <strong>review</strong> department leave
@@ -188,16 +184,17 @@ export default function ManagerLeave() {
                 <th>Type</th>
                 <th>Reason</th>
                 <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr className="mgl-empty-row">
-                  <td colSpan={5}>Loading...</td>
+                  <td colSpan={6}>Loading...</td>
                 </tr>
               ) : rows.length === 0 ? (
                 <tr className="mgl-empty-row">
-                  <td colSpan={5}>No leave requests found.</td>
+                  <td colSpan={6}>No leave requests found.</td>
                 </tr>
               ) : (
                 rows.map((row) => {
@@ -250,10 +247,7 @@ export default function ManagerLeave() {
 
                       {/* Reason */}
                       <td>
-                        <span
-                          className="mgl-reason-text"
-                          title={row.Leave_reason}
-                        >
+                        <span className="mgl-reason-text">
                           {row.Leave_reason}
                         </span>
                       </td>
@@ -265,6 +259,17 @@ export default function ManagerLeave() {
                         >
                           {statusLabel(row.Leave_status)}
                         </span>
+                      </td>
+
+                      {/* Actions */}
+                      <td>
+                        <button
+                          className="mgl-view-btn"
+                          title="View details"
+                          onClick={() => setViewRow(row)}
+                        >
+                          <i className="fa-solid fa-eye"></i>
+                        </button>
                       </td>
                     </tr>
                   );
@@ -312,6 +317,78 @@ export default function ManagerLeave() {
           </div>
         </div>
       </div>
+      {/* Leave Detail Modal */}
+      {viewRow && (
+        <div className="mgl-modal-overlay" onClick={() => setViewRow(null)}>
+          <div className="mgl-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="mgl-modal-header">
+              <h2 className="mgl-modal-title">Leave Request Details</h2>
+              <button className="mgl-modal-close" onClick={() => setViewRow(null)}>
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <div className="mgl-modal-body">
+              {/* Employee */}
+              <div className="mgl-detail-row">
+                <div
+                  className="mgl-avatar"
+                  style={{ background: getAvatarColor(viewRow.employeeName || "") }}
+                >
+                  {getInitials(viewRow.employeeName || "")}
+                </div>
+                <div>
+                  <div className="mgl-detail-emp-name">{viewRow.employeeName}</div>
+                  <div className="mgl-detail-emp-role">
+                    {viewRow.employeeRole
+                      ? viewRow.employeeRole.charAt(0).toUpperCase() +
+                        viewRow.employeeRole.slice(1).toLowerCase()
+                      : ""}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mgl-detail-divider" />
+
+              {/* 3-column info grid */}
+              <div className="mgl-detail-grid">
+                <div className="mgl-detail-field">
+                  <span className="mgl-detail-label">Dates</span>
+                  <span className="mgl-detail-value">
+                    {formatDateRange(viewRow.startDate, viewRow.endDate)}
+                  </span>
+                  <span className="mgl-detail-days">
+                    {daysBetween(viewRow.startDate, viewRow.endDate)} day
+                    {daysBetween(viewRow.startDate, viewRow.endDate) !== 1 ? "s" : ""}
+                  </span>
+                </div>
+                <div className="mgl-detail-field">
+                  <span className="mgl-detail-label">Type</span>
+                  <span className="mgl-detail-value">{formatType(viewRow.type)}</span>
+                </div>
+                <div className="mgl-detail-field">
+                  <span className="mgl-detail-label">Status</span>
+                  <span className={`mgl-status-badge ${statusBadgeClass(viewRow.Leave_status)}`}>
+                    {statusLabel(viewRow.Leave_status)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Reason — full width box */}
+              <div className="mgl-detail-reason-block">
+                <span className="mgl-detail-label">Reason</span>
+                <div className="mgl-detail-reason-box">{viewRow.Leave_reason}</div>
+              </div>
+            </div>
+
+            <div className="mgl-modal-footer">
+              <button className="mgl-modal-close-btn" onClick={() => setViewRow(null)}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

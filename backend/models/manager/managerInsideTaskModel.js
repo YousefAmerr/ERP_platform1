@@ -69,11 +69,11 @@ export async function getUserIdByEmail(email) {
     return row?.UserID || null
 }
 
-export async function insertTask(projectId, { title, description, assignedTo, dueDate, Task_status, workLoadPoints, AssignedBy }) {
+export async function insertTask(projectId, { title, description, assignedTo, dueDate, Task_status, workLoadPoints, AssignedBy, attachmentPath }) {
     const [result] = await pool.execute(
-        `INSERT INTO task (ProjectID, title, description, assignedTo, dueDate, Task_status, workLoadPoints, AssignedBy)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [projectId, title, description || null, assignedTo, dueDate || null, Task_status || 'In_progress', workLoadPoints, AssignedBy]
+        `INSERT INTO task (ProjectID, title, description, assignedTo, dueDate, Task_status, workLoadPoints, AssignedBy, attachmentPath)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [projectId, title, description || null, assignedTo, dueDate || null, Task_status || 'In_progress', workLoadPoints, AssignedBy, attachmentPath || null]
     )
     return result.insertId
 }
@@ -84,6 +84,14 @@ export async function updateTask(taskId, { title, description, assignedTo, dueDa
          WHERE TaskID=?`,
         [title, description || null, assignedTo, dueDate || null, Task_status, workLoadPoints || null, taskId]
     )
+}
+
+export async function deleteTask(taskId) {
+    const [result] = await pool.execute(
+        `DELETE FROM task WHERE TaskID = ?`,
+        [taskId]
+    )
+    return result.affectedRows
 }
 
 export async function getDoneUnratedTasks(projectId, employeeFilter = null) {

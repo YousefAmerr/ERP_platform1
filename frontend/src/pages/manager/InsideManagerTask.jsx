@@ -7,6 +7,7 @@ import {
   getProjectEmployeesRequest,
   createProjectTaskRequest,
   editProjectTaskRequest,
+  deleteProjectTaskRequest,
   getDoneTasksRequest,
   rateTaskRequest,
 } from "../../helper_module/authHelper";
@@ -82,11 +83,15 @@ export default function InsideManagerTask() {
   // Create / Edit modal state
   const [showCreate, setShowCreate] = useState(false);
   const [createForm, setCreateForm] = useState(BLANK_TASK);
+  const [createFile, setCreateFile] = useState(null);
   const [createLoading, setCreateLoading] = useState(false);
 
   const [editTask, setEditTask] = useState(null); // the task being edited
   const [editForm, setEditForm] = useState(BLANK_TASK);
   const [editLoading, setEditLoading] = useState(false);
+
+  const [deleteTarget, setDeleteTarget] = useState(null); // the task being deleted
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   // Rate Completed Tasks state
   const [doneTasks, setDoneTasks] = useState([]);
@@ -162,10 +167,11 @@ export default function InsideManagerTask() {
     }
     setCreateLoading(true);
     try {
-      await createProjectTaskRequest(id, createForm);
+      await createProjectTaskRequest(id, createForm, createFile);
       toast.success("Task created");
       setShowCreate(false);
       setCreateForm(BLANK_TASK);
+      setCreateFile(null);
       fetchTasks();
     } catch (err) {
       toast.error(err.message || "Failed to create task");
@@ -203,6 +209,21 @@ export default function InsideManagerTask() {
       toast.error(err.message || "Failed to update task");
     } finally {
       setEditLoading(false);
+    }
+  }
+
+  // ── delete task ────────────────────────────────────────────
+  async function handleDelete() {
+    setDeleteLoading(true);
+    try {
+      await deleteProjectTaskRequest(id, deleteTarget.TaskID);
+      toast.success("Task deleted");
+      setDeleteTarget(null);
+      fetchTasks();
+    } catch (err) {
+      toast.error(err.message || "Failed to delete task");
+    } finally {
+      setDeleteLoading(false);
     }
   }
 
@@ -368,12 +389,20 @@ export default function InsideManagerTask() {
                     </span>
                   </td>
                   <td>
-                    <button
-                      className="imt-edit-btn"
-                      onClick={() => openEdit(t)}
-                    >
-                      Edit
-                    </button>
+                    <div className="imt-action-cell">
+                      <button
+                        className="imt-edit-btn"
+                        onClick={() => openEdit(t)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="imt-delete-btn"
+                        onClick={() => setDeleteTarget(t)}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -563,6 +592,27 @@ export default function InsideManagerTask() {
                   <option value="Heavy">Heavy</option>
                 </select>
               </div>
+              <div className="imt-form-group">
+                <label className="imt-form-label">Attachment</label>
+                <label className="imt-file-label">
+                  <i className="fa-solid fa-paperclip"></i>
+                  <span>{createFile ? createFile.name : "Click to upload a file"}</span>
+                  <input
+                    type="file"
+                    className="imt-file-input"
+                    onChange={(e) => setCreateFile(e.target.files[0] || null)}
+                  />
+                </label>
+                {createFile && (
+                  <button
+                    type="button"
+                    className="imt-file-remove"
+                    onClick={() => setCreateFile(null)}
+                  >
+                    <i className="fa-solid fa-xmark"></i> Remove
+                  </button>
+                )}
+              </div>
               <div className="imt-modal-footer">
                 <button
                   type="button"
@@ -694,6 +744,48 @@ export default function InsideManagerTask() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Delete Confirmation Modal ───────────────────────── */}
+      {deleteTarget && (
+        <div className="imt-modal-overlay" onClick={() => setDeleteTarget(null)}>
+          <div
+            className="imt-modal imt-modal-sm"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="imt-modal-header">
+              <h4 className="imt-modal-title">Delete Task</h4>
+              <button
+                className="imt-modal-close"
+                onClick={() => setDeleteTarget(null)}
+              >
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <p className="imt-delete-text">
+              Are you sure you want to delete{" "}
+              <strong>{deleteTarget.title}</strong>? This action cannot be
+              undone.
+            </p>
+            <div className="imt-modal-footer">
+              <button
+                type="button"
+                className="imt-modal-cancel"
+                onClick={() => setDeleteTarget(null)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="imt-delete-confirm-btn"
+                onClick={handleDelete}
+                disabled={deleteLoading}
+              >
+                {deleteLoading ? "Deleting…" : "Delete"}
+              </button>
+            </div>
           </div>
         </div>
       )}

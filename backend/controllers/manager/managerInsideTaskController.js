@@ -5,6 +5,7 @@ import {
     getAllEmployees,
     insertTask,
     updateTask,
+    deleteTask,
     getUserIdByEmail,
     getDoneUnratedTasks,
     rateTask,
@@ -36,11 +37,13 @@ export async function createTask(req, res) {
         return res.status(400).json({ message: 'title, assignedTo and workload are required' })
     const assignedBy = await getUserIdByEmail(req.user.email)
     if (!assignedBy) return res.status(400).json({ message: 'Manager account not found' })
+    const attachmentPath = req.file ? req.file.filename : null
     const insertId = await insertTask(req.params.id, {
         title, description, assignedTo, dueDate,
         Task_status: 'In_progress',
         workLoadPoints,
         AssignedBy: assignedBy,
+        attachmentPath,
     })
     res.status(201).json({ insertId })
 }
@@ -49,6 +52,12 @@ export async function editTask(req, res) {
     const { title, description, assignedTo, dueDate, Task_status, workLoadPoints } = req.body
     if (!title || !assignedTo) return res.status(400).json({ message: 'title and assignedTo are required' })
     await updateTask(req.params.taskId, { title, description, assignedTo, dueDate, Task_status, workLoadPoints })
+    res.json({ success: true })
+}
+
+export async function removeTask(req, res) {
+    const affected = await deleteTask(req.params.taskId)
+    if (!affected) return res.status(404).json({ message: 'Task not found' })
     res.json({ success: true })
 }
 

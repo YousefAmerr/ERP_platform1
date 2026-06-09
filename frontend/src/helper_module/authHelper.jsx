@@ -300,11 +300,16 @@ export async function getProjectEmployeesRequest(id) {
   return data;
 }
 
-export async function createProjectTaskRequest(id, body) {
+export async function createProjectTaskRequest(id, body, file) {
+  const form = new FormData();
+  Object.entries(body).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== "") form.append(k, v);
+  });
+  if (file) form.append("attachment", file);
   const res = await fetch(`/api/v1/manager/tasks/projects/${id}/tasks`, {
     method: "POST",
-    headers: { ...authHeaders(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    body: form,
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data?.message || "Failed to create task");
@@ -322,6 +327,19 @@ export async function editProjectTaskRequest(id, taskId, body) {
   );
   const data = await res.json();
   if (!res.ok) throw new Error(data?.message || "Failed to update task");
+  return data;
+}
+
+export async function deleteProjectTaskRequest(id, taskId) {
+  const res = await fetch(
+    `/api/v1/manager/tasks/projects/${id}/tasks/${taskId}`,
+    {
+      method: "DELETE",
+      headers: authHeaders(),
+    },
+  );
+  const data = await res.json();
+  if (!res.ok) throw new Error(data?.message || "Failed to delete task");
   return data;
 }
 

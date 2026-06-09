@@ -3,12 +3,15 @@ import pool from '../../config/database.js'
 export async function getTeamLeaveRequests(page = 1, limit = 5, status = null) {
     const offset = (page - 1) * limit
     const params = []
-    let where = ''
+    // Only current/active requests: hide those whose end date has already passed
+    const conditions = ['lr.endDate >= CURDATE()']
 
     if (status && status !== 'all') {
-        where = 'WHERE lr.Leave_status = ?'
+        conditions.push('lr.Leave_status = ?')
         params.push(status)
     }
+
+    const where = 'WHERE ' + conditions.join(' AND ')
 
     const [rows] = await pool.execute(
         `SELECT
@@ -32,12 +35,15 @@ export async function getTeamLeaveRequests(page = 1, limit = 5, status = null) {
 
 export async function getTeamLeaveCount(status = null) {
     const params = []
-    let where = ''
+    // Match the same active-only filter as the list query
+    const conditions = ['endDate >= CURDATE()']
 
     if (status && status !== 'all') {
-        where = 'WHERE Leave_status = ?'
+        conditions.push('Leave_status = ?')
         params.push(status)
     }
+
+    const where = 'WHERE ' + conditions.join(' AND ')
 
     const [[row]] = await pool.execute(
         `SELECT COUNT(*) AS total FROM leave_request ${where}`,

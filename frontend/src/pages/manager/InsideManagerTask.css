@@ -276,6 +276,63 @@
   background: #1d4ed8;
 }
 
+/* Action cell (Edit + Delete) */
+.imt-action-cell {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+/* Delete button */
+.imt-delete-btn {
+  padding: 5px 14px;
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.13s;
+}
+
+.imt-delete-btn:hover {
+  background: #fecaca;
+}
+
+/* Delete confirmation modal */
+.imt-modal-sm {
+  width: 420px;
+}
+
+.imt-delete-text {
+  font-size: 0.9rem;
+  color: #374151;
+  line-height: 1.6;
+  margin: 0 0 20px 0;
+}
+
+.imt-delete-confirm-btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.13s;
+}
+
+.imt-delete-confirm-btn:hover {
+  background: #b91c1c;
+}
+
+.imt-delete-confirm-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* Workload */
 .imt-workload {
   font-size: 0.83rem;
@@ -466,4 +523,61 @@
 .imt-rate-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* ── File upload ── */
+.imt-file-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border: 2px dashed #d1d9e6;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.84rem;
+  color: #6b7590;
+  background: #f8fafc;
+  transition: border-color 0.15s, background 0.15s;
+  overflow: hidden;
+}
+
+.imt-file-label:hover {
+  border-color: #2563eb;
+  background: #eff4ff;
+  color: #2563eb;
+}
+
+.imt-file-label i {
+  font-size: 1rem;
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.imt-file-label span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.imt-file-input {
+  display: none;
+}
+
+.imt-file-remove {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #e05252;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.15s;
+}
+
+.imt-file-remove:hover {
+  opacity: 0.7;
 }
