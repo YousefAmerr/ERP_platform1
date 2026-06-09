@@ -52,15 +52,15 @@ function statusClass(status) {
 }
 
 const MONTH_OPTIONS = [
-  { val: "1",  label: "January" },
-  { val: "2",  label: "February" },
-  { val: "3",  label: "March" },
-  { val: "4",  label: "April" },
-  { val: "5",  label: "May" },
-  { val: "6",  label: "June" },
-  { val: "7",  label: "July" },
-  { val: "8",  label: "August" },
-  { val: "9",  label: "September" },
+  { val: "1", label: "January" },
+  { val: "2", label: "February" },
+  { val: "3", label: "March" },
+  { val: "4", label: "April" },
+  { val: "5", label: "May" },
+  { val: "6", label: "June" },
+  { val: "7", label: "July" },
+  { val: "8", label: "August" },
+  { val: "9", label: "September" },
   { val: "10", label: "October" },
   { val: "11", label: "November" },
   { val: "12", label: "December" },
@@ -225,10 +225,24 @@ export default function EmployeeLeave() {
 
           <div className="el-row">
             <div className="el-field full">
-              <label className="el-label">Attachment <span style={{color:"#9ca3af",textTransform:"none",fontWeight:400,letterSpacing:0}}>(Optional)</span></label>
+              <label className="el-label">
+                Attachment{" "}
+                <span
+                  style={{
+                    color: "#9ca3af",
+                    textTransform: "none",
+                    fontWeight: 400,
+                    letterSpacing: 0,
+                  }}
+                >
+                  (Optional)
+                </span>
+              </label>
               <label className="el-file-label">
                 <i className="fa-solid fa-paperclip"></i>
-                <span>{attachFile ? attachFile.name : "Click to upload a file"}</span>
+                <span>
+                  {attachFile ? attachFile.name : "Click to upload a file"}
+                </span>
                 <input
                   type="file"
                   className="el-file-input"
@@ -236,7 +250,11 @@ export default function EmployeeLeave() {
                 />
               </label>
               {attachFile && (
-                <button type="button" className="el-file-remove" onClick={() => setAttachFile(null)}>
+                <button
+                  type="button"
+                  className="el-file-remove"
+                  onClick={() => setAttachFile(null)}
+                >
                   <i className="fa-solid fa-xmark"></i> Remove
                 </button>
               )}
@@ -269,7 +287,9 @@ export default function EmployeeLeave() {
             >
               <option value="">All Years</option>
               {yearOptions.map((yr) => (
-                <option key={yr} value={yr}>{yr}</option>
+                <option key={yr} value={yr}>
+                  {yr}
+                </option>
               ))}
             </select>
             <select
@@ -279,7 +299,9 @@ export default function EmployeeLeave() {
             >
               <option value="">All Months</option>
               {MONTH_OPTIONS.map((o) => (
-                <option key={o.val} value={o.val}>{o.label}</option>
+                <option key={o.val} value={o.val}>
+                  {o.label}
+                </option>
               ))}
             </select>
           </div>
@@ -322,12 +344,12 @@ export default function EmployeeLeave() {
                         </div>
                       </td>
                       <td>
-                        <span className="el-type-text">{typeLabel(r.type)}</span>
+                        <span className="el-type-text">
+                          {typeLabel(r.type)}
+                        </span>
                       </td>
                       <td>
-                        <div className="el-reason-cell">
-                          {r.Leave_reason}
-                        </div>
+                        <div className="el-reason-cell">{r.Leave_reason}</div>
                       </td>
                       <td>
                         {r.leave_attachments_path ? (
