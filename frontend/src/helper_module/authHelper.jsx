@@ -387,11 +387,16 @@ export async function getEmployeeRatingsRequest(page = 1) {
   return data;
 }
 
-export async function submitEmployeeLeaveRequest(body) {
+export async function submitEmployeeLeaveRequest(body, file = null) {
+  const form = new FormData();
+  Object.entries(body).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && v !== "") form.append(k, v);
+  });
+  if (file) form.append("attachment", file);
   const res = await fetch("/api/v1/employee/leave", {
     method: "POST",
-    headers: { ...authHeaders(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    body: form,
   });
   const data = await res.json();
   if (!res.ok)
@@ -399,14 +404,27 @@ export async function submitEmployeeLeaveRequest(body) {
   return data;
 }
 
-export async function getEmployeeLeavesRequest(page = 1) {
-  const res = await fetch(`/api/v1/employee/leave?page=${page}`, {
+export async function getEmployeeLeavesRequest(page = 1, month = null, year = null) {
+  const params = new URLSearchParams({ page });
+  if (month) params.set("month", month);
+  if (year)  params.set("year",  year);
+  const res = await fetch(`/api/v1/employee/leave?${params}`, {
     headers: authHeaders(),
   });
   const data = await res.json();
   if (!res.ok)
     throw new Error(data?.message || "Failed to fetch leave requests");
   return data;
+}
+
+export async function getEmployeeLeaveYears() {
+  const res = await fetch("/api/v1/employee/leave/years", {
+    headers: authHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok)
+    throw new Error(data?.message || "Failed to fetch leave years");
+  return data.years;
 }
 
 export async function getEmployeeProjectsRequest() {

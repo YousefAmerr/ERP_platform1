@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import toast from "react-hot-toast";
-import { getEmployeeProjectTasksRequest } from "../../helper_module/authHelper";
+import {
+  getEmployeeProjectTasksRequest,
+  updateEmployeeTaskStatusRequest,
+} from "../../helper_module/authHelper";
 import "./EmployeeProjectTasks.css";
 
 function fmtDate(d) {
@@ -14,7 +17,7 @@ function fmtDate(d) {
 }
 
 function statusLabel(s) {
-  if (s === "done") return "done";
+  if (s === "done") return "Done";
   if (s === "In_progress") return "In Progress";
   if (s === "overdue") return "Overdue";
   return s;
@@ -26,6 +29,11 @@ function statusClass(s) {
   return "overdue";
 }
 
+function truncate(text, max = 50) {
+  if (!text) return "—";
+  return text.length > max ? text.slice(0, max) + "…" : text;
+}
+
 export default function EmployeeProjectTasks() {
   const { projectId } = useParams();
   const navigate = useNavigate();
@@ -33,6 +41,8 @@ export default function EmployeeProjectTasks() {
   const [projectName, setProjectName] = useState("");
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [viewTask, setViewTask] = useState(null);
+  const [marking, setMarking] = useState(false);
 
   useEffect(() => {
     getEmployeeProjectTasksRequest(projectId)
@@ -43,6 +53,25 @@ export default function EmployeeProjectTasks() {
       .catch((err) => toast.error(err.message || "Failed to load tasks"))
       .finally(() => setLoading(false));
   }, [projectId]);
+
+  async function handleMarkDone() {
+    if (!viewTask || viewTask.Task_status === "done") return;
+    setMarking(true);
+    try {
+      await updateEmployeeTaskStatusRequest(projectId, viewTask.TaskID, "done");
+      toast.success("Task marked as done!");
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.TaskID === viewTask.TaskID ? { ...t, Task_status: "done" } : t,
+        ),
+      );
+      setViewTask((prev) => ({ ...prev, Task_status: "done" }));
+    } catch (err) {
+      toast.error(err.message || "Failed to update task");
+    } finally {
+      setMarking(false);
+    }
+  }
 
   return (
     <div className="ept-page">
@@ -74,8 +103,8 @@ export default function EmployeeProjectTasks() {
           <table className="ept-table">
             <thead>
               <tr>
-                <th>Title</th>
-                <th>Description</th>
+                <th className="ept-th-title">Title</th>
+                <th className="ept-th-desc">Description</th>
                 <th>Due Date</th>
                 <th>Status</th>
                 <th>Workload</th>
@@ -90,13 +119,11 @@ export default function EmployeeProjectTasks() {
               ) : (
                 tasks.map((t) => (
                   <tr key={t.TaskID}>
-                    <td className="ept-title">{t.title}</td>
-                    <td className="ept-desc">{t.description}</td>
+                    <td className="ept-title">{truncate(t.title)}</td>
+                    <td className="ept-desc">{truncate(t.description)}</td>
                     <td className="ept-date">{fmtDate(t.dueDate)}</td>
                     <td>
-                      <span
-                        className={`ept-status ${statusClass(t.Task_status)}`}
-                      >
+                      <span className={`ept-status ${statusClass(t.Task_status)}`}>
                         {statusLabel(t.Task_status)}
                       </span>
                     </td>
@@ -104,11 +131,7 @@ export default function EmployeeProjectTasks() {
                     <td style={{ textAlign: "right" }}>
                       <button
                         className="ept-view-btn"
-                        onClick={() =>
-                          navigate(
-                            `/employee/tasks/${projectId}/task/${t.TaskID}`,
-                          )
-                        }
+                        onClick={() => setViewTask(t)}
                       >
                         View More
                       </button>
@@ -120,6 +143,89 @@ export default function EmployeeProjectTasks() {
           </table>
         )}
       </div>
+
+      {/* ── Task Detail Modal ── */}
+      {viewTask && (
+        <div className="ept-modal-overlay" onClick={() => setViewTask(null)}>
+          <div className="ept-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="ept-modal-header">
+              <span className="ept-modal-title">Task Details</span>
+              <button className="ept-modal-x" onClick={() => setViewTask(null)}>
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <div className="ept-modal-body">
+              {/* Title + Project */}
+              <div className="ept-modal-grid">
+                <div className="ept-modal-field ept-modal-field--full">
+                  <span className="ept-modal-label">Title</span>
+                  <div className="ept-modal-title-box">{viewTask.title}</div>
+                </div>
+                <div className="ept-modal-field">
+                  <span className="ept-modal-label">Project</span>
+                  <span className="ept-modal-value">{viewTask.projectName}</span>
+                </div>
+                <div className="ept-modal-field">
+                  <span className="ept-modal-label">Due Date</span>
+                  <span className="ept-modal-value">{fmtDate(viewTask.dueDate)}</span>
+                </div>
+                <div className="ept-modal-field">
+                  <span className="ept-modal-label">Status</span>
+                  <span className={`ept-status ${statusClass(viewTask.Task_status)}`}>
+                    {statusLabel(viewTask.Task_status)}
+                  </span>
+                </div>
+                <div className="ept-modal-field">
+                  <span className="ept-modal-label">Workload Points</span>
+                  <span className="ept-modal-value">{viewTask.workLoadPoints}</span>
+                </div>
+              </div>
+
+              <div className="ept-modal-divider" />
+
+              {/* Description */}
+              <div className="ept-modal-section">
+                <span className="ept-modal-label">Description</span>
+                <div className="ept-modal-desc-box">
+                  {viewTask.description || "No description provided."}
+                </div>
+              </div>
+
+              {/* Attachment */}
+              <div className="ept-modal-section">
+                <span className="ept-modal-label">Attachment</span>
+                {viewTask.attachmentPath ? (
+                  <a
+                    href={`/assets/uploads/${viewTask.attachmentPath}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="ept-modal-attach"
+                  >
+                    <i className="fa-solid fa-paperclip"></i> View Attachment
+                  </a>
+                ) : (
+                  <span className="ept-modal-no-attach">—</span>
+                )}
+              </div>
+            </div>
+
+            <div className="ept-modal-footer">
+              <button className="ept-modal-close-btn" onClick={() => setViewTask(null)}>
+                Close
+              </button>
+              <button
+                className="ept-modal-done-btn"
+                onClick={handleMarkDone}
+                disabled={marking || viewTask.Task_status === "done"}
+              >
+                <i className="fa-solid fa-circle-check"></i>
+                {marking ? "Saving…" : viewTask.Task_status === "done" ? "Already Done" : "Mark as Done"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

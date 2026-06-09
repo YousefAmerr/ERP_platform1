@@ -1,12 +1,9 @@
 import express from 'express'
 import 'colors'
 import cors from 'cors'
-import path from 'path'
-import { fileURLToPath } from 'url'
 import {connectDB} from './config/database.js'
 import morgan from 'morgan'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
 import UserRoute from './routes/UserRoute.js'
 import AdminDashboardRoute from './routes/adminRoute/AdminDashboardRoute.js'
 import UsersManagementRoute from './routes/adminRoute/UsersManagementRoute.js'
@@ -32,7 +29,6 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 app.use(morgan("dev"))
-app.use('/assets', express.static(path.join(__dirname, 'assets')))
 
 
 //routes

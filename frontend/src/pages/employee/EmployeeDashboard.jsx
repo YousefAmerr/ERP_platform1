@@ -30,6 +30,7 @@ function fmtDate(d) {
 
 export default function EmployeeDashboard() {
   const [stats, setStats] = useState({
+    completedTasks: 0,
     activeTasks: 0,
     overdueTasks: 0,
     pendingLeave: 0,
@@ -60,6 +61,19 @@ export default function EmployeeDashboard() {
     <div className="ed-page">
       {/* ── Stat Cards ── */}
       <div className="ed-stats-row">
+        <div className="ed-stat-card">
+          <div className="ed-stat-top">
+            <div className="ed-stat-icon green">
+              <i className="fa-solid fa-circle-check"></i>
+            </div>
+            <span className="ed-stat-badge completed">Completed</span>
+          </div>
+          <p className="ed-stat-label">My Completed Tasks</p>
+          <p className="ed-stat-value">
+            {String(stats.completedTasks).padStart(2, "0")}
+          </p>
+        </div>
+
         <div className="ed-stat-card">
           <div className="ed-stat-top">
             <div className="ed-stat-icon blue">
@@ -107,13 +121,10 @@ export default function EmployeeDashboard() {
             <h3 className="ed-ratings-title">My Recent Ratings</h3>
             <p className="ed-ratings-sub">
               Feedback from <a href="#">project managers</a> on recent
-              milestones.
+              done tasks.
             </p>
           </div>
-          <button className="ed-view-btn">
-            <i className="fa-solid fa-clock-rotate-left"></i>
-            View Full History
-          </button>
+
         </div>
 
         <table className="ed-table">

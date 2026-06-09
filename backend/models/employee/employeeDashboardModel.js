@@ -13,6 +13,10 @@ export async function getEmployeeDashboardStats(userId) {
         `SELECT COUNT(*) AS count FROM task WHERE assignedTo = ? AND Task_status = 'In_progress'`,
         [userId]
     )
+    const [[completedTasks]] = await pool.execute(
+        `SELECT COUNT(*) AS count FROM task WHERE assignedTo = ? AND Task_status = 'done'`,
+        [userId]
+    )
     const [[overdueTasks]] = await pool.execute(
         `SELECT COUNT(*) AS count FROM task WHERE assignedTo = ? AND Task_status = 'overdue'`,
         [userId]
@@ -22,6 +26,7 @@ export async function getEmployeeDashboardStats(userId) {
         [userId]
     )
     return {
+        completedTasks: completedTasks.count,
         activeTasks: activeTasks.count,
         overdueTasks: overdueTasks.count,
         pendingLeave: pendingLeave.count,

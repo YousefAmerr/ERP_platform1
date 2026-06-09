@@ -60,6 +60,7 @@
 .ept-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .ept-table thead th {
@@ -71,6 +72,10 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
+/* Fixed column widths */
+.ept-th-title { width: 30%; }
+.ept-th-desc  { width: 30%; }
+
 .ept-table tbody tr {
   border-bottom: 1px solid #f3f4f6;
   transition: background 0.1s;
@@ -81,14 +86,29 @@
 
 .ept-table td {
   padding: 14px 20px;
-  vertical-align: top;
+  vertical-align: middle;
   font-size: 0.85rem;
   color: #374151;
+  overflow: hidden;
 }
 
-.ept-title { font-weight: 500; color: #111827; }
-.ept-desc  { color: #6b7280; font-size: 0.83rem; }
-.ept-date  { white-space: nowrap; }
+.ept-title {
+  font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ept-desc {
+  color: #6b7280;
+  font-size: 0.83rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ept-date { white-space: nowrap; }
 
 /* Status badge */
 .ept-status {
@@ -127,3 +147,196 @@
   color: #9ca3af;
   font-size: 0.86rem;
 }
+
+/* ── Task Detail Modal ──────────────────────────────────── */
+.ept-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.ept-modal {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.ept-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  flex-shrink: 0;
+}
+
+.ept-modal-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.ept-modal-x {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  background: #fff;
+  color: #6b7280;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+
+.ept-modal-x:hover { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
+
+.ept-modal-body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Info fields grid */
+.ept-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 20px;
+}
+
+.ept-modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ept-modal-field--full {
+  grid-column: 1 / -1;
+}
+
+/* Title box — same look as description box */
+.ept-modal-title-box {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111827;
+  word-break: break-word;
+}
+
+.ept-modal-label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.ept-modal-value {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+.ept-modal-divider {
+  height: 1px;
+  background: #f3f4f6;
+  margin: 18px 0;
+}
+
+.ept-modal-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.ept-modal-section:last-child { margin-bottom: 0; }
+
+/* Scrollable description box */
+.ept-modal-desc-box {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 0.86rem;
+  color: #374151;
+  line-height: 1.6;
+  max-height: 160px;
+  overflow-y: auto;
+  word-break: break-word;
+}
+
+/* Attachment */
+.ept-modal-attach {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #2563eb;
+  text-decoration: none;
+  transition: color 0.12s;
+}
+
+.ept-modal-attach:hover { color: #1d4ed8; text-decoration: underline; }
+
+.ept-modal-no-attach {
+  font-size: 0.84rem;
+  color: #9ca3af;
+}
+
+.ept-modal-footer {
+  padding: 14px 24px 18px;
+  border-top: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.ept-modal-close-btn {
+  padding: 8px 22px;
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.13s;
+}
+
+.ept-modal-close-btn:hover { background: #e5e7eb; }
+
+.ept-modal-done-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 22px;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.13s;
+}
+
+.ept-modal-done-btn:hover:not(:disabled) { background: #15803d; }
+.ept-modal-done-btn:disabled { opacity: 0.55; cursor: not-allowed; }

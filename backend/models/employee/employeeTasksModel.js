@@ -28,6 +28,7 @@ export async function getProjectTasksForEmployee(userId, projectId) {
             t.dueDate,
             t.Task_status,
             t.workLoadPoints,
+            t.attachmentPath,
             p.projectName
          FROM task t
          INNER JOIN project p ON p.ProjectID = t.ProjectID
