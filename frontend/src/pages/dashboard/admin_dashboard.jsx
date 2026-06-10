@@ -102,6 +102,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
 
   const [loadError, setLoadError] = useState("");
+  const [activeTab, setActiveTab] = useState("alerts");
 
   useEffect(() => {
     Promise.all([getDashboardStatsRequest(), getMeRequest()])
@@ -145,6 +146,85 @@ const AdminDashboard = () => {
   ];
 
   const projects = stats.projectsOverview || [];
+  const openAlerts = stats.openAlerts || [];
+
+  // KPI cards — Turnover & Need Help first (Action Center prioritization).
+  // Trends are placeholder copy until historical snapshots are wired up.
+  const kpiCards = [
+    {
+      key: "turnover",
+      label: "Turnover Alerts",
+      value: stats.turnoverAlerts,
+      icon: "fa-arrow-right-from-bracket",
+      iconTone: "red",
+      tint: stats.turnoverAlerts > 0 ? "tint-red" : "",
+      trend: { dir: "up", text: "1 from last month", tone: "bad" },
+    },
+    {
+      key: "needhelp",
+      label: "Need Help Alerts",
+      value: stats.needHelpAlerts,
+      icon: "fa-circle-question",
+      iconTone: "orange",
+      tint: stats.needHelpAlerts > 0 ? "tint-orange" : "",
+      trend: { dir: "down", text: "2 this week", tone: "good" },
+    },
+    {
+      key: "employees",
+      label: "Total Employees",
+      value: stats.totalEmployees,
+      icon: "fa-users",
+      iconTone: "blue",
+      trend: { dir: "up", text: "2 from last month", tone: "good" },
+    },
+    {
+      key: "managers",
+      label: "Total Managers",
+      value: stats.totalManagers,
+      icon: "fa-user-tie",
+      iconTone: "blue",
+      trend: { dir: "flat", text: "No change", tone: "neutral" },
+    },
+    {
+      key: "projects",
+      label: "Active Projects",
+      value: stats.activeProjects,
+      icon: "fa-folder-open",
+      iconTone: "blue",
+      trend: { dir: "up", text: "1 this month", tone: "good" },
+    },
+    {
+      key: "tasks",
+      label: "Open Tasks",
+      value: stats.openTasks,
+      icon: "fa-list-check",
+      iconTone: "blue",
+      trend: { dir: "down", text: "15% this week", tone: "good" },
+    },
+    {
+      key: "recognition",
+      label: "Recognition Alerts",
+      value: stats.recognitionAlerts,
+      icon: "fa-trophy",
+      iconTone: "purple",
+      trend: { dir: "up", text: "3 this month", tone: "good" },
+    },
+    {
+      key: "leave",
+      label: "Pending Leave",
+      value: stats.pendingLeaveCount,
+      icon: "fa-calendar-days",
+      iconTone: "purple",
+      trend: { dir: "up", text: "4 this week", tone: "neutral" },
+    },
+  ];
+
+  const trendArrow = (dir) =>
+    dir === "up"
+      ? "fa-arrow-up"
+      : dir === "down"
+        ? "fa-arrow-down"
+        : "fa-minus";
 
   return (
     <div>
@@ -153,98 +233,31 @@ const AdminDashboard = () => {
         <h2 className="dash-greeting">
           {greeting}, {userName.charAt(0).toUpperCase() + userName.slice(1)}
         </h2>
+        <span className="dash-greeting-sub">Action Center</span>
       </div>
 
-      {/* Top 4 stat cards */}
-      <div className="dash-stats-grid">
-        <div className="dash-stat-card">
-          <div>
-            <div className="dash-stat-label">Total Employees</div>
-            <div className="dash-stat-number">{fmt(stats.totalEmployees)}</div>
-          </div>
-          <i className="fa-solid fa-users dash-stat-icon"></i>
-        </div>
-        <div className="dash-stat-card">
-          <div>
-            <div className="dash-stat-label">Total Managers</div>
-            <div className="dash-stat-number">{fmt(stats.totalManagers)}</div>
-          </div>
-          <i className="fa-solid fa-user-tie dash-stat-icon"></i>
-        </div>
-        <div className="dash-stat-card">
-          <div>
-            <div className="dash-stat-label">Active Projects</div>
-            <div className="dash-stat-number blue">
-              {fmt(stats.activeProjects)}
+      {/* ── ROW 1 — Urgent KPI cards ── */}
+      <div className="dash-kpi-grid">
+        {kpiCards.map((c) => (
+          <div key={c.key} className={`dash-kpi-card ${c.tint || ""}`}>
+            <div className="dash-kpi-top">
+              <span className="dash-kpi-label">{c.label}</span>
+              <span className={`dash-kpi-icon ${c.iconTone}`}>
+                <i className={`fa-solid ${c.icon}`}></i>
+              </span>
+            </div>
+            <div className="dash-kpi-number">{pad(c.value)}</div>
+            <div className={`dash-kpi-trend ${c.trend.tone}`}>
+              <i className={`fa-solid ${trendArrow(c.trend.dir)}`}></i>
+              {c.trend.text}
             </div>
           </div>
-          <i className="fa-solid fa-folder-open dash-stat-icon"></i>
-        </div>
-        <div className="dash-stat-card">
-          <div>
-            <div className="dash-stat-label">Open Tasks</div>
-            <div className="dash-stat-number blue">{fmt(stats.openTasks)}</div>
-          </div>
-          <i className="fa-solid fa-list-check dash-stat-icon"></i>
-        </div>
+        ))}
       </div>
 
-      {/* Small alert cards */}
-      <div className="dash-alert-grid">
-        <div className="dash-alert-card">
-          <div className="dash-alert-icon-wrap red">
-            <i className="fa-solid fa-circle-question"></i>
-          </div>
-          <div>
-            <div className="dash-alert-number">{pad(stats.needHelpAlerts)}</div>
-            <div className="dash-alert-label">Need Help Alerts</div>
-          </div>
-        </div>
-        <div className="dash-alert-card">
-          <div className="dash-alert-icon-wrap blue">
-            <i className="fa-solid fa-trophy"></i>
-          </div>
-          <div>
-            <div className="dash-alert-number">
-              {pad(stats.recognitionAlerts)}
-            </div>
-            <div className="dash-alert-label">Recognition Alerts</div>
-          </div>
-        </div>
-        <div className="dash-alert-card">
-          <div className="dash-alert-icon-wrap orange">
-            <i className="fa-solid fa-arrow-right-from-bracket"></i>
-          </div>
-          <div>
-            <div className="dash-alert-number">{pad(stats.turnoverAlerts)}</div>
-            <div className="dash-alert-label">Turnover Alerts</div>
-          </div>
-        </div>
-        <div className="dash-alert-card">
-          <div className="dash-alert-icon-wrap purple">
-            <i className="fa-solid fa-calendar-days"></i>
-          </div>
-          <div>
-            <div className="dash-alert-number">
-              {pad(stats.pendingLeaveCount)}
-            </div>
-            <div className="dash-alert-label">Pending Leave</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Charts row */}
-      <div className="dash-charts-grid">
-        <div className="dash-section-card">
-          <div className="dash-section-header">
-            <h6 className="dash-section-title">Task Status</h6>
-          </div>
-          <ChartBoundary>
-            <DonutChart data={taskData} centerLabel="Tasks" />
-            <ChartLegend data={taskData} />
-          </ChartBoundary>
-        </div>
-
+      {/* ── ROW 2 — The "Why": Flight Risk (actionable) + Task Status ── */}
+      <div className="dash-row2-grid">
+        {/* Workforce Flight Risk — statistical donut only */}
         <div className="dash-section-card">
           <div className="dash-section-header">
             <h6 className="dash-section-title">Workforce Flight Risk</h6>
@@ -254,9 +267,20 @@ const AdminDashboard = () => {
             <ChartLegend data={riskData} />
           </ChartBoundary>
         </div>
+
+        {/* Task Status donut */}
+        <div className="dash-section-card">
+          <div className="dash-section-header">
+            <h6 className="dash-section-title">Task Status</h6>
+          </div>
+          <ChartBoundary>
+            <DonutChart data={taskData} centerLabel="Tasks" />
+            <ChartLegend data={taskData} />
+          </ChartBoundary>
+        </div>
       </div>
 
-      {/* Current Projects health */}
+      {/* ── ROW 3 — The "What": operational tables ── */}
       <div className="dash-section-card dash-projects-card">
         <div className="dash-section-header">
           <h6 className="dash-section-title">Current Projects</h6>
@@ -330,13 +354,28 @@ const AdminDashboard = () => {
         </table>
       </div>
 
-      {/* Bottom two columns */}
-      <div className="dash-bottom-row">
-        {/* Critical Recent Alerts — empty table */}
-        <div className="dash-section-card">
-          <div className="dash-section-header">
-            <h6 className="dash-section-title">Critical Recent Alerts</h6>
-          </div>
+      {/* Consolidated tabbed widget: Alerts / Leave */}
+      <div className="dash-section-card">
+        <div className="dash-tabs">
+          <button
+            className={`dash-tab ${activeTab === "alerts" ? "active" : ""}`}
+            onClick={() => setActiveTab("alerts")}
+          >
+            <i className="fa-solid fa-triangle-exclamation"></i> Alerts
+            <span className="dash-tab-count">{openAlerts.length}</span>
+          </button>
+          <button
+            className={`dash-tab ${activeTab === "leave" ? "active" : ""}`}
+            onClick={() => setActiveTab("leave")}
+          >
+            <i className="fa-solid fa-calendar-days"></i> Leave
+            <span className="dash-tab-count">
+              {stats.pendingLeave?.length || 0}
+            </span>
+          </button>
+        </div>
+
+        {activeTab === "alerts" ? (
           <table className="dash-table">
             <thead>
               <tr>
@@ -344,13 +383,16 @@ const AdminDashboard = () => {
                 <th>Employee</th>
                 <th>Date</th>
                 <th>Status</th>
+                <th style={{ textAlign: "right" }}>Action</th>
               </tr>
             </thead>
             <tbody>
-              {stats.openAlerts && stats.openAlerts.length > 0 ? (
-                stats.openAlerts.map((a) => (
+              {openAlerts.length > 0 ? (
+                openAlerts.map((a) => (
                   <tr key={a.id}>
-                    <td>{a.type}</td>
+                    <td>
+                      <span className="dash-type-pill">{a.type}</span>
+                    </td>
                     <td>
                       <div className="dash-employee-name">{a.name}</div>
                       {a.reason && (
@@ -367,6 +409,15 @@ const AdminDashboard = () => {
                         {a.status}
                       </span>
                     </td>
+                    <td style={{ textAlign: "right" }}>
+                      <button
+                        type="button"
+                        className="dash-review-btn"
+                        onClick={() => navigate("/admin/alerts/turnover")}
+                      >
+                        Review Metrics
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -378,68 +429,66 @@ const AdminDashboard = () => {
               )}
             </tbody>
           </table>
-        </div>
-
-        {/* Pending Leave */}
-        <div className="dash-section-card">
-          <div className="dash-section-header">
-            <h6 className="dash-section-title">Pending Leave</h6>
-          </div>
-          <table className="dash-table">
-            <thead>
-              <tr>
-                <th>Employee</th>
-                <th>Type</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stats.pendingLeave?.length === 0 ? (
+        ) : (
+          <>
+            <table className="dash-table">
+              <thead>
                 <tr>
-                  <td colSpan={3} className="dash-empty">
-                    No pending leave requests for this month
-                  </td>
+                  <th>Employee</th>
+                  <th>Type</th>
+                  <th style={{ textAlign: "right" }}>Action</th>
                 </tr>
-              ) : (
-                stats.pendingLeave?.map((lr) => (
-                  <tr key={lr.LeaveRequestID}>
-                    <td>
-                      <div className="dash-employee-name">{lr.name}</div>
-                      <div className="dash-employee-dates">
-                        {formatDate(lr.startDate)} – {formatDate(lr.endDate)}
-                      </div>
-                    </td>
-                    <td>{lr.type}</td>
-                    <td>
-                      <button
-                        type="button"
-                        className="dash-view-btn"
-                        onClick={() => navigate("/admin/leave")}
-                      >
-                        View
-                      </button>
+              </thead>
+              <tbody>
+                {stats.pendingLeave?.length ? (
+                  stats.pendingLeave.map((lr) => (
+                    <tr key={lr.LeaveRequestID}>
+                      <td>
+                        <div className="dash-employee-name">{lr.name}</div>
+                        <div className="dash-employee-dates">
+                          {formatDate(lr.startDate)} – {formatDate(lr.endDate)}
+                        </div>
+                      </td>
+                      <td>
+                        <span className="dash-type-pill">{lr.type}</span>
+                      </td>
+                      <td style={{ textAlign: "right" }}>
+                        <button
+                          type="button"
+                          className="dash-review-btn"
+                          onClick={() => navigate("/admin/leave")}
+                        >
+                          Review
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={3} className="dash-empty">
+                      No pending leave requests for this month
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-          {stats.pendingLeaveMore && (
-            <div className="dash-table-footer">
-              <span>
-                Showing 10 of {fmt(stats.pendingLeaveCount)} pending leave
-                requests this month.
-              </span>
-              <button
-                type="button"
-                className="dash-view-more-btn"
-                onClick={() => navigate("/admin/leave")}
-              >
-                See all
-              </button>
-            </div>
-          )}
-        </div>
+                )}
+              </tbody>
+            </table>
+            {stats.pendingLeaveMore && (
+              <div className="dash-table-footer">
+                <span>
+                  Showing 10 of {fmt(stats.pendingLeaveCount)} pending leave
+                  requests this month.
+                </span>
+                <button
+                  type="button"
+                  className="dash-view-more-btn"
+                  onClick={() => navigate("/admin/leave")}
+                >
+                  See all
+                </button>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
