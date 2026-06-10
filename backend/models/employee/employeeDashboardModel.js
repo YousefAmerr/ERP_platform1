@@ -33,6 +33,42 @@ export async function getEmployeeDashboardStats(userId) {
     }
 }
 
+// Completed ('done') tasks grouped by month of the current year → bar chart.
+// NOTE: the task table has no completion timestamp, so dueDate is used as the
+// completion-month proxy (the only date available on a task).
+export async function getEmployeeMonthlyCompleted(userId) {
+    const [rows] = await pool.execute(
+        `SELECT MONTH(dueDate) AS month, COUNT(*) AS count
+         FROM task
+         WHERE assignedTo = ?
+           AND Task_status = 'done'
+           AND dueDate IS NOT NULL
+           AND YEAR(dueDate) = YEAR(CURDATE())
+         GROUP BY MONTH(dueDate)
+         ORDER BY MONTH(dueDate)`,
+        [userId]
+    )
+    return rows.map((r) => ({ month: Number(r.month), count: Number(r.count) }))
+}
+
+// Active (In_progress) tasks across all projects → "Active Tasks Inbox" table.
+export async function getEmployeeActiveTasks(userId) {
+    const [rows] = await pool.execute(
+        `SELECT
+            t.TaskID,
+            t.title,
+            t.dueDate,
+            t.workLoadPoints,
+            p.projectName
+         FROM task t
+         INNER JOIN project p ON p.ProjectID = t.ProjectID
+         WHERE t.assignedTo = ? AND t.Task_status = 'In_progress'
+         ORDER BY (t.dueDate IS NULL) ASC, t.dueDate ASC, t.TaskID DESC`,
+        [userId]
+    )
+    return rows
+}
+
 export async function getEmployeeRatings(userId, page = 1, limit = 10) {
     const offset = (page - 1) * limit
 

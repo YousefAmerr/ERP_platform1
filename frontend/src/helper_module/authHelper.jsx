@@ -387,6 +387,25 @@ export async function getEmployeeRatingsRequest(page = 1) {
   return data;
 }
 
+export async function getEmployeeMonthlyCompletedRequest() {
+  const res = await fetch("/api/v1/employee/dashboard/monthly-completed", {
+    headers: authHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok)
+    throw new Error(data?.message || "Failed to fetch monthly history");
+  return data;
+}
+
+export async function getEmployeeActiveTasksRequest() {
+  const res = await fetch("/api/v1/employee/dashboard/active-tasks", {
+    headers: authHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data?.message || "Failed to fetch active tasks");
+  return data;
+}
+
 export async function submitEmployeeLeaveRequest(body, file = null) {
   const form = new FormData();
   Object.entries(body).forEach(([k, v]) => {
