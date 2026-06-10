@@ -30,6 +30,15 @@ export async function getTeamAlertsCount() {
     return row.total
 }
 
+// Active "Need Help" blockers only (not resolved) → drives the KPI card.
+export async function getNeedHelpAlertsCount() {
+    const [[row]] = await pool.execute(
+        `SELECT COUNT(*) AS total FROM alert
+         WHERE type = 'Need Help' AND Alert_status <> 'resolved'`
+    )
+    return Number(row.total) || 0
+}
+
 export async function getLeaveRequestsCount() {
     const [[row]] = await pool.execute(
         `SELECT COUNT(*) AS total FROM leave_request WHERE Leave_status='Pending'`
@@ -68,18 +77,19 @@ export async function getPerformanceByEmployee() {
     const [rows] = await pool.execute(
         `SELECT
             u.Name AS name,
+            u.email AS email,
             ROUND(AVG(t.rating), 2) AS avgRating,
             COUNT(t.rating) AS ratedTasks
          FROM task t
          JOIN users u ON u.UserID = t.assignedTo
          WHERE t.rating IS NOT NULL AND t.rating > 0
            AND u.role = 'EMPLOYEE' AND u.active = 1
-         GROUP BY u.UserID, u.Name
-         ORDER BY avgRating DESC
-         LIMIT 8`
+         GROUP BY u.UserID, u.Name, u.email
+         ORDER BY avgRating DESC`
     )
     return rows.map((r) => ({
         name: r.name,
+        email: r.email || "",
         avgRating: Number(r.avgRating) || 0,
         ratedTasks: Number(r.ratedTasks) || 0,
     }))
@@ -104,6 +114,70 @@ export async function getProjectStatusBreakdown() {
         inProgress: Number(r.inProgress) || 0,
         done: Number(r.done) || 0,
         overdue: Number(r.overdue) || 0,
+    }))
+}
+
+// Recent "Need Help" alerts (employee blockers) → actionable table
+export async function getRecentNeedHelpAlerts(limit = 5) {
+    const [rows] = await pool.execute(
+        `SELECT a.AlertID, a.UserID AS userId, u.Name AS name, a.type,
+                a.Alert_reason AS reason, a.Alert_status AS status, a.createdAt
+         FROM alert a
+         JOIN users u ON u.UserID = a.UserID
+         WHERE a.type = 'Need Help'
+         ORDER BY a.createdAt DESC
+         LIMIT ?`,
+        [limit]
+    )
+    return rows
+}
+
+// Performance vs Capacity → scatter (workload vs avg rating per employee)
+export async function getCapacityPerformance() {
+    const [rows] = await pool.execute(
+        `SELECT
+            u.UserID AS userId,
+            u.Name AS name,
+            COUNT(t.TaskID) AS totalTasks,
+            ROUND(AVG(t.rating), 2) AS avgRating,
+            COUNT(t.rating) AS ratedTasks
+         FROM users u
+         LEFT JOIN task t ON t.assignedTo = u.UserID
+         WHERE u.role = 'EMPLOYEE' AND u.active = 1
+         GROUP BY u.UserID, u.Name
+         HAVING totalTasks > 0
+         ORDER BY totalTasks DESC`
+    )
+    return rows.map((r) => ({
+        userId: r.userId,
+        name: r.name,
+        totalTasks: Number(r.totalTasks) || 0,
+        avgRating: r.avgRating != null ? Number(r.avgRating) : 0,
+        ratedTasks: Number(r.ratedTasks) || 0,
+    }))
+}
+
+// Resource utilization → heatmap cells (tasks per employee per project)
+export async function getUtilizationMatrix() {
+    const [rows] = await pool.execute(
+        `SELECT
+            t.assignedTo AS userId,
+            u.Name AS employeeName,
+            t.ProjectID AS projectId,
+            p.projectName AS projectName,
+            COUNT(*) AS count
+         FROM task t
+         JOIN users u ON u.UserID = t.assignedTo
+         JOIN project p ON p.ProjectID = t.ProjectID
+         WHERE u.role = 'EMPLOYEE' AND u.active = 1
+         GROUP BY t.assignedTo, u.Name, t.ProjectID, p.projectName`
+    )
+    return rows.map((r) => ({
+        userId: r.userId,
+        employeeName: r.employeeName,
+        projectId: r.projectId,
+        projectName: r.projectName,
+        count: Number(r.count) || 0,
     }))
 }
 

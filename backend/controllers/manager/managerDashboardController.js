@@ -3,12 +3,16 @@ import {
     getTeamTasksCount,
     getOverdueTasksCount,
     getTeamAlertsCount,
+    getNeedHelpAlertsCount,
     getLeaveRequestsCount,
     getOpenProjectsCount,
     getRecentCompletedTasks,
     getTeamTaskStatus,
     getPerformanceByEmployee,
     getProjectStatusBreakdown,
+    getRecentNeedHelpAlerts,
+    getCapacityPerformance,
+    getUtilizationMatrix,
 } from '../../models/manager/managerDashboardModel.js'
 
 export async function getDashboardStats(req, res) {
@@ -18,21 +22,29 @@ export async function getDashboardStats(req, res) {
             teamTasks,
             overdueTasks,
             teamAlerts,
+            needHelpCount,
             leaveRequests,
             openProjects,
             taskStatus,
             performanceByEmployee,
             projectStatus,
+            needHelpAlerts,
+            capacityPerformance,
+            utilizationMatrix,
         ] = await Promise.all([
             getTeamEmployeesCount(),
             getTeamTasksCount(),
             getOverdueTasksCount(),
             getTeamAlertsCount(),
+            getNeedHelpAlertsCount(),
             getLeaveRequestsCount(),
             getOpenProjectsCount(),
             getTeamTaskStatus(),
             getPerformanceByEmployee(),
             getProjectStatusBreakdown(),
+            getRecentNeedHelpAlerts(),
+            getCapacityPerformance(),
+            getUtilizationMatrix(),
         ])
 
         res.json({
@@ -40,11 +52,15 @@ export async function getDashboardStats(req, res) {
             teamTasks,
             overdueTasks,
             teamAlerts,
+            needHelpCount,
             leaveRequests,
             openProjects,
             taskStatus,
             performanceByEmployee,
             projectStatus,
+            needHelpAlerts,
+            capacityPerformance,
+            utilizationMatrix,
         })
     } catch (err) {
         console.error(err)
