@@ -1,10 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import {
   getDashboardStatsRequest,
   getMeRequest,
 } from "../../helper_module/authHelper";
 import "./admin_dashboard.css";
+
+// Contains a render crash (e.g. a chart) so it never blanks the whole page
+class ChartBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { failed: false };
+  }
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch(error) {
+    console.error("Dashboard chart failed to render:", error);
+  }
+  render() {
+    if (this.state.failed) {
+      return <div className="dash-chart-empty">Chart unavailable</div>;
+    }
+    return this.props.children;
+  }
+}
 
 const fmt = (n) => Number(n).toLocaleString();
 
@@ -15,6 +42,56 @@ const formatDate = (d) => {
   return `${dt.toLocaleString("default", { month: "short" })} ${dt.getDate()}`;
 };
 
+const truncate = (text, max = 45) =>
+  text && text.length > max ? text.slice(0, max) + "…" : text || "";
+
+// Donut chart with a centered total; falls back to a message when empty
+const DonutChart = ({ data, centerLabel }) => {
+  const total = data.reduce((sum, d) => sum + d.value, 0);
+  if (total === 0) {
+    return <div className="dash-chart-empty">No data yet</div>;
+  }
+  return (
+    <div className="dash-donut-wrap">
+      <ResponsiveContainer width="100%" height={180}>
+        <PieChart>
+          <Pie
+            data={data}
+            dataKey="value"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            innerRadius={52}
+            outerRadius={78}
+            paddingAngle={2}
+            stroke="none"
+          >
+            {data.map((d) => (
+              <Cell key={d.name} fill={d.color} />
+            ))}
+          </Pie>
+          <Tooltip />
+        </PieChart>
+      </ResponsiveContainer>
+      <div className="dash-donut-center">
+        <div className="dash-donut-total">{total}</div>
+        <div className="dash-donut-sub">{centerLabel}</div>
+      </div>
+    </div>
+  );
+};
+
+const ChartLegend = ({ data }) => (
+  <div className="dash-legend">
+    {data.map((d) => (
+      <div key={d.name} className="dash-legend-item">
+        <span className="dash-legend-dot" style={{ background: d.color }} />
+        {d.name} <strong>{d.value}</strong>
+      </div>
+    ))}
+  </div>
+);
+
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
   const [userName, setUserName] = useState("");
@@ -24,11 +101,17 @@ const AdminDashboard = () => {
   const greeting = hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
   const navigate = useNavigate();
 
+  const [loadError, setLoadError] = useState("");
+
   useEffect(() => {
     Promise.all([getDashboardStatsRequest(), getMeRequest()])
       .then(([s, me]) => {
         setStats(s);
         setUserName(me.name || "Admin");
+      })
+      .catch((err) => {
+        console.error("Dashboard load failed:", err);
+        setLoadError(err.message || "Failed to load dashboard");
       })
       .finally(() => setLoading(false));
   }, []);
@@ -39,6 +122,29 @@ const AdminDashboard = () => {
         <i className="fa-solid fa-spinner fa-spin"></i>&nbsp; Loading…
       </div>
     );
+
+  if (loadError || !stats)
+    return (
+      <div className="dash-loading">
+        <i className="fa-solid fa-triangle-exclamation"></i>&nbsp;
+        {loadError || "No dashboard data available."}
+      </div>
+    );
+
+  const ts = stats.taskStatus || { inProgress: 0, done: 0, overdue: 0 };
+  const taskData = [
+    { name: "In Progress", value: ts.inProgress, color: "#3776fd" },
+    { name: "Done", value: ts.done, color: "#22c55e" },
+    { name: "Overdue", value: ts.overdue, color: "#e05252" },
+  ];
+
+  const fr = stats.flightRisk || { atRisk: 0, stable: 0 };
+  const riskData = [
+    { name: "At Risk", value: fr.atRisk, color: "#f43f5e" },
+    { name: "Stable", value: fr.stable, color: "#14b8a6" },
+  ];
+
+  const projects = stats.projectsOverview || [];
 
   return (
     <div>
@@ -127,6 +233,103 @@ const AdminDashboard = () => {
         </div>
       </div>
 
+      {/* Charts row */}
+      <div className="dash-charts-grid">
+        <div className="dash-section-card">
+          <div className="dash-section-header">
+            <h6 className="dash-section-title">Task Status</h6>
+          </div>
+          <ChartBoundary>
+            <DonutChart data={taskData} centerLabel="Tasks" />
+            <ChartLegend data={taskData} />
+          </ChartBoundary>
+        </div>
+
+        <div className="dash-section-card">
+          <div className="dash-section-header">
+            <h6 className="dash-section-title">Workforce Flight Risk</h6>
+          </div>
+          <ChartBoundary>
+            <DonutChart data={riskData} centerLabel="Staff" />
+            <ChartLegend data={riskData} />
+          </ChartBoundary>
+        </div>
+      </div>
+
+      {/* Current Projects health */}
+      <div className="dash-section-card dash-projects-card">
+        <div className="dash-section-header">
+          <h6 className="dash-section-title">Current Projects</h6>
+          <span
+            className="dash-section-link"
+            onClick={() => navigate("/admin/users")}
+          >
+            {projects.length} active
+          </span>
+        </div>
+        <table className="dash-table">
+          <thead>
+            <tr>
+              <th>Project</th>
+              <th>Progress</th>
+              <th>Tasks</th>
+              <th>Overdue</th>
+              <th>Team</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {projects.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="dash-empty">
+                  No active projects
+                </td>
+              </tr>
+            ) : (
+              projects.map((p) => {
+                const pct = p.total
+                  ? Math.round((p.done / p.total) * 100)
+                  : 0;
+                return (
+                  <tr key={p.ProjectID}>
+                    <td>
+                      <div className="dash-employee-name">{p.projectName}</div>
+                    </td>
+                    <td>
+                      <div className="dash-progress-cell">
+                        <div className="dash-progress-track">
+                          <div
+                            className="dash-progress-fill"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <span className="dash-progress-pct">{pct}%</span>
+                      </div>
+                    </td>
+                    <td>
+                      {p.done}/{p.total}
+                    </td>
+                    <td>
+                      {p.overdue > 0 ? (
+                        <span className="dash-overdue-pill">{p.overdue}</span>
+                      ) : (
+                        <span className="dash-muted">0</span>
+                      )}
+                    </td>
+                    <td>{p.team}</td>
+                    <td>
+                      <span className="status-badge status-active">
+                        {p.Project_status}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
+
       {/* Bottom two columns */}
       <div className="dash-bottom-row">
         {/* Critical Recent Alerts — empty table */}
@@ -150,9 +353,11 @@ const AdminDashboard = () => {
                     <td>{a.type}</td>
                     <td>
                       <div className="dash-employee-name">{a.name}</div>
-                      <div className="dash-employee-dates">
-                        {formatDate(a.createdAt)}
-                      </div>
+                      {a.reason && (
+                        <div className="dash-employee-dates">
+                          {truncate(a.reason)}
+                        </div>
+                      )}
                     </td>
                     <td>{formatDate(a.createdAt)}</td>
                     <td>

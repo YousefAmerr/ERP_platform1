@@ -337,3 +337,92 @@
     color: #b0bac8;
     font-size: 0.85rem;
 }
+
+/* ===== CHARTS ===== */
+.mgr-charts-row1 {
+    display: grid;
+    grid-template-columns: minmax(300px, 0.85fr) 1.5fr;
+    gap: 20px;
+    margin-bottom: 20px;
+    align-items: stretch;
+}
+
+.mgr-chart-card {
+    margin-bottom: 20px;
+}
+
+.mgr-charts-row1 .mgr-chart-card {
+    margin-bottom: 0;
+}
+
+.mgr-chart-hint {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #9aa5b5;
+    letter-spacing: 0.2px;
+}
+
+.mgr-chart-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: #b0bac8;
+    font-size: 0.85rem;
+}
+
+/* Donut with centered total */
+.mgr-donut-wrap {
+    position: relative;
+}
+
+.mgr-donut-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+}
+
+.mgr-donut-total {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #1f2a44;
+    line-height: 1;
+}
+
+.mgr-donut-sub {
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #8a96a8;
+    margin-top: 3px;
+}
+
+/* Custom legend under donut */
+.mgr-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    justify-content: center;
+    margin-top: 14px;
+}
+
+.mgr-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: #64748b;
+}
+
+.mgr-legend-item strong { color: #1f2a44; }
+
+.mgr-legend-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}

@@ -44,6 +44,69 @@ export async function getOpenProjectsCount() {
     return row.total
 }
 
+// ── Analytics (charts) ───────────────────────────────────────────────────────
+
+// Team task status breakdown → donut
+export async function getTeamTaskStatus() {
+    const [[row]] = await pool.execute(
+        `SELECT
+            SUM(Task_status = 'In_progress') AS inProgress,
+            SUM(Task_status = 'done')        AS done,
+            SUM(Task_status = 'overdue')     AS overdue
+         FROM task`
+    )
+    return {
+        inProgress: Number(row.inProgress) || 0,
+        done: Number(row.done) || 0,
+        overdue: Number(row.overdue) || 0,
+    }
+}
+
+// Average manager rating per employee → horizontal bar (performance).
+// Managers rate completed tasks 1-5; this surfaces strong / weak performers.
+export async function getPerformanceByEmployee() {
+    const [rows] = await pool.execute(
+        `SELECT
+            u.Name AS name,
+            ROUND(AVG(t.rating), 2) AS avgRating,
+            COUNT(t.rating) AS ratedTasks
+         FROM task t
+         JOIN users u ON u.UserID = t.assignedTo
+         WHERE t.rating IS NOT NULL AND t.rating > 0
+           AND u.role = 'EMPLOYEE' AND u.active = 1
+         GROUP BY u.UserID, u.Name
+         ORDER BY avgRating DESC
+         LIMIT 8`
+    )
+    return rows.map((r) => ({
+        name: r.name,
+        avgRating: Number(r.avgRating) || 0,
+        ratedTasks: Number(r.ratedTasks) || 0,
+    }))
+}
+
+// Task-status composition per active project → stacked bar (delivery health).
+export async function getProjectStatusBreakdown() {
+    const [rows] = await pool.execute(
+        `SELECT
+            p.projectName AS name,
+            SUM(t.Task_status = 'In_progress') AS inProgress,
+            SUM(t.Task_status = 'done')        AS done,
+            SUM(t.Task_status = 'overdue')     AS overdue
+         FROM project p
+         LEFT JOIN task t ON t.ProjectID = p.ProjectID
+         WHERE p.Project_status = 'Active'
+         GROUP BY p.ProjectID, p.projectName
+         ORDER BY p.ProjectID DESC`
+    )
+    return rows.map((r) => ({
+        name: r.name,
+        inProgress: Number(r.inProgress) || 0,
+        done: Number(r.done) || 0,
+        overdue: Number(r.overdue) || 0,
+    }))
+}
+
 // ── Recent Completed Tasks ───────────────────────────────────────────────────
 
 export async function getRecentCompletedTasks(limit = 5) {

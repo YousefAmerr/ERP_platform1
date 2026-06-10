@@ -9,6 +9,10 @@ import {
     getPendingLeaveCount,
     getPendingLeaveList,
     getOpenAlertsList,
+    getTaskStatusBreakdown,
+    getAtRiskEmployeeCount,
+    getLeaveByType,
+    getActiveProjectsOverview,
 } from '../../models/adminModel/admin_dashboard_model.js'
 
 export const getDashboardStats = async (req, res) => {
@@ -24,6 +28,10 @@ export const getDashboardStats = async (req, res) => {
             pendingLeaveCount,
             pendingLeaveRows,
             openAlerts,
+            taskStatus,
+            atRiskCount,
+            leaveByType,
+            projectsOverview,
         ] = await Promise.all([
             getTotalEmployees(),
             getTotalManagers(),
@@ -35,10 +43,19 @@ export const getDashboardStats = async (req, res) => {
             getPendingLeaveCount(),
             getPendingLeaveList(),
             getOpenAlertsList(),
+            getTaskStatusBreakdown(),
+            getAtRiskEmployeeCount(),
+            getLeaveByType(),
+            getActiveProjectsOverview(),
         ])
 
         const pendingLeave = pendingLeaveRows.slice(0, 10)
         const pendingLeaveMore = pendingLeaveRows.length > 10
+
+        const flightRisk = {
+            atRisk: atRiskCount,
+            stable: Math.max(0, totalEmployees - atRiskCount),
+        }
 
         res.status(200).send({
             success: true,
@@ -53,6 +70,10 @@ export const getDashboardStats = async (req, res) => {
             pendingLeaveCount,
             pendingLeave,
             pendingLeaveMore,
+            taskStatus,
+            flightRisk,
+            leaveByType,
+            projectsOverview,
         })
     } catch (error) {
         console.log(error)
