@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, useLocation } from "react-router";
 import toast from "react-hot-toast";
 import {
   getProjectByIdRequest,
@@ -70,14 +70,17 @@ const BLANK_TASK = {
 export default function InsideManagerTask() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { state: navState } = useLocation();
 
   const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [allEmployees, setAllEmployees] = useState([]);
   const [projectEmployees, setProjectEmployees] = useState([]);
 
-  // Filters for Team Tasks table
-  const [filterEmployee, setFilterEmployee] = useState("");
+  // Filters for Team Tasks table — pre-seeded from Need Help Alert navigation
+  const [filterEmployee, setFilterEmployee] = useState(
+    navState?.employeeId ? String(navState.employeeId) : ""
+  );
   const [filterStatus, setFilterStatus] = useState("");
 
   // Create / Edit modal state
@@ -309,6 +312,17 @@ export default function InsideManagerTask() {
           Create New Task
         </button>
       </div>
+
+      {/* Alert context banner — shown when navigated from a Need Help alert */}
+      {navState?.employeeId && (
+        <div className="imt-alert-banner">
+          <i className="fa-solid fa-triangle-exclamation"></i>
+          Filtered to <strong>{navState.employeeName}</strong>'s tasks — triggered by a Need Help alert.
+          <button className="imt-alert-banner-clear" onClick={() => setFilterEmployee("")}>
+            Clear filter
+          </button>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="imt-filters-row">

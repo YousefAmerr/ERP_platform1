@@ -6,6 +6,7 @@ import {
     getTaskForEmployee,
     updateTaskStatus,
 } from '../../models/employee/employeeTasksModel.js'
+import { maybeCreateNeedHelpAlert } from '../../services/alertRuleEngine.js'
 
 export async function getMyProjects(req, res) {
     const userId = await getEmployeeIdByEmail(req.user.email)
@@ -43,4 +44,6 @@ export async function patchTaskStatus(req, res) {
     const affected = await updateTaskStatus(userId, parseInt(req.params.taskId), status)
     if (!affected) return res.status(404).json({ message: 'Task not found or not yours' })
     res.json({ message: 'Status updated' })
+    // Fire rule engine asynchronously — never blocks the response
+    maybeCreateNeedHelpAlert(userId).catch((err) => console.error('[RuleEngine]', err))
 }

@@ -1,121 +1,225 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import toast from "react-hot-toast";
+import {
+  getNeedHelpAlertsRequest,
+  acknowledgeNeedHelpAlertRequest,
+} from "../../helper_module/authHelper";
 import "./ManagerNeedHelpAlerts.css";
 
-const LIMIT = 5;
-const TOTAL_PAGES = 4; // placeholder total for UI
-
 export default function ManagerNeedHelpAlerts() {
-  const [page, setPage] = useState(1);
+  const navigate = useNavigate();
 
-  // Empty rows — no DB calls yet
-  const rows = [];
+  const [alerts, setAlerts]       = useState([]);
+  const [loading, setLoading]     = useState(true);
+  const [page, setPage]           = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal]         = useState(0);
+  const [confirmId, setConfirmId] = useState(null);
+  const [actioning, setActioning] = useState(false);
+
+  const fetchAlerts = (p = page) => {
+    setLoading(true);
+    getNeedHelpAlertsRequest(p)
+      .then((data) => {
+        setAlerts(data.alerts || []);
+        setTotal(data.total || 0);
+        setTotalPages(data.totalPages || 1);
+      })
+      .catch((e) => toast.error(e.message || "Failed to load alerts"))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchAlerts(page);
+  }, [page]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const confirmAcknowledge = async () => {
+    if (!confirmId) return;
+    setActioning(true);
+    try {
+      await acknowledgeNeedHelpAlertRequest(confirmId);
+      toast.success("Alert acknowledged");
+      fetchAlerts(page);
+    } catch (e) {
+      toast.error(e.message || "Failed to acknowledge");
+    } finally {
+      setActioning(false);
+      setConfirmId(null);
+    }
+  };
 
   return (
-    <div className="mnha-page">
-      {/* Breadcrumb */}
-      <div className="mnha-breadcrumb">
-        <span className="mnha-bc-parent">ERP Manager</span>
-        <span className="mnha-bc-sep">/</span>
-        <span className="mnha-bc-current">Need Help Alerts</span>
-      </div>
-
-      {/* Card */}
-      <div className="mnha-card">
-        {/* Header */}
-        <div className="mnha-card-header">
-          <div className="mnha-header-left">
-            <h2 className="mnha-card-title">Recent Alerts</h2>
-            <span className="mnha-entry-count">Showing 0 entries</span>
-          </div>
-          <div className="mnha-header-icons">
-            <button className="mnha-icon-btn" title="Filter">
-              <i className="fa-solid fa-bars-filter"></i>
-            </button>
-            <button className="mnha-icon-btn" title="More options">
-              <i className="fa-solid fa-sliders"></i>
-            </button>
-          </div>
+    <>
+      <div className="mnha-page">
+        {/* Breadcrumb */}
+        <div className="mnha-breadcrumb">
+          <span className="mnha-bc-parent">ERP Manager</span>
+          <span className="mnha-bc-sep">/</span>
+          <span className="mnha-bc-current">Need Help Alerts</span>
         </div>
 
-        {/* Table */}
-        <div className="mnha-table-wrap">
-          <table className="mnha-table">
+        {/* Card — same structure as admin Turnover card */}
+        <div className="ta-feed-card">
+          <div className="ta-feed-header">
+            <div>
+              <p className="ta-feed-title">Need Help Alerts</p>
+              <p className="ta-feed-subtitle">
+                Rule-engine alerts triggered by deadline, quality, or capacity risks.
+              </p>
+            </div>
+            <span className="mnha-total-badge">
+              {loading ? "…" : `${total} total`}
+            </span>
+          </div>
+
+          <table className="ta-table">
             <thead>
               <tr>
+                <th>Alert Type</th>
                 <th>Employee</th>
                 <th>Reason</th>
-                <th>Date</th>
+                <th>Created Date</th>
                 <th>Status</th>
-                <th>Actions</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {rows.length === 0 ? (
-                <tr className="mnha-empty-row">
-                  <td colSpan={5}>No recent alerts</td>
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className="ta-empty">
+                    <i className="fa-solid fa-spinner fa-spin"></i> Loading…
+                  </td>
+                </tr>
+              ) : alerts.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="ta-empty">
+                    No need-help alerts — team is on track!
+                  </td>
                 </tr>
               ) : (
-                rows.map((row, i) => (
-                  <tr key={i}>
+                alerts.map((a) => (
+                  <tr key={a.AlertID}>
+                    {/* Alert type */}
                     <td>
-                      <div className="mnha-emp-cell">
-                        <div
-                          className="mnha-avatar"
-                          style={{ background: row.avatarColor }}
-                        >
-                          {row.initials}
+                      <div className="ta-alert-type">
+                        <span className="ta-type-label">Need Help</span>
+                      </div>
+                    </td>
+
+                    {/* Employee */}
+                    <td>
+                      <div className="ta-employee">
+                        <div className="ta-emp-avatar">
+                          {a.name?.split(" ")[0]?.[0] || "?"}
                         </div>
                         <div>
-                          <div className="mnha-emp-name">{row.name}</div>
-                          <div className="mnha-emp-dept">{row.dept}</div>
+                          <div className="ta-emp-name">{a.name || "—"}</div>
+                          <div className="ta-emp-role">{a.email || ""}</div>
                         </div>
                       </div>
                     </td>
-                    <td>
-                      <span className="mnha-reason">{row.reason}</span>
+
+                    {/* Reason */}
+                    <td className="ta-reason">{a.reason || "—"}</td>
+
+                    {/* Date */}
+                    <td className="ta-date">
+                      {a.createdAt ? new Date(a.createdAt).toLocaleString() : "—"}
                     </td>
+
+                    {/* Status */}
                     <td>
-                      <div className="mnha-date-main">{row.date}</div>
-                      <div className="mnha-date-time">{row.time}</div>
-                    </td>
-                    <td>
-                      <span className={`mnha-status-badge ${row.statusClass}`}>
-                        {row.statusLabel}
+                      <span className={`ta-status ${(a.status || "").toLowerCase()}`}>
+                        {a.status}
                       </span>
                     </td>
+
+                    {/* Actions */}
                     <td>
-                      <button className="mnha-view-btn">View Details</button>
+                      <div className="mnha-row-actions">
+                        {(a.status || "").toLowerCase() === "open" && (
+                          <button
+                            className="ta-action-close"
+                            onClick={() => setConfirmId(a.AlertID)}
+                          >
+                            Acknowledge
+                          </button>
+                        )}
+                        <button
+                          className="mnha-view-tasks-btn"
+                          onClick={() =>
+                            navigate("/manager/tasks", {
+                              state: { employeeId: a.userId, employeeName: a.name },
+                            })
+                          }
+                        >
+                          <i className="fa-solid fa-arrow-up-right-from-square"></i>
+                          View Tasks
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
               )}
             </tbody>
           </table>
-        </div>
 
-        {/* Footer */}
-        <div className="mnha-card-footer">
-          <span className="mnha-page-info">
-            Page {page} of {TOTAL_PAGES}
-          </span>
-          <div className="mnha-pagination">
-            <button
-              className="mnha-page-btn"
-              onClick={() => setPage((p) => p - 1)}
-              disabled={page === 1}
-            >
-              <i className="fa-solid fa-chevron-left"></i>
-            </button>
-            <button
-              className="mnha-page-btn"
-              onClick={() => setPage((p) => p + 1)}
-              disabled={page === TOTAL_PAGES}
-            >
-              <i className="fa-solid fa-chevron-right"></i>
-            </button>
-          </div>
+          {/* Pagination footer */}
+          {totalPages > 1 && (
+            <div className="ta-feed-footer">
+              <span className="ta-showing">
+                Page {page} of {totalPages}
+              </span>
+              <div className="ta-pag">
+                <button
+                  className="ta-pag-arrow"
+                  disabled={page === 1 || loading}
+                  onClick={() => setPage((p) => p - 1)}
+                >
+                  <i className="fa-solid fa-chevron-left"></i>
+                </button>
+                <span className="ta-pag-info">{page}</span>
+                <button
+                  className="ta-pag-arrow"
+                  disabled={page === totalPages || loading}
+                  onClick={() => setPage((p) => p + 1)}
+                >
+                  <i className="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
-    </div>
+
+      {/* Confirm acknowledge modal — same pattern as Turnover alerts */}
+      {confirmId && (
+        <div className="ta-modal-overlay">
+          <div className="ta-modal-card">
+            <h3>Confirm Acknowledge</h3>
+            <p>
+              Acknowledging this alert lets the employee know their situation has been
+              seen. You can follow up via their task list.
+            </p>
+            <div className="ta-modal-actions">
+              <button
+                className="ta-modal-cancel"
+                onClick={() => setConfirmId(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className="ta-modal-confirm"
+                onClick={confirmAcknowledge}
+                disabled={actioning}
+              >
+                {actioning ? "Acknowledging…" : "Yes, Acknowledge"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

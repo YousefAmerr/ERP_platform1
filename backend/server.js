@@ -12,6 +12,7 @@ import ManagerDashboardRoute from './routes/managerRoute/ManagerDashboardRoute.j
 import ManagerLeaveRoute from './routes/managerRoute/ManagerLeaveRoute.js'
 import ManagerTasksRoute from './routes/managerRoute/ManagerTasksRoute.js'
 import ManagerInsideTaskRoute from './routes/managerRoute/ManagerInsideTaskRoute.js'
+import ManagerNeedHelpAlertsRoute from './routes/managerRoute/ManagerNeedHelpAlertsRoute.js'
 import EmployeeDashboardRoute from './routes/employeeRoute/EmployeeDashboardRoute.js'
 import EmployeeLeaveRoute from './routes/employeeRoute/EmployeeLeaveRoute.js'
 import EmployeeTasksRoute from './routes/employeeRoute/EmployeeTasksRoute.js'
@@ -40,6 +41,7 @@ app.use('/api/v1/manager', ManagerDashboardRoute)
 app.use('/api/v1/manager', ManagerLeaveRoute)
 app.use('/api/v1/manager', ManagerTasksRoute)
 app.use('/api/v1/manager', ManagerInsideTaskRoute)
+app.use('/api/v1/manager', ManagerNeedHelpAlertsRoute)
 app.use('/api/v1/employee', EmployeeDashboardRoute)
 app.use('/api/v1/employee', EmployeeLeaveRoute)
 app.use('/api/v1/employee', EmployeeTasksRoute)

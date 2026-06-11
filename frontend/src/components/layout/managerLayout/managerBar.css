@@ -6,7 +6,7 @@
 .mgr-nav-chevron {
     margin-left: auto;
     font-size: 0.62rem;
-    color: #8a96a8;
+    color: #94a3b8;
 }
 
 .mgr-subnav {
@@ -22,20 +22,20 @@
     border-radius: 6px;
     font-size: 0.83rem;
     font-weight: 500;
-    color: #6b7590;
+    color: #94a3b8;
     text-decoration: none;
-    transition: background 0.13s, color 0.13s;
+    transition: background 0.15s, color 0.15s;
 }
 
 .mgr-subnav-link:hover {
-    background: #f0f4ff;
-    color: #1f2a44;
+    background: rgba(255, 255, 255, 0.07);
+    color: #e2e8f0;
     text-decoration: none;
 }
 
 .mgr-subnav-link.active {
-    background: #eff4ff;
-    color: #3776fd;
+    background: rgba(79, 70, 229, 0.28);
+    color: #a5b4fc;
     font-weight: 600;
 }
 
@@ -52,7 +52,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background: #f4f6fb;
+    background: #f9fafb;   /* gray-50 */
 }
 
 .mgr-content {
@@ -61,12 +61,12 @@
     padding: 28px 32px;
 }
 
-/* ===== SIDEBAR ===== */
+/* ===== SIDEBAR — Deep Charcoal (slate-900) ===== */
 .mgr-sidebar {
     width: 230px;
     min-width: 230px;
-    background: #f1f5f9;
-    border-right: 1px solid #e5e9f0;
+    background: #0f172a;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
     display: flex;
     flex-direction: column;
 }
@@ -88,7 +88,7 @@
 .mgr-brand-title {
     font-size: 1.05rem;
     font-weight: 700;
-    color: #1f2a44;
+    color: #f1f5f9;
     letter-spacing: 0.2px;
     line-height: 1.2;
 }
@@ -106,7 +106,7 @@
     gap: 12px;
     padding: 10px 14px;
     border-radius: 8px;
-    color: #6b7590;
+    color: #94a3b8;         /* gray-400 — unselected */
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 500;
@@ -114,21 +114,21 @@
 }
 
 .mgr-nav-link:hover {
-    background: #f0f4ff;
-    color: #1f2a44;
+    background: rgba(255, 255, 255, 0.07);
+    color: #f1f5f9;
     text-decoration: none;
 }
 
 .mgr-nav-link.active {
-    background: #ffffff;
-    color: #3776fd;
+    background: #4f46e5;    /* indigo-600 */
+    color: #ffffff;
     font-weight: 600;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
 }
 
 .mgr-nav-link.active:hover {
-    background: #ffffff;
-    color: #3776fd;
+    background: #4338ca;
+    color: #ffffff;
 }
 
 .mgr-nav-link i {
@@ -141,7 +141,7 @@
 .mgr-sidebar-footer {
     margin-top: auto;
     padding: 16px 12px;
-    border-top: 1px solid #e5e9f0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .mgr-logout {
@@ -153,7 +153,7 @@
     border: none;
     border-radius: 8px;
     background: transparent;
-    color: #e05252;
+    color: #f87171;
     font-size: 0.9rem;
     font-weight: 500;
     cursor: pointer;
@@ -161,8 +161,8 @@
 }
 
 .mgr-logout:hover {
-    background: #fdeaea;
-    color: #c0392b;
+    background: rgba(248, 113, 113, 0.12);
+    color: #fca5a5;
 }
 
 .mgr-logout i {
@@ -196,16 +196,17 @@
     gap: 12px;
 }
 
+/* Role badge — indigo accent */
 .mgr-role-badge {
     display: flex;
     align-items: center;
     gap: 6px;
     padding: 5px 14px;
     border-radius: 20px;
-    border: 1.5px solid #3776fd;
+    border: 1.5px solid #4f46e5;
     font-size: 0.78rem;
     font-weight: 700;
-    color: #3776fd;
+    color: #4f46e5;
     letter-spacing: 0.4px;
 }
 
@@ -213,7 +214,7 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: #3776fd;
+    background: #4f46e5;
     flex-shrink: 0;
 }
 
@@ -221,7 +222,7 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: #3776fd;
+    background: #4f46e5;
     display: flex;
     align-items: center;
     justify-content: center;

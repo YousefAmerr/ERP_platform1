@@ -4,6 +4,7 @@ import {
   predictTurnoverRequest,
   getTurnoverAlertsRequest,
   acknowledgeAlertRequest,
+  getNeedHelpAlertsRequest,
 } from "../../../helper_module/authHelper";
 
 const TurnoverAlerts = () => {
@@ -48,6 +49,25 @@ const TurnoverAlerts = () => {
     }
   };
 
+  // ── Need Help Alerts state ────────────────────────────────────────────────
+  const [nhAlerts, setNhAlerts] = useState([]);
+  const [nhLoading, setNhLoading] = useState(true);
+  const [nhPage, setNhPage] = useState(1);
+  const [nhTotalPages, setNhTotalPages] = useState(1);
+  const [nhTotal, setNhTotal] = useState(0);
+  const fetchNeedHelpAlerts = (p = nhPage) => {
+    setNhLoading(true);
+    getNeedHelpAlertsRequest(p)
+      .then((data) => {
+        setNhAlerts(data.alerts || []);
+        setNhTotal(data.total || 0);
+        setNhTotalPages(data.totalPages || 1);
+      })
+      .catch(() => {})
+      .finally(() => setNhLoading(false));
+  };
+
+  // ── Turnover confirm modal state ──────────────────────────────────────────
   const [confirmAlertId, setConfirmAlertId] = useState(null);
 
   const handleAcknowledgeAlert = async (id) => {
@@ -77,8 +97,14 @@ const TurnoverAlerts = () => {
 
   useEffect(() => {
     fetchAlerts(statusFilter);
+    fetchNeedHelpAlerts(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    fetchNeedHelpAlerts(nhPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nhPage]);
 
   const handleStatusFilterChange = async (statuses) => {
     setStatusFilter(statuses);
@@ -191,6 +217,102 @@ const TurnoverAlerts = () => {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* ── Need Help Alerts card (view-only for admin) ── */}
+      <div className="ta-feed-card ta-nh-card">
+        <div className="ta-feed-header">
+          <div>
+            <p className="ta-feed-title">Need Help Alerts</p>
+            <p className="ta-feed-subtitle">
+              Rule-engine alerts triggered by deadline, quality, or capacity risks.
+              Managed by the employee's direct manager.
+            </p>
+          </div>
+          <span className="ta-nh-count-badge">{nhTotal} total</span>
+        </div>
+
+        <table className="ta-table">
+          <thead>
+            <tr>
+              <th>Alert Type</th>
+              <th>Employee</th>
+              <th>Reason</th>
+              <th>Created Date</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {nhLoading ? (
+              <tr>
+                <td colSpan={6} className="ta-empty">
+                  <i className="fa-solid fa-spinner fa-spin"></i> Loading…
+                </td>
+              </tr>
+            ) : nhAlerts.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="ta-empty">No need-help alerts on record</td>
+              </tr>
+            ) : (
+              nhAlerts.map((a) => (
+                <tr key={a.AlertID}>
+                  <td>
+                    <div className="ta-alert-type">
+                      <span className="ta-type-label">Need Help</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="ta-employee">
+                      <div className="ta-emp-avatar ta-nh-avatar">
+                        {a.name?.split(" ")[0]?.[0] || "?"}
+                      </div>
+                      <div>
+                        <div className="ta-emp-name">{a.name || "—"}</div>
+                        <div className="ta-emp-role">{a.email || ""}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="ta-reason">{a.reason || "—"}</td>
+                  <td className="ta-date">
+                    {a.createdAt ? new Date(a.createdAt).toLocaleString() : "—"}
+                  </td>
+                  <td>
+                    <span className={`ta-status ${(a.status || "").toLowerCase()}`}>
+                      {a.status}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="ta-no-action">—</span>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+
+        {nhTotalPages > 1 && (
+          <div className="ta-feed-footer">
+            <span className="ta-showing">Page {nhPage} of {nhTotalPages}</span>
+            <div className="ta-pag">
+              <button
+                className="ta-pag-arrow"
+                disabled={nhPage === 1 || nhLoading}
+                onClick={() => setNhPage((p) => p - 1)}
+              >
+                <i className="fa-solid fa-chevron-left"></i>
+              </button>
+              <span className="ta-pag-info">{nhPage}</span>
+              <button
+                className="ta-pag-arrow"
+                disabled={nhPage === nhTotalPages || nhLoading}
+                onClick={() => setNhPage((p) => p + 1)}
+              >
+                <i className="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {confirmAlertId && (

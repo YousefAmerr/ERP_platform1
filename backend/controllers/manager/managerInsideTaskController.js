@@ -9,7 +9,9 @@ import {
     getUserIdByEmail,
     getDoneUnratedTasks,
     rateTask,
+    getTaskAssignedTo,
 } from '../../models/manager/managerInsideTaskModel.js'
+import { maybeCreateNeedHelpAlert } from '../../services/alertRuleEngine.js'
 
 export async function getProject(req, res) {
     const project = await getProjectById(req.params.id)
@@ -73,4 +75,8 @@ export async function submitRating(req, res) {
         return res.status(400).json({ message: 'Rating must be between 1 and 5' })
     await rateTask(req.params.taskId, { rating, ratingComment })
     res.json({ success: true })
+    // Fire rule engine asynchronously — never blocks the response
+    getTaskAssignedTo(req.params.taskId)
+        .then((assignedTo) => assignedTo && maybeCreateNeedHelpAlert(assignedTo))
+        .catch((err) => console.error('[RuleEngine]', err))
 }

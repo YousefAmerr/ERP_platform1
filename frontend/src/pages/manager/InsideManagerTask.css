@@ -130,6 +130,39 @@
   background: #1d4ed8;
 }
 
+/* Need Help alert context banner */
+.imt-alert-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-left: 4px solid #f59e0b;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #92400e;
+  flex-wrap: wrap;
+}
+
+.imt-alert-banner i { color: #f59e0b; flex-shrink: 0; }
+.imt-alert-banner strong { color: #78350f; }
+
+.imt-alert-banner-clear {
+  margin-left: auto;
+  background: none;
+  border: 1px solid #f59e0b;
+  border-radius: 6px;
+  color: #b45309;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+
+.imt-alert-banner-clear:hover { background: #fef3c7; }
+
 /* Filters row */
 .imt-filters-row {
   display: flex;

@@ -201,6 +201,35 @@ export async function rejectLeaveRequest(id) {
 
 // ─── Manager Dashboard ────────────────────────────────────────────────────────
 
+export async function getNeedHelpAlertsRequest(page = 1) {
+  const res = await fetch(`/api/v1/manager/alerts/need-help?page=${page}`, {
+    headers: authHeaders(),
+  })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data?.message || 'Failed to fetch need-help alerts')
+  return data
+}
+
+export async function acknowledgeNeedHelpAlertRequest(id) {
+  const res = await fetch(`/api/v1/manager/alerts/${id}/acknowledge`, {
+    method: 'PATCH',
+    headers: authHeaders(),
+  })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data?.message || 'Failed to acknowledge alert')
+  return data
+}
+
+export async function resolveNeedHelpAlertRequest(id) {
+  const res = await fetch(`/api/v1/manager/alerts/${id}/resolve`, {
+    method: 'PATCH',
+    headers: authHeaders(),
+  })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data?.message || 'Failed to resolve alert')
+  return data
+}
+
 export async function getManagerDashboardStatsRequest() {
   const res = await fetch("/api/v1/manager/dashboard/stats", {
     headers: authHeaders(),

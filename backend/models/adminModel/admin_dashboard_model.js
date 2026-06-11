@@ -30,7 +30,7 @@ export async function getOverdueTasksCount() {
 
 export async function getNeedHelpAlertsCount() {
     const [[row]] = await pool.execute(
-        `SELECT COUNT(*) AS total FROM alert WHERE type='burnout' AND Alert_status='Open'`
+        `SELECT COUNT(*) AS total FROM alert WHERE type='Need Help' AND Alert_status='Open'`
     )
     return row.total
 }
@@ -90,7 +90,7 @@ export async function getOpenAlertsList(limit = 20) {
                 `SELECT a.AlertID AS id, a.UserID as userId, u.Name as name, a.type, a.Alert_reason as reason, a.createdAt, a.Alert_status as status
                  FROM alert a
                  JOIN users u ON a.UserID = u.UserID
-                 WHERE LOWER(a.Alert_status) = 'open' AND a.type IN ('Turnover','burnout')
+                 WHERE LOWER(a.Alert_status) = 'open' AND a.type IN ('Turnover','Need Help')
                  ORDER BY a.createdAt DESC
                  LIMIT ?`,
                 [limit]
@@ -167,4 +167,93 @@ export async function getActiveProjectsOverview() {
         overdue: Number(r.overdue) || 0,
         team: Number(r.team) || 0,
     }))
+}
+
+/* ── Real KPI trends (all queries hit the DB) ─────────────────────────────── */
+
+function trend(count, zeroText, upTextFn, downDir = 'flat') {
+    const n = Number(count) || 0
+    if (n === 0) return { count: 0, dir: downDir, text: zeroText }
+    return { count: n, dir: 'up', text: upTextFn(n) }
+}
+
+export async function getDashboardTrends() {
+    const now = new Date()
+    const month = now.getMonth() + 1
+    const year  = now.getFullYear()
+
+    const [
+        [empRow],
+        [mgrRow],
+        [prjRow],
+        [taskRow],
+        [recRow],
+        [turnRow],
+        [nhRow],
+        [leaveRow],
+    ] = await Promise.all([
+        // Employees joined this calendar month
+        pool.execute(
+            `SELECT COUNT(*) AS cnt FROM users
+             WHERE role='EMPLOYEE' AND active=1
+               AND MONTH(createdAt)=? AND YEAR(createdAt)=?`,
+            [month, year]
+        ),
+        // Managers joined this calendar month
+        pool.execute(
+            `SELECT COUNT(*) AS cnt FROM users
+             WHERE role='MANAGER' AND active=1
+               AND MONTH(createdAt)=? AND YEAR(createdAt)=?`,
+            [month, year]
+        ),
+        // Projects created this calendar month
+        pool.execute(
+            `SELECT COUNT(*) AS cnt FROM project
+             WHERE MONTH(createdAt)=? AND YEAR(createdAt)=?`,
+            [month, year]
+        ),
+        // Open tasks whose due date falls within the next 7 days
+        pool.execute(
+            `SELECT COUNT(*) AS cnt FROM task
+             WHERE Task_status='In_progress'
+               AND dueDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)`
+        ),
+        // Recognition alerts raised this calendar month
+        pool.execute(
+            `SELECT COUNT(*) AS cnt FROM alert
+             WHERE type='recognition'
+               AND MONTH(createdAt)=? AND YEAR(createdAt)=?`,
+            [month, year]
+        ),
+        // Turnover alerts raised this calendar month
+        pool.execute(
+            `SELECT COUNT(*) AS cnt FROM alert
+             WHERE type='Turnover'
+               AND MONTH(createdAt)=? AND YEAR(createdAt)=?`,
+            [month, year]
+        ),
+        // Need Help alerts raised in the last 7 days
+        pool.execute(
+            `SELECT COUNT(*) AS cnt FROM alert
+             WHERE type='Need Help'
+               AND createdAt >= DATE_SUB(NOW(), INTERVAL 7 DAY)`
+        ),
+        // Pending leave requests submitted this calendar week
+        pool.execute(
+            `SELECT COUNT(*) AS cnt FROM leave_request
+             WHERE Leave_status='Pending'
+               AND YEARWEEK(created_at, 1) = YEARWEEK(CURDATE(), 1)`
+        ),
+    ])
+
+    return {
+        employees:   trend(empRow[0].cnt,  'none this month',  n => `${n} joined this month`),
+        managers:    trend(mgrRow[0].cnt,  'none this month',  n => `${n} joined this month`),
+        projects:    trend(prjRow[0].cnt,  'none this month',  n => `${n} created this month`),
+        tasks:       trend(taskRow[0].cnt, 'none due this week', n => `${n} due this week`),
+        recognition: trend(recRow[0].cnt,  'none this month',  n => `${n} this month`),
+        turnover:    trend(turnRow[0].cnt, 'none this month',  n => `${n} this month`),
+        needHelp:    trend(nhRow[0].cnt,   'none this week',   n => `${n} this week`),
+        leave:       trend(leaveRow[0].cnt,'none this week',   n => `${n} submitted this week`),
+    }
 }

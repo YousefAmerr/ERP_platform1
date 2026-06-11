@@ -126,3 +126,11 @@ export async function rateTask(taskId, { rating, ratingComment }) {
         [rating, ratingComment || null, taskId]
     )
 }
+
+export async function getTaskAssignedTo(taskId) {
+    const [[row]] = await pool.execute(
+        `SELECT assignedTo FROM task WHERE TaskID = ? LIMIT 1`,
+        [taskId]
+    )
+    return row?.assignedTo || null
+}

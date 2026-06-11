@@ -1,12 +1,9 @@
-/* ── Manager Need Help Alerts ─────────────────────────────── */
-
+/* ── Page shell ─────────────────────────────────────────────────── */
 .mnha-page {
   padding: 15px 32px;
-  background: #f4f6fb;
   min-height: 100%;
 }
 
-/* Breadcrumb */
 .mnha-breadcrumb {
   display: flex;
   align-items: center;
@@ -15,265 +12,290 @@
   margin-bottom: 22px;
 }
 
-.mnha-bc-parent {
-  color: #374151;
-  font-weight: 500;
-}
+.mnha-bc-parent  { color: #374151; font-weight: 500; }
+.mnha-bc-sep     { color: #9ca3af; font-size: 0.78rem; }
+.mnha-bc-current { color: #4f46e5; font-weight: 600; }
 
-.mnha-bc-sep {
-  color: #9ca3af;
-  font-size: 0.78rem;
-}
-
-.mnha-bc-current {
-  color: #2563eb;
-  font-weight: 600;
-}
-
-/* Card */
-.mnha-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
-  overflow: hidden;
-}
-
-/* Card Header */
-.mnha-card-header {
-  display: flex;
+/* Total badge in card header */
+.mnha-total-badge {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 18px 22px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.mnha-header-left {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-}
-
-.mnha-card-title {
-  font-size: 1.05rem;
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: #ede9fe;
+  color: #6d28d9;
+  font-size: 0.76rem;
   font-weight: 700;
-  color: #111827;
-  margin: 0;
-}
-
-.mnha-entry-count {
-  font-size: 0.8rem;
-  color: #9ca3af;
-}
-
-.mnha-header-icons {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.mnha-icon-btn {
-  background: none;
-  border: none;
-  color: #9ca3af;
-  font-size: 1rem;
-  cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 6px;
-  transition: background 0.12s, color 0.12s;
-}
-
-.mnha-icon-btn:hover {
-  background: #f3f4f6;
-  color: #374151;
-}
-
-/* Table */
-.mnha-table-wrap {
-  overflow-x: auto;
-}
-
-.mnha-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.mnha-table thead th {
-  padding: 11px 20px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: #9ca3af;
-  text-align: left;
-  background: #fff;
-  border-bottom: 1px solid #f3f4f6;
-}
-
-.mnha-table tbody tr {
-  border-bottom: 1px solid #f9fafb;
-  transition: background 0.12s;
-}
-
-.mnha-table tbody tr:last-child {
-  border-bottom: none;
-}
-
-.mnha-table tbody tr:hover {
-  background: #fafbff;
-}
-
-.mnha-table td {
-  padding: 14px 20px;
-  vertical-align: middle;
-}
-
-/* Employee cell */
-.mnha-emp-cell {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.mnha-avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #fff;
+  letter-spacing: 0.3px;
   flex-shrink: 0;
 }
 
-.mnha-emp-name {
-  font-size: 0.88rem;
+/* Action cell — two buttons side-by-side */
+.mnha-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+/* "View Tasks" button */
+.mnha-view-tasks-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border-radius: 7px;
+  font-size: 0.78rem;
   font-weight: 600;
-  color: #111827;
-  line-height: 1.3;
-}
-
-.mnha-emp-dept {
-  font-size: 0.74rem;
-  color: #2563eb;
-  font-weight: 500;
-  margin-top: 1px;
-}
-
-/* Reason */
-.mnha-reason {
-  font-size: 0.85rem;
-  color: #374151;
-}
-
-/* Date cell */
-.mnha-date-main {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: #374151;
-  white-space: nowrap;
-}
-
-.mnha-date-time {
-  font-size: 0.73rem;
-  color: #9ca3af;
-  margin-top: 2px;
-  white-space: nowrap;
-}
-
-/* Status badges */
-.mnha-status-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-}
-
-.mnha-status-badge.open {
-  background: #fef3c7;
-  color: #d97706;
-}
-
-.mnha-status-badge.under-review {
+  cursor: pointer;
+  border: 1.5px solid #4f46e5;
   background: #ede9fe;
-  color: #7c3aed;
-}
-
-.mnha-status-badge.resolved {
-  background: #d1fae5;
-  color: #059669;
-}
-
-/* Actions */
-.mnha-view-btn {
-  background: none;
-  border: none;
-  color: #2563eb;
-  font-size: 0.84rem;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 0;
-  transition: opacity 0.12s;
+  color: #4f46e5;
+  transition: background 0.13s, color 0.13s;
   white-space: nowrap;
 }
 
-.mnha-view-btn:hover {
-  opacity: 0.7;
-  text-decoration: underline;
+.mnha-view-tasks-btn:hover {
+  background: #ddd6fe;
+  color: #3730a3;
 }
 
-/* Empty state */
-.mnha-empty-row td {
-  text-align: center;
-  padding: 56px;
-  color: #9ca3af;
-  font-size: 0.88rem;
-}
+/* ── Shared table / card styles (mirrors TurnoverAlerts) ─────────── */
 
-/* Footer / Pagination */
-.mnha-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 13px 22px;
-  border-top: 1px solid #f0f0f0;
-}
-
-.mnha-page-info {
-  font-size: 0.82rem;
-  color: #6b7280;
-}
-
-.mnha-pagination {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.mnha-page-btn {
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  border: 1px solid #e5e7eb;
+.ta-feed-card {
   background: #fff;
-  font-size: 0.75rem;
-  color: #374151;
-  cursor: pointer;
+  border-radius: 12px;
+  padding: 24px 28px 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.ta-feed-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.ta-feed-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1f2a44;
+  margin: 0 0 4px;
+}
+
+.ta-feed-subtitle {
+  font-size: 0.78rem;
+  color: #8a96a8;
+  margin: 0;
+}
+
+.ta-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+}
+
+.ta-table th {
+  text-align: left;
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  color: #8a96a8;
+  text-transform: uppercase;
+  padding: 0 16px 12px;
+  border-bottom: 1px solid #f0f4f8;
+}
+
+.ta-table td {
+  padding: 16px;
+  border-bottom: 1px solid #f0f4f8;
+  vertical-align: middle;
+  color: #1f2a44;
+}
+
+.ta-table tr:last-child td { border-bottom: none; }
+.ta-table tbody tr:hover { background: #fafbff; }
+
+.ta-alert-type {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.ta-type-label {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #1f2a44;
+}
+
+.ta-employee {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ta-emp-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #4f46e5;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.12s, border-color 0.12s;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  text-transform: uppercase;
 }
 
-.mnha-page-btn:hover:not(:disabled) {
-  background: #f3f4f6;
+.ta-emp-name {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #1f2a44;
 }
 
-.mnha-page-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+.ta-emp-role {
+  font-size: 0.74rem;
+  color: #8a96a8;
+  margin-top: 2px;
 }
+
+.ta-reason {
+  color: #6b7590;
+  font-size: 0.84rem;
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ta-date {
+  color: #4b5670;
+  font-size: 0.84rem;
+  white-space: nowrap;
+}
+
+.ta-status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.71rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ta-status.open         { background: #f1f5f9; color: #6b7590;  border: 1px solid #d1d9e6; }
+.ta-status.acknowledged { background: #ede9fe; color: #7c3aed;  border: 1px solid #c4b5fd; }
+.ta-status.resolved     { background: #d1fae5; color: #059669;  border: 1px solid #6ee7b7; }
+
+.ta-action-close {
+  background: transparent;
+  border: none;
+  color: #1976d2;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.84rem;
+  padding: 0;
+  transition: opacity 0.13s;
+  white-space: nowrap;
+}
+
+.ta-action-close:hover { opacity: 0.7; text-decoration: underline; }
+
+.ta-no-action { color: #888; }
+
+.ta-empty {
+  text-align: center;
+  padding: 48px 0;
+  color: #b0bac8;
+  font-size: 0.85rem;
+}
+
+/* Footer / pagination */
+.ta-feed-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  margin-top: 4px;
+  border-top: 1px solid #f0f4f8;
+}
+
+.ta-showing { font-size: 0.8rem; color: #8a96a8; }
+
+.ta-pag {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ta-pag-arrow {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid #d1d9e6;
+  background: #fff;
+  color: #4b5670;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ta-pag-arrow:hover:not(:disabled) { background: #f1f5f9; }
+.ta-pag-arrow:disabled { color: #c8d0dc; cursor: not-allowed; }
+
+.ta-pag-info {
+  font-size: 0.82rem;
+  color: #4b5670;
+  font-weight: 500;
+}
+
+/* Confirm modal */
+.ta-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+
+.ta-modal-card {
+  width: min(520px, 100%);
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 18px;
+  box-shadow: 0 24px 62px rgba(15, 23, 42, 0.16);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.ta-modal-card h3 { margin: 0 0 12px; font-size: 1.05rem; color: #102a43; }
+.ta-modal-card p  { margin: 0 0 24px; color: #475569; line-height: 1.6; }
+
+.ta-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.ta-modal-cancel,
+.ta-modal-confirm {
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.ta-modal-cancel  { background: #f8fafc; color: #334155; border-color: #cbd5e1; }
+.ta-modal-confirm { background: #4f46e5; color: #fff; }
+.ta-modal-confirm:disabled { opacity: 0.65; cursor: not-allowed; }

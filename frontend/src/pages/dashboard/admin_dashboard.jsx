@@ -132,6 +132,8 @@ const AdminDashboard = () => {
       </div>
     );
 
+  const T = stats.trends || {};
+
   const ts = stats.taskStatus || { inProgress: 0, done: 0, overdue: 0 };
   const taskData = [
     { name: "In Progress", value: ts.inProgress, color: "#3776fd" },
@@ -148,9 +150,47 @@ const AdminDashboard = () => {
   const projects = stats.projectsOverview || [];
   const openAlerts = stats.openAlerts || [];
 
-  // KPI cards — Turnover & Need Help first (Action Center prioritization).
-  // Trends are placeholder copy until historical snapshots are wired up.
   const kpiCards = [
+    {
+      key: "employees",
+      label: "Total Employees",
+      value: stats.totalEmployees,
+      icon: "fa-users",
+      iconTone: "blue",
+      trend: { dir: T.employees?.dir || "flat", text: T.employees?.text || "—", tone: "good" },
+    },
+    {
+      key: "managers",
+      label: "Total Managers",
+      value: stats.totalManagers,
+      icon: "fa-user-tie",
+      iconTone: "blue",
+      trend: { dir: T.managers?.dir || "flat", text: T.managers?.text || "—", tone: "good" },
+    },
+    {
+      key: "projects",
+      label: "Active Projects",
+      value: stats.activeProjects,
+      icon: "fa-folder-open",
+      iconTone: "blue",
+      trend: { dir: T.projects?.dir || "flat", text: T.projects?.text || "—", tone: "good" },
+    },
+    {
+      key: "tasks",
+      label: "Open Tasks",
+      value: stats.openTasks,
+      icon: "fa-list-check",
+      iconTone: "blue",
+      trend: { dir: T.tasks?.dir || "flat", text: T.tasks?.text || "—", tone: "neutral" },
+    },
+    {
+      key: "recognition",
+      label: "Recognition Alerts",
+      value: stats.recognitionAlerts,
+      icon: "fa-trophy",
+      iconTone: "purple",
+      trend: { dir: T.recognition?.dir || "flat", text: T.recognition?.text || "—", tone: "good" },
+    },
     {
       key: "turnover",
       label: "Turnover Alerts",
@@ -158,7 +198,7 @@ const AdminDashboard = () => {
       icon: "fa-arrow-right-from-bracket",
       iconTone: "red",
       tint: stats.turnoverAlerts > 0 ? "tint-red" : "",
-      trend: { dir: "up", text: "1 from last month", tone: "bad" },
+      trend: { dir: T.turnover?.dir || "flat", text: T.turnover?.text || "—", tone: "bad" },
     },
     {
       key: "needhelp",
@@ -167,47 +207,7 @@ const AdminDashboard = () => {
       icon: "fa-circle-question",
       iconTone: "orange",
       tint: stats.needHelpAlerts > 0 ? "tint-orange" : "",
-      trend: { dir: "down", text: "2 this week", tone: "good" },
-    },
-    {
-      key: "employees",
-      label: "Total Employees",
-      value: stats.totalEmployees,
-      icon: "fa-users",
-      iconTone: "blue",
-      trend: { dir: "up", text: "2 from last month", tone: "good" },
-    },
-    {
-      key: "managers",
-      label: "Total Managers",
-      value: stats.totalManagers,
-      icon: "fa-user-tie",
-      iconTone: "blue",
-      trend: { dir: "flat", text: "No change", tone: "neutral" },
-    },
-    {
-      key: "projects",
-      label: "Active Projects",
-      value: stats.activeProjects,
-      icon: "fa-folder-open",
-      iconTone: "blue",
-      trend: { dir: "up", text: "1 this month", tone: "good" },
-    },
-    {
-      key: "tasks",
-      label: "Open Tasks",
-      value: stats.openTasks,
-      icon: "fa-list-check",
-      iconTone: "blue",
-      trend: { dir: "down", text: "15% this week", tone: "good" },
-    },
-    {
-      key: "recognition",
-      label: "Recognition Alerts",
-      value: stats.recognitionAlerts,
-      icon: "fa-trophy",
-      iconTone: "purple",
-      trend: { dir: "up", text: "3 this month", tone: "good" },
+      trend: { dir: T.needHelp?.dir || "flat", text: T.needHelp?.text || "—", tone: "bad" },
     },
     {
       key: "leave",
@@ -215,7 +215,7 @@ const AdminDashboard = () => {
       value: stats.pendingLeaveCount,
       icon: "fa-calendar-days",
       iconTone: "purple",
-      trend: { dir: "up", text: "4 this week", tone: "neutral" },
+      trend: { dir: T.leave?.dir || "flat", text: T.leave?.text || "—", tone: "neutral" },
     },
   ];
 

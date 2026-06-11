@@ -13,6 +13,7 @@ import {
     getAtRiskEmployeeCount,
     getLeaveByType,
     getActiveProjectsOverview,
+    getDashboardTrends,
 } from '../../models/adminModel/admin_dashboard_model.js'
 
 export const getDashboardStats = async (req, res) => {
@@ -32,6 +33,7 @@ export const getDashboardStats = async (req, res) => {
             atRiskCount,
             leaveByType,
             projectsOverview,
+            trends,
         ] = await Promise.all([
             getTotalEmployees(),
             getTotalManagers(),
@@ -47,6 +49,7 @@ export const getDashboardStats = async (req, res) => {
             getAtRiskEmployeeCount(),
             getLeaveByType(),
             getActiveProjectsOverview(),
+            getDashboardTrends(),
         ])
 
         const pendingLeave = pendingLeaveRows.slice(0, 10)
@@ -74,6 +77,7 @@ export const getDashboardStats = async (req, res) => {
             flightRisk,
             leaveByType,
             projectsOverview,
+            trends,
         })
     } catch (error) {
         console.log(error)

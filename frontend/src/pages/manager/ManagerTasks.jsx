@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import {
   getManagerProjectsRequest,
   createManagerProjectRequest,
@@ -12,6 +12,9 @@ export default function ManagerTasks() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { state: navState } = useLocation();
+  // employeeId / employeeName passed from ManagerNeedHelpAlerts "View Tasks"
+  const focusEmployee = navState?.employeeId ? navState : null;
 
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
@@ -91,6 +94,14 @@ export default function ManagerTasks() {
 
   return (
     <div className="mgt-page">
+      {/* Focus banner — shown when navigated from a Need Help alert */}
+      {focusEmployee && (
+        <div className="mgt-focus-banner">
+          <i className="fa-solid fa-triangle-exclamation"></i>
+          Viewing tasks for <strong>{focusEmployee.employeeName}</strong> — select a project below to see their assigned tasks.
+        </div>
+      )}
+
       {/* Top row */}
       <div className="mgt-top-row">
         <button className="mgt-add-btn" onClick={openModal}>
@@ -118,7 +129,13 @@ export default function ManagerTasks() {
             <div
               className="mgt-project-card"
               key={p.ProjectID}
-              onClick={() => navigate(`/manager/tasks/${p.ProjectID}`)}
+              onClick={() =>
+                navigate(`/manager/tasks/${p.ProjectID}`, {
+                  state: focusEmployee
+                    ? { employeeId: focusEmployee.employeeId, employeeName: focusEmployee.employeeName }
+                    : undefined,
+                })
+              }
             >
               <div className="mgt-card-body">
                 <h3 className="mgt-project-name">{p.projectName}</h3>

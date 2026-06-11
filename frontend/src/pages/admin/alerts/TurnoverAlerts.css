@@ -504,6 +504,76 @@
     font-weight: 500;
 }
 
+/* ===== NEED HELP CARD ===== */
+.ta-nh-card {
+    margin-top: 20px;
+    border-top: 3px solid #f59e0b;
+}
+
+.ta-nh-icon {
+    color: #f59e0b;
+    margin-right: 8px;
+}
+
+.ta-nh-count-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 14px;
+    border-radius: 20px;
+    background: #fef3c7;
+    color: #b45309;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+}
+
+.ta-nh-avatar { background: #f59e0b; }
+
+.ta-nh-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ta-nh-ack-btn,
+.ta-nh-resolve-btn {
+    padding: 5px 13px;
+    border-radius: 7px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid;
+    transition: background 0.13s, opacity 0.13s;
+    white-space: nowrap;
+}
+
+.ta-nh-ack-btn {
+    background: #ede9fe;
+    color: #7c3aed;
+    border-color: #c4b5fd;
+}
+
+.ta-nh-ack-btn:hover:not(:disabled) { background: #ddd6fe; }
+
+.ta-nh-resolve-btn {
+    background: #d1fae5;
+    color: #059669;
+    border-color: #6ee7b7;
+}
+
+.ta-nh-resolve-btn:hover:not(:disabled) { background: #a7f3d0; }
+
+.ta-nh-ack-btn:disabled,
+.ta-nh-resolve-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Status badge additions for need-help */
+.ta-status.acknowledged {
+    background: #ede9fe;
+    color: #7c3aed;
+    border: 1px solid #c4b5fd;
+}
+
 /* empty state */
 .ta-empty {
     text-align: center;
