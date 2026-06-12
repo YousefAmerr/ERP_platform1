@@ -37,7 +37,7 @@ const EmployeeLeftSideBar = () => {
           }
         >
           <i className="fa-regular fa-square-check"></i>
-          My Tasks
+          Tasks
         </NavLink>
 
         <NavLink
@@ -47,7 +47,7 @@ const EmployeeLeftSideBar = () => {
           }
         >
           <i className="fa-regular fa-calendar-days"></i>
-          My Leave
+          Leave
         </NavLink>
       </nav>
 

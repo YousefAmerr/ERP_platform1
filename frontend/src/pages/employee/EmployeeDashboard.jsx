@@ -60,15 +60,15 @@ function renderStars(rating) {
   ));
 }
 
-// Returns the formatted due date + whether it falls within the next 2 days
+// Returns the formatted due date + whether it is overdue (past) or due soon (≤2 days)
 function dueInfo(dueDate) {
-  if (!dueDate) return { text: "No due date", soon: false };
+  if (!dueDate) return { text: "No due date", soon: false, overdue: false };
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const due = new Date(dueDate);
   due.setHours(0, 0, 0, 0);
   const days = Math.round((due - today) / 86400000);
-  return { text: fmtDate(dueDate), soon: days <= 2 };
+  return { text: fmtDate(dueDate), soon: days >= 0 && days <= 2, overdue: days < 0 };
 }
 
 export default function EmployeeDashboard() {
@@ -268,7 +268,12 @@ export default function EmployeeDashboard() {
                           </div>
                         </td>
                         <td>
-                          {due.soon ? (
+                          {due.overdue ? (
+                            <span className="ed-due-overdue">
+                              <i className="fa-solid fa-triangle-exclamation"></i>{" "}
+                              {due.text} · Overdue
+                            </span>
+                          ) : due.soon ? (
                             <span className="ed-due-soon">
                               <i className="fa-solid fa-triangle-exclamation"></i>{" "}
                               {due.text}

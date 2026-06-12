@@ -19,6 +19,7 @@ import EmployeeTasksRoute from './routes/employeeRoute/EmployeeTasksRoute.js'
 import employeeRiskRoute from './routes/employeeRiskRoute.js';
 import AlertRoute from './routes/adminRoute/AlertRoute.js'
 import { initTurnoverRiskScheduler } from './utils/turnoverScheduler.js';
+import { initOverdueScheduler } from './utils/overdueScheduler.js';
 import recognitionRoutes from './routes/adminRoute/recognitionRoutes.js';
 
 //check 
@@ -52,12 +53,14 @@ app.use('/api/admin', employeeRiskRoute);
 app.use('/api/admin', AlertRoute);
 app.use('/api/recognition', recognitionRoutes);
 
-// Initialize scheduler
+// Initialize schedulers
 let turnoverScheduler = initTurnoverRiskScheduler();
+let overdueScheduler = initOverdueScheduler();
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
   turnoverScheduler?.stop();
+  overdueScheduler?.stop();
   process.exit(0);
 });
 

@@ -4,7 +4,7 @@ import pool from '../config/database.js'
 
 async function getLastTwoTasks(userId) {
     const [rows] = await pool.execute(
-        `SELECT Task_status FROM task WHERE assignedTo = ? ORDER BY TaskID DESC LIMIT 2`,
+        `SELECT was_overdue FROM task WHERE assignedTo = ? ORDER BY TaskID DESC LIMIT 2`,
         [userId]
     )
     return rows
@@ -55,10 +55,10 @@ async function insertAlert(userId, reason) {
 // ── Trigger evaluation ────────────────────────────────────────────────────────
 
 export async function evaluateEmployee(userId) {
-    // T1 — Deadline Risk: last 2 assigned tasks are both overdue
+    // T1 — Deadline Risk: last 2 assigned tasks both missed their deadline
     const lastTwo = await getLastTwoTasks(userId)
-    if (lastTwo.length === 2 && lastTwo.every((t) => t.Task_status === 'overdue')) {
-        return { triggered: true, reason: 'Deadline Risk: 2 consecutive tasks are overdue' }
+    if (lastTwo.length === 2 && lastTwo.every((t) => Number(t.was_overdue) === 1)) {
+        return { triggered: true, reason: 'Deadline Risk: 2 consecutive tasks missed their deadline' }
     }
 
     // T2 — Quality Alert: most recent rating ≤ 2.0, OR avg of last 3 rated tasks < 3.0

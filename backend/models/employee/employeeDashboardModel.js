@@ -17,8 +17,11 @@ export async function getEmployeeDashboardStats(userId) {
         `SELECT COUNT(*) AS count FROM task WHERE assignedTo = ? AND Task_status = 'done'`,
         [userId]
     )
+    // Currently overdue = still in progress AND past its due date (live, real-time)
     const [[overdueTasks]] = await pool.execute(
-        `SELECT COUNT(*) AS count FROM task WHERE assignedTo = ? AND Task_status = 'overdue'`,
+        `SELECT COUNT(*) AS count FROM task
+         WHERE assignedTo = ? AND Task_status = 'In_progress'
+           AND dueDate IS NOT NULL AND dueDate < CURDATE()`,
         [userId]
     )
     const [[pendingLeave]] = await pool.execute(
@@ -58,6 +61,7 @@ export async function getEmployeeActiveTasks(userId) {
             t.TaskID,
             t.title,
             t.dueDate,
+            t.was_overdue,
             t.workLoadPoints,
             p.projectName
          FROM task t

@@ -431,6 +431,20 @@
   white-space: nowrap;
 }
 
+.ed-due-overdue {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #dc2626;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  padding: 4px 10px;
+  border-radius: 7px;
+  white-space: nowrap;
+}
+
 /* Workload badge */
 .ed-wl-badge {
   display: inline-block;

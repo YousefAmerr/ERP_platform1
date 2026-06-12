@@ -19,8 +19,15 @@ function fmtDate(d) {
 const STATUS_OPTIONS = [
   { value: "In_progress", label: "In Progress" },
   { value: "done", label: "Done" },
-  { value: "overdue", label: "Overdue" },
 ];
+
+// A task is "late" when it is still in progress and past its due date.
+function isLate(task) {
+  if (!task || task.Task_status !== "In_progress" || !task.dueDate) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return new Date(task.dueDate) < today;
+}
 
 export default function EmployeeTaskDetail() {
   const { projectId, taskId } = useParams();
@@ -86,7 +93,14 @@ export default function EmployeeTaskDetail() {
 
             <div className="etd-row">
               <span className="etd-row-label">Due Date:</span>
-              <span className="etd-row-value">{fmtDate(task.dueDate)}</span>
+              <span className="etd-row-value">
+                {fmtDate(task.dueDate)}
+                {isLate(task) && (
+                  <span className="etd-late-badge">
+                    <i className="fa-solid fa-triangle-exclamation"></i> Overdue
+                  </span>
+                )}
+              </span>
             </div>
 
             <div className="etd-row">

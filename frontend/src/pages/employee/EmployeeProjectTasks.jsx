@@ -16,17 +16,25 @@ function fmtDate(d) {
   });
 }
 
-function statusLabel(s) {
-  if (s === "done") return "Done";
-  if (s === "In_progress") return "In Progress";
-  if (s === "overdue") return "Overdue";
-  return s;
+// A task is "late" when still in progress and past its due date.
+function isLate(task) {
+  if (!task || task.Task_status !== "In_progress" || !task.dueDate) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return new Date(task.dueDate) < today;
 }
 
-function statusClass(s) {
-  if (s === "done") return "done";
-  if (s === "In_progress") return "in-progress";
-  return "overdue";
+function statusLabel(task) {
+  if (isLate(task)) return "Overdue";
+  if (task.Task_status === "done") return "Done";
+  if (task.Task_status === "In_progress") return "In Progress";
+  return task.Task_status;
+}
+
+function statusClass(task) {
+  if (isLate(task)) return "overdue";
+  if (task.Task_status === "done") return "done";
+  return "in-progress";
 }
 
 function truncate(text, max = 50) {
@@ -123,8 +131,8 @@ export default function EmployeeProjectTasks() {
                     <td className="ept-desc">{truncate(t.description)}</td>
                     <td className="ept-date">{fmtDate(t.dueDate)}</td>
                     <td>
-                      <span className={`ept-status ${statusClass(t.Task_status)}`}>
-                        {statusLabel(t.Task_status)}
+                      <span className={`ept-status ${statusClass(t)}`}>
+                        {statusLabel(t)}
                       </span>
                     </td>
                     <td>{t.workLoadPoints}</td>
@@ -172,8 +180,8 @@ export default function EmployeeProjectTasks() {
                 </div>
                 <div className="ept-modal-field">
                   <span className="ept-modal-label">Status</span>
-                  <span className={`ept-status ${statusClass(viewTask.Task_status)}`}>
-                    {statusLabel(viewTask.Task_status)}
+                  <span className={`ept-status ${statusClass(viewTask)}`}>
+                    {statusLabel(viewTask)}
                   </span>
                 </div>
                 <div className="ept-modal-field">

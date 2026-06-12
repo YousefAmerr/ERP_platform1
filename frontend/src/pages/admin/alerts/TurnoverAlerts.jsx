@@ -224,10 +224,6 @@ const TurnoverAlerts = () => {
         <div className="ta-feed-header">
           <div>
             <p className="ta-feed-title">Need Help Alerts</p>
-            <p className="ta-feed-subtitle">
-              Rule-engine alerts triggered by deadline, quality, or capacity risks.
-              Managed by the employee's direct manager.
-            </p>
           </div>
           <span className="ta-nh-count-badge">{nhTotal} total</span>
         </div>
@@ -240,7 +236,6 @@ const TurnoverAlerts = () => {
               <th>Reason</th>
               <th>Created Date</th>
               <th>Status</th>
-              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -281,9 +276,6 @@ const TurnoverAlerts = () => {
                     <span className={`ta-status ${(a.status || "").toLowerCase()}`}>
                       {a.status}
                     </span>
-                  </td>
-                  <td>
-                    <span className="ta-no-action">—</span>
                   </td>
                 </tr>
               ))

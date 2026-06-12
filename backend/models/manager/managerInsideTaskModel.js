@@ -16,7 +16,10 @@ export async function getProjectTasks(projectId, filters = {}) {
         conditions.push('t.assignedTo = ?')
         params.push(filters.employee)
     }
-    if (filters.status) {
+    if (filters.status === 'overdue') {
+        // "Overdue" is a derived state: in progress AND past its due date
+        conditions.push("t.Task_status = 'In_progress' AND t.dueDate IS NOT NULL AND t.dueDate < CURDATE()")
+    } else if (filters.status) {
         conditions.push('t.Task_status = ?')
         params.push(filters.status)
     }
@@ -29,6 +32,7 @@ export async function getProjectTasks(projectId, filters = {}) {
             t.title,
             t.dueDate,
             t.Task_status,
+            t.was_overdue,
             t.workLoadPoints,
             t.assignedTo,
             u.Name AS employeeName

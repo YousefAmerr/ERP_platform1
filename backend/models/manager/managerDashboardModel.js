@@ -17,8 +17,11 @@ export async function getTeamTasksCount() {
 }
 
 export async function getOverdueTasksCount() {
+    // Currently overdue = in progress AND past its due date (live)
     const [[row]] = await pool.execute(
-        `SELECT COUNT(*) AS total FROM task WHERE Task_status='overdue'`
+        `SELECT COUNT(*) AS total FROM task
+         WHERE Task_status='In_progress'
+           AND dueDate IS NOT NULL AND dueDate < CURDATE()`
     )
     return row.total
 }
@@ -59,9 +62,9 @@ export async function getOpenProjectsCount() {
 export async function getTeamTaskStatus() {
     const [[row]] = await pool.execute(
         `SELECT
-            SUM(Task_status = 'In_progress') AS inProgress,
-            SUM(Task_status = 'done')        AS done,
-            SUM(Task_status = 'overdue')     AS overdue
+            SUM(Task_status = 'In_progress' AND (dueDate IS NULL OR dueDate >= CURDATE())) AS inProgress,
+            SUM(Task_status = 'done')                                                       AS done,
+            SUM(Task_status = 'In_progress' AND dueDate IS NOT NULL AND dueDate < CURDATE()) AS overdue
          FROM task`
     )
     return {
@@ -100,9 +103,9 @@ export async function getProjectStatusBreakdown() {
     const [rows] = await pool.execute(
         `SELECT
             p.projectName AS name,
-            SUM(t.Task_status = 'In_progress') AS inProgress,
-            SUM(t.Task_status = 'done')        AS done,
-            SUM(t.Task_status = 'overdue')     AS overdue
+            SUM(t.Task_status = 'In_progress' AND (t.dueDate IS NULL OR t.dueDate >= CURDATE())) AS inProgress,
+            SUM(t.Task_status = 'done')                                                            AS done,
+            SUM(t.Task_status = 'In_progress' AND t.dueDate IS NOT NULL AND t.dueDate < CURDATE()) AS overdue
          FROM project p
          LEFT JOIN task t ON t.ProjectID = p.ProjectID
          WHERE p.Project_status = 'Active'

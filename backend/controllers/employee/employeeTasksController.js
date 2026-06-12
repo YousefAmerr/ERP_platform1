@@ -37,7 +37,8 @@ export async function patchTaskStatus(req, res) {
     const userId = await getEmployeeIdByEmail(req.user.email)
     if (!userId) return res.status(404).json({ message: 'Employee not found' })
     const { status } = req.body
-    const allowed = ['In_progress', 'done', 'overdue']
+    // 'overdue' is no longer a settable status — lateness is tracked via was_overdue
+    const allowed = ['In_progress', 'done']
     if (!allowed.includes(status)) {
         return res.status(400).json({ message: 'Invalid status value' })
     }

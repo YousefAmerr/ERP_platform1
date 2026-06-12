@@ -45,16 +45,23 @@ function fmtDate(d) {
     year: "numeric",
   });
 }
-function statusLabel(s = "") {
-  if (s === "In_progress") return "In Progress";
-  if (s === "done") return "Done";
-  if (s === "overdue") return "Overdue";
-  return s;
+// A task is "late" when still in progress and past its due date.
+function isLate(task) {
+  if (!task || task.Task_status !== "In_progress" || !task.dueDate) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return new Date(task.dueDate) < today;
 }
-function statusClass(s = "") {
-  if (s === "In_progress") return "in_progress";
-  if (s === "done") return "done";
-  if (s === "overdue") return "overdue";
+function statusLabel(task) {
+  if (isLate(task)) return "Overdue";
+  if (task.Task_status === "In_progress") return "In Progress";
+  if (task.Task_status === "done") return "Done";
+  return task.Task_status || "";
+}
+function statusClass(task) {
+  if (isLate(task)) return "overdue";
+  if (task.Task_status === "In_progress") return "in_progress";
+  if (task.Task_status === "done") return "done";
   return "";
 }
 
@@ -392,9 +399,9 @@ export default function InsideManagerTask() {
                   <td>{fmtDate(t.dueDate)}</td>
                   <td>
                     <span
-                      className={`imt-task-status ${statusClass(t.Task_status)}`}
+                      className={`imt-task-status ${statusClass(t)}`}
                     >
-                      {statusLabel(t.Task_status)}
+                      {statusLabel(t)}
                     </span>
                   </td>
                   <td>
@@ -722,7 +729,6 @@ export default function InsideManagerTask() {
                 >
                   <option value="In_progress">In Progress</option>
                   <option value="done">Done</option>
-                  <option value="overdue">Overdue</option>
                 </select>
               </div>
               <div className="imt-form-group">

@@ -71,6 +71,7 @@ export async function analyzeTurnoverRisk() {
       `
       SELECT assignedTo as userId,
              Task_status as taskStatus,
+             was_overdue,
              dueDate,
              rating
       FROM task
@@ -107,6 +108,7 @@ export async function analyzeTurnoverRisk() {
         taskCount: 0,
         doneCount: 0,
         overdueCount: 0,
+        resolvedCount: 0,
         ratingSum: 0,
         ratingCount: 0,
         leaveCount: 0,
@@ -123,8 +125,13 @@ export async function analyzeTurnoverRisk() {
 
       employee.taskCount += 1;
       const status = String(row.taskStatus || '').toLowerCase();
-      if (status === 'done') employee.doneCount += 1;
-      if (status === 'overdue') employee.overdueCount += 1;
+      const wasOverdue = Number(row.was_overdue) === 1;
+      const isDone = status === 'done';
+      if (isDone) employee.doneCount += 1;
+      if (wasOverdue) employee.overdueCount += 1;
+      // A task counts as "resolved/attempted" if it was completed or ever missed
+      // its deadline (these can overlap when a task is completed late).
+      if (isDone || wasOverdue) employee.resolvedCount += 1;
 
       if (row.rating !== null && row.rating !== undefined) {
         employee.ratingSum += Number(row.rating);
@@ -145,7 +152,7 @@ export async function analyzeTurnoverRisk() {
 
     const eligibleEmployees = Array.from(employeeAggregateMap.values()).filter(
       (employee) => {
-        const freshTaskCount = employee.doneCount + employee.overdueCount;
+        const freshTaskCount = employee.resolvedCount;
         if (freshTaskCount < MIN_TOTAL_TASKS) {
           console.log(
             `⏭️ Skipping ${employee.name}: only ${freshTaskCount} fresh done/overdue tasks since last alert.`

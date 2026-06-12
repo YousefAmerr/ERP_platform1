@@ -27,6 +27,7 @@ export async function getProjectTasksForEmployee(userId, projectId) {
             t.description,
             t.dueDate,
             t.Task_status,
+            t.was_overdue,
             t.workLoadPoints,
             t.attachmentPath,
             p.projectName
@@ -55,7 +56,9 @@ export async function getTaskForEmployee(userId, taskId) {
             t.description,
             t.dueDate,
             t.Task_status,
+            t.was_overdue,
             t.workLoadPoints,
+            t.attachmentPath,
             p.ProjectID,
             p.projectName
          FROM task t
@@ -68,8 +71,13 @@ export async function getTaskForEmployee(userId, taskId) {
 }
 
 export async function updateTaskStatus(userId, taskId, status) {
+    // Preserve the late-history flag: once a task has passed its due date it is
+    // permanently marked was_overdue = 1 (even if it is now being completed late).
     const [result] = await pool.execute(
-        `UPDATE task SET Task_status = ? WHERE TaskID = ? AND assignedTo = ?`,
+        `UPDATE task
+         SET Task_status = ?,
+             was_overdue = (was_overdue OR (dueDate IS NOT NULL AND dueDate < CURDATE()))
+         WHERE TaskID = ? AND assignedTo = ?`,
         [status, taskId, userId]
     )
     return result.affectedRows

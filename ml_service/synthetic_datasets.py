@@ -21,6 +21,13 @@ for UserID in range(1, N_ROWS + 1):
     )
 
     # 2. Generate RAW Operational Data
+    #
+    # NEW OVERDUE MODEL: 'overdue' is no longer a Task_status. It is the
+    # was_overdue flag (1 = the task missed its deadline at some point). It is an
+    # INDEPENDENT, OVERLAPPING dimension — a task can be BOTH done AND late, so
+    # done_tasks + overdue_tasks may exceed total_tasks. This lets us represent
+    # realistic patterns the old data could not, e.g. a "pressured" employee who
+    # delivers most work but is frequently late.
     total_tasks = np.random.randint(6, 21)
 
     if profile == "stable":
@@ -40,12 +47,9 @@ for UserID in range(1, N_ROWS + 1):
         overdue_tasks = np.random.randint(int(total_tasks * 0.25), int(total_tasks * 0.60) + 1)
         leave_count = np.random.randint(2, 6)
 
-    # Sanity check for tasks
-    if done_tasks + overdue_tasks > total_tasks:
-        overdue_tasks = max(0, total_tasks - done_tasks)
-        
-    # Matching exact 'In_progress' enum from Task_status
-    In_progress_tasks = total_tasks - done_tasks - overdue_tasks
+    # done and overdue are independent flags now — no mutual-exclusivity clamp.
+    # In_progress = any task not yet done (a late in-progress task is still here).
+    In_progress_tasks = total_tasks - done_tasks
 
     # 3. FEATURE ENGINEERING (Simulating the Node.js Backend)
     task_completion_rate = done_tasks / total_tasks
