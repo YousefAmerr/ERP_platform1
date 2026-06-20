@@ -158,8 +158,6 @@ const ManagerDashboard = () => {
           </div>
           {overdueAlarm && (
             <div className="mgr-stat-flag">
-              <i className="fa-solid fa-triangle-exclamation"></i> Above safe
-              threshold
             </div>
           )}
         </div>
@@ -251,7 +249,7 @@ const ManagerDashboard = () => {
                         className="mgr-review-blocker"
                         onClick={() => navigate("/manager/alerts/need-help")}
                       >
-                        <i className="fa-solid fa-headset"></i> Review
+                        Review
                       </button>
                     </td>
                   </tr>

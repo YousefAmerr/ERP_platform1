@@ -162,7 +162,15 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 0.84rem;
+    table-layout: fixed;
 }
+
+.ra-table th:nth-child(1),
+.ra-table td:nth-child(1) { width: 200px; }
+.ra-table th:nth-child(2),
+.ra-table td:nth-child(2) { width: 100px; }
+.ra-table th:nth-child(3),
+.ra-table td:nth-child(3) { width: 150px; }
 
 .ra-table th {
     text-align: left;
@@ -235,12 +243,14 @@
 .ra-reason {
     color: #6b7590;
     font-size: 0.84rem;
-    /* allow wrapping and full text display */
-    max-width: none;
     white-space: normal;
-    overflow: visible;
     word-break: break-word;
     overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.5;
 }
 
 /* date */

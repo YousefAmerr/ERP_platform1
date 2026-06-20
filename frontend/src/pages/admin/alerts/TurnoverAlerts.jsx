@@ -67,32 +67,34 @@ const TurnoverAlerts = () => {
       .finally(() => setNhLoading(false));
   };
 
-  // ── Turnover confirm modal state ──────────────────────────────────────────
-  const [confirmAlertId, setConfirmAlertId] = useState(null);
+  // ── Alert detail modal state ──────────────────────────────────────────────
+  // detailAlert is a normalized object: { id, userId, name, email, type,
+  // reason, createdAt, status, kind } where kind is 'turnover' | 'needhelp'.
+  const [detailAlert, setDetailAlert] = useState(null);
 
-  const handleAcknowledgeAlert = async (id) => {
-    setConfirmAlertId(id);
+  const openDetail = (alert, kind) => {
+    setDetailAlert({ ...alert, kind });
   };
 
-  const confirmAcknowledge = async () => {
-    if (!confirmAlertId) return;
+  const closeDetail = () => {
+    setDetailAlert(null);
+  };
+
+  const handleAcknowledgeFromModal = async () => {
+    if (!detailAlert?.id) return;
 
     setLoading(true);
     setError("");
     try {
-      await acknowledgeAlertRequest(confirmAlertId);
+      await acknowledgeAlertRequest(detailAlert.id);
       await fetchAlerts(statusFilter);
       setMessage("Alert acknowledged. Feed refreshed.");
+      setDetailAlert(null);
     } catch (err) {
       setError(err.message || "Failed to acknowledge alert");
     } finally {
       setLoading(false);
-      setConfirmAlertId(null);
     }
-  };
-
-  const cancelAcknowledge = () => {
-    setConfirmAlertId(null);
   };
 
   useEffect(() => {
@@ -116,11 +118,7 @@ const TurnoverAlerts = () => {
       <div className="ta-feed-card">
         <div className="ta-feed-header">
           <div>
-            <p className="ta-feed-title">Active Alert Feed</p>
-            <p className="ta-feed-subtitle">
-              Real-time monitoring of turnover indicators and employee help
-              requests.
-            </p>
+            <p className="ta-feed-title">Turnover Alerts</p>
           </div>
           <div className="ta-feed-actions">
             <button
@@ -194,17 +192,13 @@ const TurnoverAlerts = () => {
                     </span>
                   </td>
                   <td>
-                    {alert.status === "Open" ? (
-                      <button
-                        className="ta-action-close"
-                        type="button"
-                        onClick={() => handleAcknowledgeAlert(alert.id)}
-                      >
-                        Acknowledge
-                      </button>
-                    ) : (
-                      <span className="ta-no-action">—</span>
-                    )}
+                    <button
+                      className="ta-view-btn"
+                      type="button"
+                      onClick={() => openDetail(alert, "turnover")}
+                    >
+                      <i className="fa-solid fa-eye"></i> View
+                    </button>
                   </td>
                 </tr>
               ))
@@ -225,7 +219,6 @@ const TurnoverAlerts = () => {
           <div>
             <p className="ta-feed-title">Need Help Alerts</p>
           </div>
-          <span className="ta-nh-count-badge">{nhTotal} total</span>
         </div>
 
         <table className="ta-table">
@@ -236,6 +229,7 @@ const TurnoverAlerts = () => {
               <th>Reason</th>
               <th>Created Date</th>
               <th>Status</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -277,6 +271,29 @@ const TurnoverAlerts = () => {
                       {a.status}
                     </span>
                   </td>
+                  <td>
+                    <button
+                      className="ta-view-btn"
+                      type="button"
+                      onClick={() =>
+                        openDetail(
+                          {
+                            id: a.AlertID,
+                            userId: a.userId,
+                            name: a.name,
+                            email: a.email,
+                            type: "Need Help",
+                            reason: a.reason,
+                            createdAt: a.createdAt,
+                            status: a.status,
+                          },
+                          "needhelp",
+                        )
+                      }
+                    >
+                      <i className="fa-solid fa-eye"></i> View
+                    </button>
+                  </td>
                 </tr>
               ))
             )}
@@ -307,27 +324,93 @@ const TurnoverAlerts = () => {
         )}
       </div>
 
-      {confirmAlertId && (
-        <div className="ta-modal-overlay">
-          <div className="ta-modal-card">
-            <h3>Confirm Acknowledge</h3>
-            <p>Are you sure you want to acknowledge this alert?</p>
-            <div className="ta-modal-actions">
+      {detailAlert && (
+        <div className="ta-modal-overlay" onClick={closeDetail}>
+          <div
+            className="ta-detail-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="ta-detail-close"
+              type="button"
+              onClick={closeDetail}
+              aria-label="Close"
+            >
+              <i className="fa-solid fa-xmark"></i>
+            </button>
+
+            <div className="ta-detail-header">
+              <div
+                className={`ta-detail-avatar ${
+                  detailAlert.kind === "needhelp" ? "ta-nh-avatar" : ""
+                }`}
+              >
+                {detailAlert.name?.split(" ")[0]?.[0] || "U"}
+              </div>
+              <div className="ta-detail-headinfo">
+                <h2 className="ta-detail-name">{detailAlert.name || "—"}</h2>
+                <p className="ta-detail-email">{detailAlert.email || "—"}</p>
+              </div>
+              <span
+                className={`ta-status ${(detailAlert.status || "").toLowerCase()}`}
+              >
+                {detailAlert.status}
+              </span>
+            </div>
+
+            <div className="ta-detail-grid">
+              <div className="ta-detail-field">
+                <span className="ta-detail-label">Alert Type</span>
+                <span className="ta-detail-value">{detailAlert.type || "—"}</span>
+              </div>
+              <div className="ta-detail-field">
+                <span className="ta-detail-label">Status</span>
+                <span className="ta-detail-value">{detailAlert.status || "—"}</span>
+              </div>
+              <div className="ta-detail-field">
+                <span className="ta-detail-label">Employee ID</span>
+                <span className="ta-detail-value">{detailAlert.userId ?? "—"}</span>
+              </div>
+              <div className="ta-detail-field">
+                <span className="ta-detail-label">Alert ID</span>
+                <span className="ta-detail-value">{detailAlert.id ?? "—"}</span>
+              </div>
+              <div className="ta-detail-field ta-detail-field-wide">
+                <span className="ta-detail-label">Created Date</span>
+                <span className="ta-detail-value">
+                  {detailAlert.createdAt
+                    ? new Date(detailAlert.createdAt).toLocaleString()
+                    : "—"}
+                </span>
+              </div>
+            </div>
+
+            <div className="ta-detail-reason-block">
+              <span className="ta-detail-label">Full Reason</span>
+              <p className="ta-detail-reason-text">
+                {detailAlert.reason || "No reason provided."}
+              </p>
+            </div>
+
+            <div className="ta-detail-footer">
               <button
                 className="ta-modal-cancel"
                 type="button"
-                onClick={cancelAcknowledge}
+                onClick={closeDetail}
               >
-                Cancel
+                Close
               </button>
-              <button
-                className="ta-modal-confirm"
-                type="button"
-                onClick={confirmAcknowledge}
-                disabled={loading}
-              >
-                {loading ? "Acknowledging..." : "Yes, Acknowledge"}
-              </button>
+              {detailAlert.kind === "turnover" &&
+                (detailAlert.status || "").toLowerCase() === "open" && (
+                  <button
+                    className="ta-modal-confirm"
+                    type="button"
+                    onClick={handleAcknowledgeFromModal}
+                    disabled={loading}
+                  >
+                    {loading ? "Acknowledging..." : "Acknowledge"}
+                  </button>
+                )}
             </div>
           </div>
         </div>

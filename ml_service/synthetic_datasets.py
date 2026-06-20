@@ -56,18 +56,23 @@ for UserID in range(1, N_ROWS + 1):
     overdue_rate = overdue_tasks / total_tasks
 
     rating_base = 4.8 - (2.0 * overdue_rate) - (1.5 * (1 - task_completion_rate))
-    
-    # Matching exact 'rating' column from the task table
-    rating = clamp(rating_base + np.random.normal(0, 0.25), 1.0, 5.0)
+
+    # Matching exact 'rating' column from the task table.
+    # Noise raised 0.25 -> 0.60: a manager's judgement is not a pure mechanical
+    # function of completion/overdue, so the rating carries its own independent
+    # signal (this lets the model learn a real coefficient for it).
+    rating = clamp(rating_base + np.random.normal(0, 0.60), 1.0, 5.0)
 
     normalized_low_rating = (5 - rating) / 4
     normalized_leave = min(leave_count, 5) / 5
 
     # 4. Calculate Risk Score (Workload removed per Supervisor's instruction)
+    # Rebalanced: rating weight raised 0.15 -> 0.25, completion lowered
+    # 0.40 -> 0.30 (overdue and leave unchanged; weights still sum to 1.0)
     risk_score = (
-        0.40 * (1 - task_completion_rate) +
+        0.30 * (1 - task_completion_rate) +
         0.35 * overdue_rate +
-        0.15 * normalized_low_rating +
+        0.25 * normalized_low_rating +
         0.10 * normalized_leave
     )
 

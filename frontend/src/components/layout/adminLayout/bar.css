@@ -52,7 +52,10 @@
     padding: 18px 12px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 15px;
+    border-top: 1px solid #dce1e9;
+    margin-top: 0;
+    padding-top: 22px;
 }
 
 .sidebar-link {

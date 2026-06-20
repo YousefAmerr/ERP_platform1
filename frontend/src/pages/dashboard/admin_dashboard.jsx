@@ -141,10 +141,9 @@ const AdminDashboard = () => {
     { name: "Overdue", value: ts.overdue, color: "#e05252" },
   ];
 
-  const fr = stats.flightRisk || { atRisk: 0, stable: 0 };
   const riskData = [
-    { name: "At Risk", value: fr.atRisk, color: "#f43f5e" },
-    { name: "Stable", value: fr.stable, color: "#14b8a6" },
+    { name: "Turnover", value: stats.turnoverAlerts || 0, color: "#f43f5e" },
+    { name: "Need Help", value: stats.needHelpAlerts || 0, color: "#f59e0b" },
   ];
 
   const projects = stats.projectsOverview || [];
@@ -260,10 +259,10 @@ const AdminDashboard = () => {
         {/* Workforce Flight Risk — statistical donut only */}
         <div className="dash-section-card">
           <div className="dash-section-header">
-            <h6 className="dash-section-title">Workforce Flight Risk</h6>
+            <h6 className="dash-section-title">Employees Risks</h6>
           </div>
           <ChartBoundary>
-            <DonutChart data={riskData} centerLabel="Staff" />
+            <DonutChart data={riskData} centerLabel="Alerts" />
             <ChartLegend data={riskData} />
           </ChartBoundary>
         </div>
