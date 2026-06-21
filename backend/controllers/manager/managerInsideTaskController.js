@@ -12,11 +12,13 @@ import {
     getTaskAssignedTo,
 } from '../../models/manager/managerInsideTaskModel.js'
 import { maybeCreateNeedHelpAlert } from '../../services/alertRuleEngine.js'
+import { getProjectAttachments } from '../../models/manager/managerProjectAttachmentModel.js'
 
 export async function getProject(req, res) {
     const project = await getProjectById(req.params.id)
     if (!project) return res.status(404).json({ message: 'Project not found' })
-    res.json({ project })
+    const attachments = await getProjectAttachments(req.params.id)
+    res.json({ project: { ...project, attachments } })
 }
 
 export async function getTasks(req, res) {

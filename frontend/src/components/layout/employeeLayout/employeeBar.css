@@ -39,24 +39,40 @@
 }
 
 .emp-brand-logo {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     object-fit: contain;
+    border-radius: 9px;
+}
+
+.emp-brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.05;
 }
 
 .emp-brand-title {
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: 1.2rem;
+    font-weight: 800;
     color: #f0fdfa;          /* teal-50 — white-ish on dark teal */
-    letter-spacing: 0.2px;
-    line-height: 1.2;
+    letter-spacing: normal;
+}
+
+.emp-brand-sub {
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #99f6e4;          /* teal-200 */
+    margin-top: 3px;
 }
 
 .emp-nav {
     padding: 14px 12px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding-top: 22px;
 }
 
 .emp-nav-link {

@@ -48,6 +48,14 @@ export async function getProjectNameById(projectId) {
     return row?.projectName || null
 }
 
+export async function getProjectMetaById(projectId) {
+    const [[row]] = await pool.execute(
+        `SELECT projectName, projectDescription, Project_status FROM project WHERE ProjectID = ? LIMIT 1`,
+        [projectId]
+    )
+    return row || null
+}
+
 export async function getTaskForEmployee(userId, taskId) {
     const [[row]] = await pool.execute(
         `SELECT

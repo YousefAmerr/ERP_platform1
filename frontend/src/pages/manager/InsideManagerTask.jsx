@@ -45,6 +45,22 @@ function fmtDate(d) {
     year: "numeric",
   });
 }
+// Pick a coloured file icon based on the attachment's extension.
+function fileMeta(name = "") {
+  const ext = name.split(".").pop()?.toLowerCase() || "";
+  if (ext === "pdf") return { icon: "fa-file-pdf", cls: "pdf" };
+  if (["doc", "docx"].includes(ext)) return { icon: "fa-file-word", cls: "word" };
+  if (["xls", "xlsx", "csv"].includes(ext))
+    return { icon: "fa-file-excel", cls: "excel" };
+  if (["ppt", "pptx"].includes(ext))
+    return { icon: "fa-file-powerpoint", cls: "ppt" };
+  if (["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp"].includes(ext))
+    return { icon: "fa-file-image", cls: "image" };
+  if (["zip", "rar", "7z", "tar", "gz"].includes(ext))
+    return { icon: "fa-file-zipper", cls: "zip" };
+  if (["txt", "md"].includes(ext)) return { icon: "fa-file-lines", cls: "text" };
+  return { icon: "fa-file", cls: "generic" };
+}
 // A task is "late" when still in progress and past its due date.
 function isLate(task) {
   if (!task || task.Task_status !== "In_progress" || !task.dueDate) return false;
@@ -55,13 +71,16 @@ function isLate(task) {
 function statusLabel(task) {
   if (isLate(task)) return "Overdue";
   if (task.Task_status === "In_progress") return "In Progress";
-  if (task.Task_status === "done") return "Done";
+  if (task.Task_status === "done")
+    // Completed, but the DB flagged it as having passed its due date.
+    return Number(task.was_overdue) === 1 ? "Done (Overdue)" : "Done";
   return task.Task_status || "";
 }
 function statusClass(task) {
   if (isLate(task)) return "overdue";
   if (task.Task_status === "In_progress") return "in_progress";
-  if (task.Task_status === "done") return "done";
+  if (task.Task_status === "done")
+    return Number(task.was_overdue) === 1 ? "done-overdue" : "done";
   return "";
 }
 
@@ -285,29 +304,79 @@ export default function InsideManagerTask() {
         </button>
       </div>
 
-      {/* Project card */}
-      <div className="imt-project-card">
-        <div className="imt-project-icon">
-          <i className="fa-solid fa-diagram-project"></i>
+      {/* Project brief — name, description & attachments */}
+      <div className="imt-brief-card">
+        <div className="imt-brief-head">
+          <div className="imt-project-icon">
+            <i className="fa-solid fa-diagram-project"></i>
+          </div>
+          <div className="imt-brief-headinfo">
+            <h2 className="imt-project-name">
+              {project ? project.projectName : "Loading…"}
+            </h2>
+            <span className="imt-brief-meta">
+              <i className="fa-solid fa-paperclip"></i>
+              {project?.attachments?.length
+                ? `${project.attachments.length} attachment${
+                    project.attachments.length > 1 ? "s" : ""
+                  }`
+                : "No attachments"}
+            </span>
+          </div>
+          {project && (
+            <span
+              className={`imt-proj-status-badge ${
+                project.Project_status === "Active" ? "active" : "done"
+              }`}
+            >
+              {project.Project_status}
+            </span>
+          )}
         </div>
-        <div className="imt-project-info">
-          <h2 className="imt-project-name">
-            {project ? project.projectName : "Loading…"}
-          </h2>
-          <p className="imt-project-desc">
+
+        <div className="imt-brief-section">
+          <span className="imt-brief-label">
+            <i className="fa-solid fa-align-left"></i> Project Description
+          </span>
+          <div className="imt-brief-desc">
             {project
               ? project.projectDescription || "No description provided."
-              : ""}
-          </p>
+              : "Loading…"}
+          </div>
         </div>
-        {project && (
-          <span
-            className={`imt-proj-status-badge ${
-              project.Project_status === "Active" ? "active" : "done"
-            }`}
-          >
-            {project.Project_status}
-          </span>
+
+        {project?.attachments?.length > 0 && (
+          <div className="imt-brief-section">
+            <span className="imt-brief-label">
+              <i className="fa-solid fa-folder-open"></i> Attachments
+            </span>
+            <div className="imt-attach-grid">
+              {project.attachments.map((a) => {
+                const meta = fileMeta(a.originalName);
+                return (
+                  <a
+                    key={a.AttachmentID}
+                    href={`/assets/uploads/${a.filePath}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="imt-attach-card"
+                    title={a.originalName}
+                  >
+                    <span className={`imt-attach-icon ${meta.cls}`}>
+                      <i className={`fa-solid ${meta.icon}`}></i>
+                    </span>
+                    <span className="imt-attach-info">
+                      <span className="imt-attach-name">{a.originalName}</span>
+                      <span className="imt-attach-action">
+                        <i className="fa-solid fa-arrow-up-right-from-square"></i>
+                        Open
+                      </span>
+                    </span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
         )}
       </div>
 

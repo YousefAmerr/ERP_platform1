@@ -23,6 +23,7 @@ export default function ManagerTasks() {
     projectDescription: "",
     Project_status: "Active",
   });
+  const [attachments, setAttachments] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
   function loadProjects() {
@@ -60,11 +61,25 @@ export default function ManagerTasks() {
       projectDescription: "",
       Project_status: "Active",
     });
+    setAttachments([]);
     setModalOpen(true);
   }
 
   function closeModal() {
     setModalOpen(false);
+  }
+
+  function handleAddFiles(e) {
+    const picked = Array.from(e.target.files || []);
+    if (picked.length) {
+      // Append so the manager can add files across multiple picks
+      setAttachments((prev) => [...prev, ...picked]);
+    }
+    e.target.value = ""; // allow re-selecting the same file
+  }
+
+  function removeAttachment(index) {
+    setAttachments((prev) => prev.filter((_, i) => i !== index));
   }
 
   async function handleCreate(e) {
@@ -75,7 +90,7 @@ export default function ManagerTasks() {
     }
     setSubmitting(true);
     try {
-      await createManagerProjectRequest(form);
+      await createManagerProjectRequest(form, attachments);
       toast.success("Project created successfully");
       closeModal();
       loadProjects();
@@ -139,9 +154,6 @@ export default function ManagerTasks() {
             >
               <div className="mgt-card-body">
                 <h3 className="mgt-project-name">{p.projectName}</h3>
-                {p.projectDescription && (
-                  <p className="mgt-project-desc">{p.projectDescription}</p>
-                )}
 
                 {/* Completion bar */}
                 <div className="mgt-completion-row">
@@ -252,6 +264,44 @@ export default function ManagerTasks() {
                   <option value="Active">Active</option>
                   <option value="done">Done</option>
                 </select>
+              </div>
+
+              <div className="mgt-form-group">
+                <label className="mgt-form-label">
+                  Attachments
+                  <span className="mgt-form-hint"> (add as many as you need)</span>
+                </label>
+                <label className="mgt-file-drop">
+                  <i className="fa-solid fa-cloud-arrow-up"></i>
+                  <span>Click to add files</span>
+                  <input
+                    type="file"
+                    multiple
+                    className="mgt-file-input"
+                    onChange={handleAddFiles}
+                  />
+                </label>
+
+                {attachments.length > 0 && (
+                  <ul className="mgt-file-list">
+                    {attachments.map((file, i) => (
+                      <li className="mgt-file-item" key={`${file.name}-${i}`}>
+                        <i className="fa-solid fa-paperclip mgt-file-icon"></i>
+                        <span className="mgt-file-name" title={file.name}>
+                          {file.name}
+                        </span>
+                        <button
+                          type="button"
+                          className="mgt-file-remove"
+                          onClick={() => removeAttachment(i)}
+                          aria-label="Remove file"
+                        >
+                          <i className="fa-solid fa-xmark"></i>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
 
               <div className="mgt-modal-footer">

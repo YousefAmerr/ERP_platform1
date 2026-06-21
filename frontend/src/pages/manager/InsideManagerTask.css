@@ -31,17 +31,22 @@
   border-color: #d1d5db;
 }
 
-/* Project info card */
-.imt-project-card {
+/* Project brief card */
+.imt-brief-card {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
-  padding: 22px 28px;
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
+  padding: 24px 28px;
   margin-bottom: 24px;
   width: 100%;
+}
+
+.imt-brief-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eef2f7;
 }
 
 .imt-project-icon {
@@ -57,7 +62,7 @@
   color: #2563eb;
 }
 
-.imt-project-info {
+.imt-brief-headinfo {
   flex: 1;
   min-width: 0;
 }
@@ -69,11 +74,116 @@
   margin: 0 0 6px 0;
 }
 
-.imt-project-desc {
-  font-size: 0.85rem;
+.imt-brief-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: #8a96a8;
+}
+
+/* Brief sections (description / attachments) */
+.imt-brief-section {
+  margin-top: 20px;
+}
+
+.imt-brief-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
   color: #6b7280;
-  margin: 0;
-  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.imt-brief-label i {
+  color: #2563eb;
+}
+
+.imt-brief-desc {
+  font-size: 0.9rem;
+  color: #374151;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+  border-radius: 10px;
+  padding: 16px 18px;
+}
+
+/* Attachment grid */
+.imt-attach-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.imt-attach-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #e5e9f0;
+  border-radius: 10px;
+  background: #fff;
+  text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+
+.imt-attach-card:hover {
+  border-color: #c7d8fd;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+  transform: translateY(-1px);
+}
+
+.imt-attach-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.imt-attach-icon.pdf { background: #fee2e2; color: #dc2626; }
+.imt-attach-icon.word { background: #dbeafe; color: #2563eb; }
+.imt-attach-icon.excel { background: #dcfce7; color: #16a34a; }
+.imt-attach-icon.ppt { background: #ffedd5; color: #ea580c; }
+.imt-attach-icon.image { background: #f3e8ff; color: #9333ea; }
+.imt-attach-icon.zip { background: #fef9c3; color: #ca8a04; }
+.imt-attach-icon.text { background: #e0f2fe; color: #0284c7; }
+
+.imt-attach-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.imt-attach-name {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.imt-attach-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #2563eb;
 }
 
 .imt-proj-status-badge {
@@ -285,6 +395,11 @@
 .imt-task-status.done {
   background: #dcfce7;
   color: #15803d;
+}
+
+.imt-task-status.done-overdue {
+  background: #ffedd5;
+  color: #c2410c;
 }
 
 .imt-task-status.overdue {

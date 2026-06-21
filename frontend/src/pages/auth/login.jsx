@@ -3,7 +3,6 @@ import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import "./login.css";
 import { loginRequest } from "../../helper_module/authHelper";
-import ERPLogo from "../../assets/ERP_system_logo.png";
 
 const ROLE_CONFIG = [
   { key: "ADMIN", label: "ADMIN", icon: "fa-solid fa-shield-halved" },
@@ -61,8 +60,11 @@ const Login = () => {
         <div className="login-left-content">
           {/* Logo */}
           <div className="login-logo">
-            <img src={ERPLogo} alt="ERP Platform Logo" />
-            <span>ERP Platform</span>
+            <img src="/assets/brand-logo.svg" alt="فن الامتياز" />
+            <div className="login-logo-text">
+              <span className="login-logo-name">فن الامتياز</span>
+              <span className="login-logo-sub">REAL ESTATE</span>
+            </div>
           </div>
 
           {/* Heading */}
@@ -137,7 +139,7 @@ const Login = () => {
           <div className="login-footer">
             <hr />
             <div className="login-footer-content">
-              <span>&copy; 2026 ERP PLATFORM INTELLIGENCE</span>
+              <span>&copy; 2026 فن الامتياز — REAL ESTATE</span>
               <div className="login-footer-links">
                 <a>PRIVACY</a>
                 <a>SECURITY</a>

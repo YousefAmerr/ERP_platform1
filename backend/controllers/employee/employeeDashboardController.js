@@ -4,6 +4,7 @@ import {
     getEmployeeRatings,
     getEmployeeMonthlyCompleted,
     getEmployeeActiveTasks,
+    getEmployeeRecognition,
 } from '../../models/employee/employeeDashboardModel.js'
 
 export async function getDashboardStats(req, res) {
@@ -36,4 +37,12 @@ export async function getActiveTasks(req, res) {
     if (!userId) return res.status(404).json({ message: 'Employee not found' })
     const tasks = await getEmployeeActiveTasks(userId)
     res.json({ tasks })
+}
+
+// Employee of the Month status for the logged-in employee → celebration banner.
+export async function getRecognition(req, res) {
+    const userId = await getEmployeeIdByEmail(req.user.email)
+    if (!userId) return res.status(404).json({ message: 'Employee not found' })
+    const data = await getEmployeeRecognition(userId)
+    res.json(data)
 }

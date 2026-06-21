@@ -21,9 +21,15 @@ import AlertRoute from './routes/adminRoute/AlertRoute.js'
 import { initTurnoverRiskScheduler } from './utils/turnoverScheduler.js';
 import { initOverdueScheduler } from './utils/overdueScheduler.js';
 import recognitionRoutes from './routes/adminRoute/recognitionRoutes.js';
+import { ensureProjectAttachmentTable } from './models/manager/managerProjectAttachmentModel.js'
 
-//check 
+//check
 connectDB();
+
+// Ensure the project_attachment table exists (no manual migration needed)
+ensureProjectAttachmentTable().catch((e) =>
+  console.error('Failed to ensure project_attachment table:', e.message)
+);
 
 const app = express()
 

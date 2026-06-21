@@ -2,10 +2,11 @@ import { getEmployeeIdByEmail } from '../../models/employee/employeeDashboardMod
 import {
     getEmployeeProjects,
     getProjectTasksForEmployee,
-    getProjectNameById,
+    getProjectMetaById,
     getTaskForEmployee,
     updateTaskStatus,
 } from '../../models/employee/employeeTasksModel.js'
+import { getProjectAttachments } from '../../models/manager/managerProjectAttachmentModel.js'
 import { maybeCreateNeedHelpAlert } from '../../services/alertRuleEngine.js'
 
 export async function getMyProjects(req, res) {
@@ -19,10 +20,19 @@ export async function getMyProjectTasks(req, res) {
     const userId = await getEmployeeIdByEmail(req.user.email)
     if (!userId) return res.status(404).json({ message: 'Employee not found' })
     const projectId = parseInt(req.params.projectId)
-    const projectName = await getProjectNameById(projectId)
-    if (!projectName) return res.status(404).json({ message: 'Project not found' })
-    const tasks = await getProjectTasksForEmployee(userId, projectId)
-    res.json({ projectName, tasks })
+    const meta = await getProjectMetaById(projectId)
+    if (!meta) return res.status(404).json({ message: 'Project not found' })
+    const [tasks, attachments] = await Promise.all([
+        getProjectTasksForEmployee(userId, projectId),
+        getProjectAttachments(projectId),
+    ])
+    res.json({
+        projectName: meta.projectName,
+        projectDescription: meta.projectDescription,
+        projectStatus: meta.Project_status,
+        attachments,
+        tasks,
+    })
 }
 
 export async function getMyTaskDetail(req, res) {

@@ -80,17 +80,31 @@
 }
 
 .mgr-brand-logo {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     object-fit: contain;
+    border-radius: 9px;
+}
+
+.mgr-brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.05;
 }
 
 .mgr-brand-title {
-    font-size: 1.05rem;
-    font-weight: 700;
+    font-size: 1.2rem;
+    font-weight: 800;
     color: #f1f5f9;
-    letter-spacing: 0.2px;
-    line-height: 1.2;
+    letter-spacing: normal;
+}
+
+.mgr-brand-sub {
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #94a3b8;
+    margin-top: 3px;
 }
 
 .mgr-nav {

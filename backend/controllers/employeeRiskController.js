@@ -17,6 +17,54 @@ function safeNumber(value, fallback = 0) {
 }
 
 /**
+ * Turn the raw ML metrics into a plain-language reason a manager can act on.
+ * Lists only the factors that are actually problematic, ordered by the model's
+ * weighting (overdue 0.35 > completion 0.30 > rating 0.25 > leave 0.10).
+ */
+function buildTurnoverReason(payload, prediction) {
+  const completionPct = Math.round(safeNumber(payload.task_completion_rate) * 100);
+  const overduePct = Math.round(safeNumber(payload.overdue_rate) * 100);
+  const rating = safeNumber(payload.rating, 3);
+  const leaves = safeNumber(payload.leave_count, 0);
+  const riskPct = Math.round(safeNumber(prediction.Risk_Probability));
+
+  const factors = [];
+  if (safeNumber(payload.overdue_rate) >= 0.2) {
+    factors.push(`missed deadlines on ${overduePct}% of their tasks`);
+  }
+  if (safeNumber(payload.task_completion_rate) < 0.7) {
+    factors.push(`low task completion (only ${completionPct}% finished)`);
+  }
+  if (rating < 3) {
+    factors.push(`a below-average performance rating (${rating.toFixed(1)} out of 5)`);
+  }
+  if (leaves >= 3) {
+    factors.push(`frequent time off (${leaves} approved leaves)`);
+  }
+
+  // Should always have at least one factor when flagged, but fall back to a
+  // metrics summary just in case the combination was borderline.
+  if (factors.length === 0) {
+    factors.push(
+      `${completionPct}% task completion`,
+      `${overduePct}% of tasks overdue`,
+      `an average rating of ${rating.toFixed(1)}/5`,
+    );
+  }
+
+  const factorText =
+    factors.length === 1
+      ? factors[0]
+      : `${factors.slice(0, -1).join(', ')} and ${factors[factors.length - 1]}`;
+
+  let band = 'Elevated';
+  if (riskPct >= 75) band = 'Critical';
+  else if (riskPct >= 60) band = 'High';
+
+  return `${band} turnover risk — ${riskPct}% likelihood of leaving. Main concerns: this employee has ${factorText}.`;
+}
+
+/**
  * Analyze turnover risk across all active employees with batch data retrieval.
  * This implementation avoids per-row queries and uses in-memory merging.
  */
@@ -220,7 +268,7 @@ export async function analyzeTurnoverRisk() {
         continue;
       }
 
-      const alertReason = `AI predicted high flight risk (${prediction.Risk_Probability}% probability) based on metrics: ${payload.task_completion_rate} completion, ${payload.overdue_rate} overdue.`;
+      const alertReason = buildTurnoverReason(payload, prediction);
       alertsToInsert.push([employee.id, ALERT_TYPE, alertReason, ALERT_STATUS_OPEN]);
       createdAlerts.push({
         userId: employee.id,

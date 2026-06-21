@@ -30,12 +30,35 @@
   flex-shrink: 0;
 }
 
-/* Action cell — two buttons side-by-side */
+/* Action cell — two buttons side-by-side, pinned to the right */
 .mnha-row-actions {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 10px;
   flex-wrap: nowrap;
+}
+
+/* "Acknowledge" button */
+.mnha-ack-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border-radius: 7px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid #bcd0fb;
+  background: #eef4ff;
+  color: #2563eb;
+  transition: background 0.13s, color 0.13s;
+  white-space: nowrap;
+}
+
+.mnha-ack-btn:hover {
+  background: #dbe7ff;
+  color: #1d4ed8;
 }
 
 /* "View Tasks" button */
@@ -93,6 +116,18 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.84rem;
+  table-layout: fixed;
+}
+
+/* Fixed column sizing — every column takes only what it needs, the
+   flexible Reason column (3rd) absorbs the remaining space. */
+.ta-table th:nth-child(1), .ta-table td:nth-child(1) { width: 100px; }  /* Alert Type */
+.ta-table th:nth-child(2), .ta-table td:nth-child(2) { width: 190px; }  /* Employee */
+.ta-table th:nth-child(4), .ta-table td:nth-child(4) { width: 200px; }  /* Created Date */
+.ta-table th:nth-child(5), .ta-table td:nth-child(5) { width: 160px; }  /* Status */
+.ta-table th:nth-child(6), .ta-table td:nth-child(6) {                  /* Action */
+  width: 100px;
+  text-align: right;
 }
 
 .ta-table th {
@@ -102,12 +137,12 @@
   letter-spacing: 0.7px;
   color: #8a96a8;
   text-transform: uppercase;
-  padding: 0 16px 12px;
+  padding: 0 22px 12px;
   border-bottom: 1px solid #f0f4f8;
 }
 
 .ta-table td {
-  padding: 16px;
+  padding: 18px 22px;
   border-bottom: 1px solid #f0f4f8;
   vertical-align: middle;
   color: #1f2a44;
@@ -133,6 +168,16 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+}
+
+/* Keep the name/email inside the fixed Employee column */
+.ta-employee > div:last-child { min-width: 0; }
+.ta-emp-name,
+.ta-emp-role {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ta-emp-avatar {
@@ -165,10 +210,10 @@
 .ta-reason {
   color: #6b7590;
   font-size: 0.84rem;
-  max-width: 260px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.55;
 }
 
 .ta-date {

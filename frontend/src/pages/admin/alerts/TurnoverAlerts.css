@@ -328,7 +328,16 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 0.84rem;
+    table-layout: fixed;
 }
+
+/* Fixed column sizing — Reason (3rd) flexes, the rest keep a clear space so
+   Created Date and Status never overlap. */
+.ta-table th:nth-child(1), .ta-table td:nth-child(1) { width: 110px; }  /* Alert Type */
+.ta-table th:nth-child(2), .ta-table td:nth-child(2) { width: 210px; }  /* Employee */
+.ta-table th:nth-child(4), .ta-table td:nth-child(4) { width: 200px; }  /* Created Date */
+.ta-table th:nth-child(5), .ta-table td:nth-child(5) { width: 160px; }  /* Status */
+.ta-table th:nth-child(6), .ta-table td:nth-child(6) { width: 110px; }  /* Action */
 
 .ta-table th {
     text-align: left;
@@ -337,12 +346,12 @@
     letter-spacing: 0.7px;
     color: #8a96a8;
     text-transform: uppercase;
-    padding: 0 16px 12px;
+    padding: 0 22px 12px;
     border-bottom: 1px solid #f0f4f8;
 }
 
 .ta-table td {
-    padding: 16px;
+    padding: 18px 22px;
     border-bottom: 1px solid #f0f4f8;
     vertical-align: middle;
     color: #1f2a44;
@@ -383,7 +392,10 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0;
 }
+
+.ta-employee > div:last-child { min-width: 0; }
 
 .ta-emp-avatar {
     width: 38px;
@@ -404,22 +416,28 @@
     font-weight: 600;
     font-size: 0.88rem;
     color: #1f2a44;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .ta-emp-role {
     font-size: 0.74rem;
     color: #8a96a8;
     margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* reason cell */
 .ta-reason {
     color: #6b7590;
     font-size: 0.84rem;
-    max-width: 240px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
 }
 
 /* date cell */

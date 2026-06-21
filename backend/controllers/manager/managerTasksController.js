@@ -1,4 +1,5 @@
 import { getAllProjects, createProject, updateProjectStatus } from '../../models/manager/managerTasksModel.js'
+import { insertProjectAttachments } from '../../models/manager/managerProjectAttachmentModel.js'
 
 export async function getProjects(req, res) {
     const projects = await getAllProjects()
@@ -11,6 +12,9 @@ export async function addProject(req, res) {
         return res.status(400).json({ message: 'projectName and Project_status are required' })
     }
     const insertId = await createProject(projectName, projectDescription, Project_status)
+    if (req.files && req.files.length) {
+        await insertProjectAttachments(insertId, req.files)
+    }
     res.status(201).json({ insertId })
 }
 

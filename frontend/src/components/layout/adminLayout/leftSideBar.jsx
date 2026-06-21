@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router";
 import "./bar.css";
-import ERPLogo from "../../../assets/ERP_system_logo.png";
 
 const LeftSideBar = () => {
   const navigate = useNavigate();
@@ -20,8 +19,11 @@ const LeftSideBar = () => {
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
-        <img src={ERPLogo} alt="ERP Logo" className="sidebar-brand-logo" />
-        <span>ERP Platform</span>
+        <img src="/assets/brand-logo.svg" alt="فن الامتياز" className="sidebar-brand-logo" />
+        <div className="sidebar-brand-text">
+          <span className="sidebar-brand-name">فن الامتياز</span>
+          <span className="sidebar-brand-sub">REAL ESTATE</span>
+        </div>
       </div>
       <nav className="sidebar-nav">
         <NavLink

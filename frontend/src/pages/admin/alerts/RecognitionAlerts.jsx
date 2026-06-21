@@ -140,16 +140,23 @@ const RecognitionAlerts = () => {
         {loading ? (
           <div className="ra-feed-card">Loading...</div>
         ) : latest ? (
-          <div className="ra-feed-card ra-hero-card">
-            <div className="ra-hero-inner">
-              <div className="ra-hero-trophy">🏆</div>
-              <div>
-                <div className="ra-hero-name">{latest.name}</div>
-                <div className="ra-hero-reason">
-                  {latest.Alert_reason || latest.reason}
-                </div>
-              </div>
+          <div className="ra-eotm-banner">
+            <div className="ra-eotm-medal">
+              <i className="fa-solid fa-trophy"></i>
             </div>
+            <div className="ra-eotm-content">
+              <span className="ra-eotm-pill">
+                <i className="fa-solid fa-star"></i> Employee of the Month
+                {monthYear(latest.createdAt) && (
+                  <> · {monthYear(latest.createdAt)}</>
+                )}
+              </span>
+              <h2 className="ra-eotm-title">{latest.name}</h2>
+              <p className="ra-eotm-text">
+                {latest.Alert_reason || latest.reason}
+              </p>
+            </div>
+            <i className="fa-solid fa-award ra-eotm-watermark"></i>
           </div>
         ) : (
           <div className="ra-feed-card">No recognition entries yet</div>

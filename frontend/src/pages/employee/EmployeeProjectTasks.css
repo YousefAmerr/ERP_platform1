@@ -40,6 +40,117 @@
   margin: 0;
 }
 
+/* ── Project brief (instructions & attachments) ─────────── */
+.ept-brief-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  padding: 22px 24px;
+  margin-bottom: 22px;
+}
+
+.ept-brief-section + .ept-brief-section {
+  margin-top: 20px;
+}
+
+.ept-brief-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+
+.ept-brief-label i {
+  color: #3b82f6;
+}
+
+.ept-brief-desc {
+  font-size: 0.9rem;
+  color: #374151;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+  border-radius: 10px;
+  padding: 16px 18px;
+}
+
+.ept-attach-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.ept-attach-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #e5e9f0;
+  border-radius: 10px;
+  background: #fff;
+  text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+
+.ept-attach-card:hover {
+  border-color: #bfdbfe;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+  transform: translateY(-1px);
+}
+
+.ept-attach-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.ept-attach-icon.pdf { background: #fee2e2; color: #dc2626; }
+.ept-attach-icon.word { background: #dbeafe; color: #2563eb; }
+.ept-attach-icon.excel { background: #dcfce7; color: #16a34a; }
+.ept-attach-icon.ppt { background: #ffedd5; color: #ea580c; }
+.ept-attach-icon.image { background: #f3e8ff; color: #9333ea; }
+.ept-attach-icon.zip { background: #fef9c3; color: #ca8a04; }
+.ept-attach-icon.text { background: #e0f2fe; color: #0284c7; }
+
+.ept-attach-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ept-attach-name {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ept-attach-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #3b82f6;
+}
+
 /* ── Tasks card ─────────────────────────────────────────── */
 .ept-tasks-card {
   background: #fff;

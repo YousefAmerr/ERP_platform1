@@ -42,11 +42,30 @@ function truncate(text, max = 50) {
   return text.length > max ? text.slice(0, max) + "…" : text;
 }
 
+// Pick a coloured file icon based on the attachment's extension.
+function fileMeta(name = "") {
+  const ext = name.split(".").pop()?.toLowerCase() || "";
+  if (ext === "pdf") return { icon: "fa-file-pdf", cls: "pdf" };
+  if (["doc", "docx"].includes(ext)) return { icon: "fa-file-word", cls: "word" };
+  if (["xls", "xlsx", "csv"].includes(ext))
+    return { icon: "fa-file-excel", cls: "excel" };
+  if (["ppt", "pptx"].includes(ext))
+    return { icon: "fa-file-powerpoint", cls: "ppt" };
+  if (["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp"].includes(ext))
+    return { icon: "fa-file-image", cls: "image" };
+  if (["zip", "rar", "7z", "tar", "gz"].includes(ext))
+    return { icon: "fa-file-zipper", cls: "zip" };
+  if (["txt", "md"].includes(ext)) return { icon: "fa-file-lines", cls: "text" };
+  return { icon: "fa-file", cls: "generic" };
+}
+
 export default function EmployeeProjectTasks() {
   const { projectId } = useParams();
   const navigate = useNavigate();
 
   const [projectName, setProjectName] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
+  const [attachments, setAttachments] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewTask, setViewTask] = useState(null);
@@ -56,6 +75,8 @@ export default function EmployeeProjectTasks() {
     getEmployeeProjectTasksRequest(projectId)
       .then((data) => {
         setProjectName(data.projectName || "");
+        setProjectDescription(data.projectDescription || "");
+        setAttachments(data.attachments || []);
         setTasks(data.tasks || []);
       })
       .catch((err) => toast.error(err.message || "Failed to load tasks"))
@@ -94,6 +115,54 @@ export default function EmployeeProjectTasks() {
         </button>
         <h2 className="ept-project-title">{projectName || "Project"}</h2>
       </div>
+
+      {/* Project brief — instructions & attachments from the manager */}
+      {!loading && (
+        <div className="ept-brief-card">
+          <div className="ept-brief-section">
+            <span className="ept-brief-label">
+              <i className="fa-solid fa-align-left"></i> Project Instructions
+            </span>
+            <div className="ept-brief-desc">
+              {projectDescription || "No instructions provided for this project."}
+            </div>
+          </div>
+
+          {attachments.length > 0 && (
+            <div className="ept-brief-section">
+              <span className="ept-brief-label">
+                <i className="fa-solid fa-folder-open"></i> Attachments
+              </span>
+              <div className="ept-attach-grid">
+                {attachments.map((a) => {
+                  const meta = fileMeta(a.originalName);
+                  return (
+                    <a
+                      key={a.AttachmentID}
+                      href={`/assets/uploads/${a.filePath}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="ept-attach-card"
+                      title={a.originalName}
+                    >
+                      <span className={`ept-attach-icon ${meta.cls}`}>
+                        <i className={`fa-solid ${meta.icon}`}></i>
+                      </span>
+                      <span className="ept-attach-info">
+                        <span className="ept-attach-name">{a.originalName}</span>
+                        <span className="ept-attach-action">
+                          <i className="fa-solid fa-arrow-up-right-from-square"></i>
+                          Open
+                        </span>
+                      </span>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Tasks table card */}
       <div className="ept-tasks-card">

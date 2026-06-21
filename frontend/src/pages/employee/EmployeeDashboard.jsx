@@ -13,6 +13,7 @@ import {
   getEmployeeMonthlyCompletedRequest,
   getEmployeeActiveTasksRequest,
   getEmployeeRatingsRequest,
+  getEmployeeRecognitionRequest,
 } from "../../helper_module/authHelper";
 import toast from "react-hot-toast";
 import "./EmployeeDashboard.css";
@@ -84,11 +85,17 @@ export default function EmployeeDashboard() {
   const [ratings, setRatings] = useState([]);
   const [ratingsPage, setRatingsPage] = useState(1);
   const [ratingsTotalPages, setRatingsTotalPages] = useState(1);
+  const [recognition, setRecognition] = useState(null);
 
   useEffect(() => {
     getEmployeeDashboardStatsRequest()
       .then((data) => setStats(data.stats))
       .catch((err) => toast.error(err.message || "Failed to load stats"));
+
+    // Employee of the Month banner — fail silently so it never breaks the page
+    getEmployeeRecognitionRequest()
+      .then((data) => setRecognition(data))
+      .catch(() => {});
 
     getEmployeeMonthlyCompletedRequest()
       .then((data) => setMonthly(data.months || []))
@@ -117,6 +124,37 @@ export default function EmployeeDashboard() {
 
   return (
     <div className="ed-page">
+      {/* ── Employee of the Month celebration banner ── */}
+      {recognition?.recognized && (
+        <div className="ed-eotm-banner">
+          <div className="ed-eotm-medal">
+            <i className="fa-solid fa-trophy"></i>
+          </div>
+          <div className="ed-eotm-content">
+            <span className="ed-eotm-pill">
+              <i className="fa-solid fa-star"></i> Employee of the Month
+            </span>
+            <h2 className="ed-eotm-title">
+              Congratulations,{" "}
+              {recognition.name?.split(" ")[0] || "Champion"}! 🎉
+            </h2>
+            <p className="ed-eotm-text">
+              {recognition.reason ? (
+                recognition.reason
+              ) : (
+                <>
+                  You've been named our <strong>Employee of the Month</strong>.
+                  Your dedication, consistency, and outstanding work set the
+                  standard for the entire team. Keep shining — you've truly
+                  earned it!
+                </>
+              )}
+            </p>
+          </div>
+          <i className="fa-solid fa-award ed-eotm-watermark"></i>
+        </div>
+      )}
+
       {/* ── Stat Cards ── */}
       <div className="ed-stats-row">
         <div className="ed-stat-card">

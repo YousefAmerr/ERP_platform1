@@ -73,6 +73,29 @@ export async function getEmployeeActiveTasks(userId) {
     return rows
 }
 
+// Is this employee recognised (Employee of the Month)?
+// The banner is shown only for 5 days after the recognition was created.
+export async function getEmployeeRecognition(userId) {
+    const [[row]] = await pool.execute(
+        `SELECT a.Alert_reason AS reason, a.createdAt, u.Name AS name
+         FROM alert a
+         JOIN users u ON u.UserID = a.UserID
+         WHERE a.UserID = ?
+           AND a.type = 'recognition'
+           AND a.createdAt >= (NOW() - INTERVAL 5 DAY)
+         ORDER BY a.createdAt DESC
+         LIMIT 1`,
+        [userId]
+    )
+    if (!row) return { recognized: false }
+    return {
+        recognized: true,
+        name: row.name,
+        reason: row.reason,
+        createdAt: row.createdAt,
+    }
+}
+
 export async function getEmployeeRatings(userId, page = 1, limit = 10) {
     const offset = (page - 1) * limit
 

@@ -46,8 +46,8 @@ async function hasActiveAlert(userId) {
 
 async function insertAlert(userId, reason) {
     await pool.execute(
-        `INSERT INTO alert (UserID, type, Alert_reason, Alert_status)
-         VALUES (?, 'Need Help', ?, 'Open')`,
+        `INSERT INTO alert (UserID, type, Alert_reason, Alert_status, createdAt)
+         VALUES (?, 'Need Help', ?, 'Open', NOW())`,
         [userId, reason]
     )
 }

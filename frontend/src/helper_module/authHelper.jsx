@@ -275,11 +275,16 @@ export async function getManagerProjectsRequest() {
   return data;
 }
 
-export async function createManagerProjectRequest(body) {
+export async function createManagerProjectRequest(body, files = []) {
+  const form = new FormData();
+  Object.entries(body).forEach(([k, v]) => {
+    if (v !== undefined && v !== null) form.append(k, v);
+  });
+  files.forEach((f) => form.append("attachments", f));
   const res = await fetch("/api/v1/manager/tasks/projects", {
     method: "POST",
-    headers: { ...authHeaders(), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    body: form,
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data?.message || "Failed to create project");
@@ -432,6 +437,15 @@ export async function getEmployeeActiveTasksRequest() {
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data?.message || "Failed to fetch active tasks");
+  return data;
+}
+
+export async function getEmployeeRecognitionRequest() {
+  const res = await fetch("/api/v1/employee/dashboard/recognition", {
+    headers: authHeaders(),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data?.message || "Failed to fetch recognition");
   return data;
 }
 

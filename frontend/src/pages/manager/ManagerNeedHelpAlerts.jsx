@@ -52,25 +52,13 @@ export default function ManagerNeedHelpAlerts() {
   return (
     <>
       <div className="mnha-page">
-        {/* Breadcrumb */}
-        <div className="mnha-breadcrumb">
-          <span className="mnha-bc-parent">ERP Manager</span>
-          <span className="mnha-bc-sep">/</span>
-          <span className="mnha-bc-current">Need Help Alerts</span>
-        </div>
 
         {/* Card — same structure as admin Turnover card */}
         <div className="ta-feed-card">
           <div className="ta-feed-header">
             <div>
               <p className="ta-feed-title">Need Help Alerts</p>
-              <p className="ta-feed-subtitle">
-                Rule-engine alerts triggered by deadline, quality, or capacity risks.
-              </p>
             </div>
-            <span className="mnha-total-badge">
-              {loading ? "…" : `${total} total`}
-            </span>
           </div>
 
           <table className="ta-table">
@@ -140,9 +128,10 @@ export default function ManagerNeedHelpAlerts() {
                       <div className="mnha-row-actions">
                         {(a.status || "").toLowerCase() === "open" && (
                           <button
-                            className="ta-action-close"
+                            className="mnha-ack-btn"
                             onClick={() => setConfirmId(a.AlertID)}
                           >
+                            <i className="fa-solid fa-check"></i>
                             Acknowledge
                           </button>
                         )}
